@@ -18,6 +18,8 @@ Add your own name (do not add the names for others!) to the section below.
 <!-- - Preferably add a recognizable photo, otherwise add your GitLab photo -->
 <!-- - (please make sure the photos have the same size) --> 
 
+<!-- You've been hit by, you've been struck by, a smooth criminal.. -->
+
 ## How to run it
 
 ## How to contribute to it
