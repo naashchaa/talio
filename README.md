@@ -17,6 +17,7 @@ Add your own name (do not add the names for others!) to the section below.
 <!-- - Mention your *student* email address -->
 <!-- - Preferably add a recognizable photo, otherwise add your GitLab photo -->
 <!-- - (please make sure the photos have the same size) --> 
+<!-- test edit -->
 
 ## How to run it
 
