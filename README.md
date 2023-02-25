@@ -11,14 +11,13 @@ Add your own name (do not add the names for others!) to the section below.
 | Profile Picture | Name | Email |
 |---|---|---|
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) | Your Name Here | Y.NameHere@student.tudelft.nl |
+| ![](https://secure.gravatar.com/avatar/3094e0ca6fe23dd800b281cdb6d3bef5?s=50&d=identicon) | Mateo Alexander Nasse | M.A.Nasse@student.tudelft.nl |
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
 <!-- - Mention your *student* email address -->
 <!-- - Preferably add a recognizable photo, otherwise add your GitLab photo -->
 <!-- - (please make sure the photos have the same size) --> 
-
-<!-- You've been hit by, you've been struck by, a smooth criminal.. -->
 
 ## How to run it
 
