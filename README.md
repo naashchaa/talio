@@ -15,6 +15,7 @@ Add your own name (do not add the names for others!) to the section below.
 | ![](https://secure.gravatar.com/avatar/4ee186c94801486ee3e25aed0b74d7b2?s=50&d=identicon) | Lucas Bastiaan Paul | L.B.Paul@student.tudelft.nl |
 | ![](https://secure.gravatar.com/avatar/f18c53613801f4857d88fa7483f98d7c?s=50&d=identicon) | Daria Elena Bucur | D.E.Bucur@student.tudelft.nl |
 | ![](https://secure.gravatar.com/avatar/86bf24e1e93f272893c480878f9aaf91?s=50&d=identicon) | Marit Hes | m.hes@student.tudelft.nl |
+| ![](https://secure.gravatar.com/avatar/2924a2967741146d93f25a8796eb10e6?s=50&d=identicon) | Maxim Istomin | m.i.istomin@student.tudelft.nl |
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
 <!-- - Mention your *student* email address -->
