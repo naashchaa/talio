@@ -6,8 +6,51 @@
 <module name = "Checker">
     <module name="TreeWalker">
         <module name="UnusedImports" />
+
+        <module name="ConstantName"/>
+
+        <module name="CyclomaticComplexity"/>
+
+        <module name="Indentation"/>
+
+        <module name="InterfaceTypeParameterName"/>
+
+        <module name="JavadocMethod"/>
+
+        <module name="MissingJavadocMethod">
+            <property name="minLineCount" value="5"/>
+            <property name="scope" value="private"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+        </module>
+
+        <module name="JavadocStyle"/>
+
+        <module name="MemberName"/>
+
+        <module name="MethodLength">
+            <property name="max" value="75"/>
+        </module>
+
+        <module name="NestedForDepth">
+            <property name="max" value="2"/>
+        </module>
+
+        <module name="NestedIfDepth">
+            <property name="max" value="2"/>
+        </module>
+
+        <module name="ParameterNumber"/>
+
+        <module name="RequireThis">
+            <property name="validateOnlyOverlapping" value="false"/>
+        </module>
     </module>
 
     <!-- TODO: decide in your team with other checkers to add! -->
 
+    <module name="LineLength">
+        <property name="max" value="100"/>
+    </module>
+
 </module>
+
