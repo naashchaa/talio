@@ -6,9 +6,9 @@ import java.util.Objects;
 
 public class Board {
 
-    private String id;
+    private final String id;
     private String name;
-    private List<TaskList> taskLists;
+    private final List<TaskList> taskLists;
     private String password;
 
 
