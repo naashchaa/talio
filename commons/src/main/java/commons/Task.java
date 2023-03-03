@@ -1,4 +1,4 @@
-package server;
+package commons;
 
 // Interface for the Task entity
 public interface Task {
