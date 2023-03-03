@@ -11,7 +11,6 @@ public class Board {
     private final List<TaskList> taskLists;
     private String password;
 
-
     /**
      * Constructor for when the password field is left empty
      * @param id
@@ -39,7 +38,6 @@ public class Board {
     String getID(){
         return this.id;
     }
-
 
     String getName() {
         return this.name;
