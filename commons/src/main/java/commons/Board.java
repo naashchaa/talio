@@ -11,10 +11,22 @@ public class Board {
     private final List<TaskList> taskLists;
     private String password;
 
+//    id should be auto-generated
     public Board(String id, String name) {
         this.id = id;
+        if (name == null) throw new IllegalArgumentException("Name must not be null");
         this.name = name;
         this.taskLists = new ArrayList<>();
+    }
+
+//    constructor for when a password is entered, again id should be auto-generated
+    public Board(String id, String name, String password){
+        this.id = id;
+        if (name == null) throw new IllegalArgumentException("Name must not be null");
+        this.name = name;
+        this.taskLists = new ArrayList<>();
+        if (password == null) throw new IllegalArgumentException("Password must not be null");
+        this.password = password;
     }
 
     public String getID(){
@@ -25,7 +37,9 @@ public class Board {
         return this.name;
     }
 
+//    input will probably have to be sanitized
     public void setName(String name){
+        if (name == null) throw new IllegalArgumentException("Name cannot be null");
         this.name = name;
     }
 
@@ -38,6 +52,7 @@ public class Board {
      * @param taskList to be added to the list
      */
     public void addTaskList(TaskList taskList){
+        if (taskList == null) throw new IllegalArgumentException("taskList cannot be null");
         this.taskLists.add(taskList);
     }
 
@@ -56,6 +71,7 @@ public class Board {
         return this.password;
      }
 
+//     input will probably have to be sanitized
      public void setPassword(String password){
         this.password = password;
      }
