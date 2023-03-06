@@ -1,4 +1,4 @@
-﻿Tuesday 28th, February 
+Tuesday 28th, February 
 
 13:45 
 
