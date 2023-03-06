@@ -1,35 +1,38 @@
 package commons;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
+@Entity
 public class Board {
 
-    private final String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String name;
-    private final List<TaskList> taskLists;
     private String password;
 
-//    id should be auto-generated
-    public Board(String id, String name) {
-        this.id = id;
-        if (name == null) throw new IllegalArgumentException("Name must not be null");
-        this.name = name;
-        this.taskLists = new ArrayList<>();
+    private Board(){
+        // for object mapper
     }
 
-//    constructor for when a password is entered, again id should be auto-generated
-    public Board(String id, String name, String password){
-        this.id = id;
+    public Board(String name) {
         if (name == null) throw new IllegalArgumentException("Name must not be null");
         this.name = name;
-        this.taskLists = new ArrayList<>();
+    }
+
+//    constructor for when a password is entered
+    public Board(String name, String password){
+        if (name == null) throw new IllegalArgumentException("Name must not be null");
+        this.name = name;
         if (password == null) throw new IllegalArgumentException("Password must not be null");
         this.password = password;
     }
 
-    public String getID(){
+    public long getID(){
         return this.id;
     }
 
@@ -41,30 +44,6 @@ public class Board {
     public void setName(String name){
         if (name == null) throw new IllegalArgumentException("Name cannot be null");
         this.name = name;
-    }
-
-    public List<TaskList> getTaskLists(){
-        return this.taskLists;
-    }
-
-    /**
-     * Adds a TaskList to the list of TaskLists
-     * @param taskList to be added to the list
-     */
-    public void addTaskList(TaskList taskList){
-        if (taskList == null) throw new IllegalArgumentException("taskList cannot be null");
-        this.taskLists.add(taskList);
-    }
-
-    /**
-     * Removes a TaskList from the list of TaskLists if it exists
-     * @param taskList to be removed
-     * @return the removed taskList if it exists and null otherwise
-     */
-    public TaskList removeTaskList(TaskList taskList){
-        int index = this.taskLists.indexOf(taskList);
-        if (index == -1) return null;
-        return this.taskLists.remove(index);
     }
 
      public String getPassword(){
@@ -82,11 +61,11 @@ public class Board {
         if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
         return Objects.equals(this.id, board.id) && Objects.equals(this.name, board.name)
-                && Objects.equals(this.taskLists, board.taskLists) && Objects.equals(this.password, board.password);
+                && Objects.equals(this.password, board.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.taskLists, this.password);
+        return Objects.hash(this.id, this.name, this.password);
     }
 }
