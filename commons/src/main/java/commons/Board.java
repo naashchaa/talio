@@ -1,24 +1,27 @@
 package commons;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "board")
 public class Board {
 
     @Id
+    @Column(name = "board_id", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(name = "name", unique = false, nullable = false)
     private String name;
+
+    @Column(name = "password", unique = false, nullable = false)
     private String password;
 
-    private Board(){
-        // for object mapper
-    }
+//    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+//    private List<TaskList> taskLists = new ArrayList<>();
 
     public Board(String name) {
         if (name == null) throw new IllegalArgumentException("Name must not be null");
@@ -55,6 +58,10 @@ public class Board {
      public void setPassword(String password){
         this.password = password;
      }
+
+//     public List<TaskList> getTaskLists(){
+//        return this.taskLists;
+//     }
 
     @Override
     public boolean equals(Object o) {
