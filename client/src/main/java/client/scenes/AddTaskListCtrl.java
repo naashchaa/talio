@@ -2,13 +2,8 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Person;
-import commons.Quote;
-import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 
 /**
  * AddTaskList is currently connected to MainCtrl, but after the board is done will be connected to board and task.
@@ -18,6 +13,7 @@ public class AddTaskListCtrl {
     private final MainCtrl mainCtrl;
     @FXML
     private TextField name;
+
 
     @Inject
     public AddTaskListCtrl(ServerUtils server, MainCtrl mainCtrl) {
