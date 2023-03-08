@@ -50,11 +50,12 @@ public class Main extends Application {
 //        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
 //        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
 
-        var overview  = FXML.load(AddTaskCtrl.class, "client", "scenes", "AddTask.fxml");
+        var addTask  = FXML.load(AddTaskCtrl.class, "client", "scenes", "AddTask.fxml");
+        var board  = FXML.load(BoardCrtl.class, "client", "scenes", "Board.fxml");
 
 //        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 //        mainCtrl.initialize(primaryStage, overview, add);
-        var mainCtrl = INJECTOR.getInstance(TemporalCtrl.class);
-        mainCtrl.initialize(primaryStage, overview);
+        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        mainCtrl.initialize(primaryStage, board, addTask);
     }
 }
