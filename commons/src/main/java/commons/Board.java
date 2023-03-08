@@ -10,18 +10,17 @@ import java.util.Objects;
 public class Board {
 
     @Id
-    @Column(name = "board_id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "name", unique = false, nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "password", unique = false, nullable = false)
     private String password;
 
-//    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
-//    private List<TaskList> taskLists = new ArrayList<>();
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<TaskList> taskLists = new ArrayList<>();
 
     public Board(String name) {
         if (name == null) throw new IllegalArgumentException("Name must not be null");
@@ -59,9 +58,9 @@ public class Board {
         this.password = password;
      }
 
-//     public List<TaskList> getTaskLists(){
-//        return this.taskLists;
-//     }
+     public List<TaskList> getTaskLists(){
+        return this.taskLists;
+     }
 
     @Override
     public boolean equals(Object o) {
