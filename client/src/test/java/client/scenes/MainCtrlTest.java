@@ -18,13 +18,13 @@ package client.scenes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class OldMainCtrlTest {
+public class MainCtrlTest {
 
-    private OldMainCtrl sut;
+    private MainCtrl sut;
 
     @BeforeEach
     public void setup() {
-        sut = new OldMainCtrl();
+        sut = new MainCtrl();
     }
 
     @Test

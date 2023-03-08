@@ -30,7 +30,7 @@ import javafx.stage.Modality;
 public class AddQuoteCtrl {
 
     private final ServerUtils server;
-    private final OldMainCtrl oldMainCtrl;
+    private final MainCtrl mainCtrl;
 
     @FXML
     private TextField firstName;
@@ -42,14 +42,15 @@ public class AddQuoteCtrl {
     private TextField quote;
 
     @Inject
-    public AddQuoteCtrl(ServerUtils server, OldMainCtrl oldMainCtrl) {
-        this.oldMainCtrl = oldMainCtrl;
+    public AddQuoteCtrl(ServerUtils server, MainCtrl mainCtrl) {
+        this.mainCtrl = mainCtrl;
         this.server = server;
+
     }
 
     public void cancel() {
         clearFields();
-        oldMainCtrl.showOverview();
+        mainCtrl.showOverview();
     }
 
     public void ok() {
@@ -65,7 +66,7 @@ public class AddQuoteCtrl {
         }
 
         clearFields();
-        oldMainCtrl.showOverview();
+        mainCtrl.showOverview();
     }
 
     private Quote getQuote() {
