@@ -10,11 +10,12 @@ public class TemporalCtrl {
     private Stage primaryStage;
     private AddTaskCtrl addtaskCtrl;
     private Scene overview;
+    private AddTaskListCtrl addTaskList;
 
-    public void initialize(Stage primaryStage, Pair<AddTaskCtrl, Parent> addtask) {
+    public void initialize(Stage primaryStage, Pair<AddTaskListCtrl, Parent> addTaskList) {
         this.primaryStage = primaryStage;
-        this.addtaskCtrl = addtask.getKey();
-        this.overview = new Scene(addtask.getValue());
+        this.addTaskList = addTaskList.getKey();
+        this.overview = new Scene(addTaskList.getValue());
         primaryStage.setTitle("Task Overview");
         primaryStage.setScene(overview);
         primaryStage.show();
