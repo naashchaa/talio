@@ -68,4 +68,8 @@ public class QuoteOverviewCtrl implements Initializable {
         data = FXCollections.observableList(quotes);
         table.setItems(data);
     }
+
+    public void addTaskList() {
+        mainCtrl.showAddTaskList();
+    }
 }
