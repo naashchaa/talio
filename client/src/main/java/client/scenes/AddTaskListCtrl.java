@@ -19,7 +19,6 @@ public class AddTaskListCtrl {
     public AddTaskListCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-
     }
 
     /**
@@ -28,8 +27,7 @@ public class AddTaskListCtrl {
      */
     public void cancel() {
         name.clear();
-        //ToDo: Change mainCtrl when the board is done, such that it displays the board overview.
-        mainCtrl.showOverview();
+        mainCtrl.showBoard();
     }
 
     public void create() {
