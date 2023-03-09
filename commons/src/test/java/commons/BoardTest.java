@@ -43,14 +43,15 @@ class BoardTest {
 
     @Test
     void testHashEquals() {
+        b1.setId(1L);
         assertEquals(b1, b1);
-        assertEquals(b1, b2);
+        assertNotEquals(b1, b2);
         assertNotEquals(b1, b3);
         assertNotEquals(b1, b4);
         assertEquals(b1, b5);
 
         assertEquals(b1.hashCode(), b1.hashCode());
-        assertEquals(b1.hashCode(), b2.hashCode());
+        assertNotEquals(b1.hashCode(), b2.hashCode());
         assertNotEquals(b1.hashCode(), b3.hashCode());
         assertNotEquals(b1.hashCode(), b4.hashCode());
         assertEquals(b1.hashCode(), b5.hashCode());
