@@ -23,47 +23,44 @@ import javafx.util.Pair;
 public class MainCtrl {
 
     private Stage primaryStage;
-
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
-
+    private BoardCtrl boardCtrl;
+    private Scene board;
+    private AddTaskCtrl addTaskCtrl;
+    private Scene addTask;
     private AddTaskListCtrl addTaskListCtrl;
     private Scene addTaskList;
 
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add, Pair<AddTaskListCtrl, Parent> addTaskList) {
+    public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
+            Pair<AddTaskCtrl, Parent> addTask, Pair<AddTaskListCtrl, Parent> addTaskList) {
         this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
+        this.boardCtrl = boardCtrl.getKey();
+        this.board = new Scene(boardCtrl.getValue());
+
+        this.addTaskCtrl = addTask.getKey();
+        this.addTask = new Scene(addTask.getValue());
 
         this.addTaskListCtrl = addTaskList.getKey();
         this.addTaskList = new Scene(addTaskList.getValue());
 
-
-        showOverview();
+        showBoard();
         primaryStage.show();
     }
 
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
+    public void showBoard() {
+        primaryStage.setTitle("Board");
+        primaryStage.setScene(board);
+//        boardCtrl.refresh();
     }
 
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    public void showAddTask() {
+        primaryStage.setTitle("Add New Task");
+        primaryStage.setScene(addTask);
+//        addTask.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
     public void showAddTaskList() {
-        primaryStage.setTitle("New Task List");
+        primaryStage.setTitle("Add New Task List");
         primaryStage.setScene(addTaskList);
     }
 }

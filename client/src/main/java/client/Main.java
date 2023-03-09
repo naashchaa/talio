@@ -47,12 +47,12 @@ public class Main extends Application {
 //            e.printStackTrace();
 //        }
 
-        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
+        var board  = FXML.load(BoardCtrl.class, "client", "scenes", "Board.fxml");
+        var addTask  = FXML.load(AddTaskCtrl.class, "client", "scenes", "AddTask.fxml");
         var addTaskList = FXML.load(AddTaskListCtrl.class, "client", "scenes", "AddTaskList.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, addTaskList);
+        mainCtrl.initialize(primaryStage, board, addTask, addTaskList);
 //
     }
 }
