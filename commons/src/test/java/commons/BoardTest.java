@@ -12,9 +12,13 @@ class BoardTest {
     Board b4 = new Board("bb");
     Board b5 = b1;
 
-
     @Test
-    void getName() {
+    void testId(){
+        b1.setId(1L);
+        assertEquals(1L, b1.getId());
+    }
+    @Test
+    void testName() {
         assertEquals("b", b1.getName());
         b1.setName("b1");
         assertEquals("b1", b1.getName());
@@ -22,7 +26,7 @@ class BoardTest {
     }
 
     @Test
-    void getPassword() {
+    void testPassword() {
         assertNull(b1.getPassword());
         assertNotNull(b3.getPassword());
         assertEquals("test1", b3.getPassword());
@@ -34,7 +38,7 @@ class BoardTest {
     @Test
     void getTaskLists() {
         assertEquals(0, b1.getTaskLists().size());
-//        test for setting a list needed
+//        test for setting a list needed but no implementation of taskList yet
     }
 
     @Test
@@ -56,5 +60,7 @@ class BoardTest {
     void testToString(){
         assertEquals("Board: b, 0", b1.toString());
         assertEquals("Board: bb, 0", b4.toString());
+        b1.setId(1L);
+        assertEquals("Board: b, 1", b1.toString());
     }
 }

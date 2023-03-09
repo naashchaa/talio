@@ -35,9 +35,12 @@ public class Board {
         this.password = password;
     }
 
-    public long getID(){
+    public long getId(){
         return this.id;
     }
+
+    //only to be used for testing
+    public void setId(long l){this.id = l;}
 
     public String getName() {
         return this.name;
