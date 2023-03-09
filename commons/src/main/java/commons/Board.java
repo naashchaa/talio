@@ -11,7 +11,7 @@ public class Board {
 
     @Id
     @Column(unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     @Column(nullable = false)
@@ -62,17 +62,26 @@ public class Board {
         return this.taskLists;
      }
 
+     public void setTaskLists(List<TaskList> list){
+        this.taskLists = list;
+     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
         return Objects.equals(this.id, board.id) && Objects.equals(this.name, board.name)
-                && Objects.equals(this.password, board.password);
+                && Objects.equals(this.taskLists, board.taskLists) && Objects.equals(this.password, board.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.password);
+        return Objects.hash(this.id, this.name, this.taskLists, this.password);
+    }
+
+    @Override
+    public String toString(){
+        return "Board: " + this.name + ": " + this.id;
     }
 }
