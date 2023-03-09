@@ -11,7 +11,7 @@ public class Board {
 
     @Id
     @Column(unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column(nullable = false)
@@ -82,6 +82,6 @@ public class Board {
 
     @Override
     public String toString(){
-        return "Board: " + this.name + ": " + this.id;
+        return "Board: " + this.name + ", " + this.id;
     }
 }

@@ -10,6 +10,8 @@ class BoardTest {
     Board b2 = new Board("b");
     Board b3 = new Board("b", "test1");
     Board b4 = new Board("bb");
+    Board b5 = b1;
+
 
     @Test
     void getName() {
@@ -36,18 +38,23 @@ class BoardTest {
     }
 
     @Test
-    void testEquals() {
-        assertTrue(b1.equals(b1));
-        assertTrue(b1.equals(b2));
-        assertFalse(b1.equals(b4));
-        assertFalse(b1.equals(b3));
-    }
+    void testHashEquals() {
+        assertEquals(b1, b1);
+        assertEquals(b1, b2);
+        assertNotEquals(b1, b3);
+        assertNotEquals(b1, b4);
+        assertEquals(b1, b5);
 
-    @Test
-    void testHashCode() {
         assertEquals(b1.hashCode(), b1.hashCode());
         assertEquals(b1.hashCode(), b2.hashCode());
         assertNotEquals(b1.hashCode(), b3.hashCode());
         assertNotEquals(b1.hashCode(), b4.hashCode());
+        assertEquals(b1.hashCode(), b5.hashCode());
+    }
+
+    @Test
+    void testToString(){
+        assertEquals("Board: b, 0", b1.toString());
+        assertEquals("Board: bb, 0", b4.toString());
     }
 }
