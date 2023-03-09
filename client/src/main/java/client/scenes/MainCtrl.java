@@ -30,14 +30,21 @@ public class MainCtrl {
     private AddQuoteCtrl addCtrl;
     private Scene add;
 
+    private AddTaskListCtrl addTaskListCtrl;
+    private Scene addTaskList;
+
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add) {
+            Pair<AddQuoteCtrl, Parent> add, Pair<AddTaskListCtrl, Parent> addTaskList) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
+
+        this.addTaskListCtrl = addTaskList.getKey();
+        this.addTaskList = new Scene(addTaskList.getValue());
+
 
         showOverview();
         primaryStage.show();
@@ -53,5 +60,10 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    }
+
+    public void showAddTaskList() {
+        primaryStage.setTitle("New Task List");
+        primaryStage.setScene(addTaskList);
     }
 }
