@@ -34,6 +34,10 @@ public class ServerUtils {
 
     private static final String SERVER = "http://localhost:8080/";
 
+    /**
+     * Opens a connection with the localhost and reads the quotes directly.
+     * @throws IOException if there is an exception
+     */
     public void getQuotesTheHardWay() throws IOException {
         var url = new URL("http://localhost:8080/api/quotes");
         var is = url.openConnection().getInputStream();
