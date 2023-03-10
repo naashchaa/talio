@@ -24,7 +24,6 @@ public class Board {
     private Board(){}
 
     public Board(@NotNull String name) {
-        if (name == null) throw new IllegalArgumentException("Name must not be null");
         this.name = name;
     }
 
