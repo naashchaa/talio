@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/tasklist") // -> localhost:XXXX/named/name/variable
 public class TestGetControllerArray {
 
-    String[] tasks = new String[]{"never","gonna","give","you","up","never","gonna","let","you","down"};
+    String[] tasks = new String[]{"never","gonna","give","you","up",
+        "never","gonna","let","you","down"};
 
     @GetMapping("/id/{id}")
     @ResponseBody
     public String named(@PathVariable("id") int id) {
-        return tasks[id];
+        return this.tasks[id];
     }
 
 }

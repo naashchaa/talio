@@ -49,13 +49,17 @@ public class AddQuoteCtrl {
     }
 
     public void cancel() {
-        clearFields();
-        mainCtrl.showBoard();
+
+        this.clearFields();
+        this.mainCtrl.showBoard();
     }
 
+    /**
+     * Approves the method for adding a quote if possible.
+     */
     public void ok() {
         try {
-            server.addQuote(getQuote());
+            this.server.addQuote(this.getQuote());
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -64,33 +68,36 @@ public class AddQuoteCtrl {
             alert.showAndWait();
             return;
         }
-
-        clearFields();
-        mainCtrl.showBoard();
+        this.clearFields();
+        this.mainCtrl.showBoard();
     }
 
     private Quote getQuote() {
-        var p = new Person(firstName.getText(), lastName.getText());
-        var q = quote.getText();
+        var p = new Person(this.firstName.getText(), this.lastName.getText());
+        var q = this.quote.getText();
         return new Quote(p, q);
     }
 
     private void clearFields() {
-        firstName.clear();
-        lastName.clear();
-        quote.clear();
+        this.firstName.clear();
+        this.lastName.clear();
+        this.quote.clear();
     }
 
+    /**
+     * When enters is pressed, ok is called, when escape is pressed, cancel is called.
+     * @param e event triggered by the user.
+     */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
-        case ENTER:
-            ok();
-            break;
-        case ESCAPE:
-            cancel();
-            break;
-        default:
-            break;
+            case ENTER:
+                this.ok();
+                break;
+            case ESCAPE:
+                this.cancel();
+                break;
+            default:
+                break;
         }
     }
 }

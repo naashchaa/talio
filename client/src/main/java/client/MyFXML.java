@@ -37,9 +37,17 @@ public class MyFXML {
         this.injector = injector;
     }
 
+    /**
+     * Method to facilitate the load to the fxml.
+     * @param c the class for the controller
+     * @param parts the path to the files
+     * @return returns a pair that wraps the controller and its parent
+     * @param <T> the type of class
+     */
     public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
         try {
-            var loader = new FXMLLoader(getLocation(parts), null, null, new MyFactory(), StandardCharsets.UTF_8);
+            var loader = new FXMLLoader(this.getLocation(parts), null,
+                    null, new MyFactory(), StandardCharsets.UTF_8);
             Parent parent = loader.load();
             T ctrl = loader.getController();
             return new Pair<>(ctrl, parent);
@@ -61,14 +69,14 @@ public class MyFXML {
             return new Builder() {
                 @Override
                 public Object build() {
-                    return injector.getInstance(type);
+                    return MyFXML.this.injector.getInstance(type);
                 }
             };
         }
 
         @Override
         public Object call(Class<?> type) {
-            return injector.getInstance(type);
+            return MyFXML.this.injector.getInstance(type);
         }
     }
 }

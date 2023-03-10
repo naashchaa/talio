@@ -14,10 +14,10 @@ public class BoardCtrl {
     }
 
     public void addTask() {
-        mainCtrl.showAddTask();
+        this.mainCtrl.showAddTask();
     }
 
     public void addTaskList() {
-        mainCtrl.showAddTaskList();
+        this.mainCtrl.showAddTaskList();
     }
 }
