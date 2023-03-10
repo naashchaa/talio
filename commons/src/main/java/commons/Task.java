@@ -1,13 +1,26 @@
 package commons;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 // Task class
+@Entity
+@Table(name = "TaskList")
 public class Task {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true, nullable = false)
+    public long id;
+    @Column(nullable = false)
     private String name;
+    @Column
     private String description;
+    @ManyToOne
+    @JoinColumn(name = TaskList_id)
     private TaskList parentTaskList;
+    @ManyToOne
+    @JoinColumn(name = "Task_id")
     private Task parentTask;
 
     /** The constructor for the Task class.
@@ -19,7 +32,6 @@ public class Task {
      *                   This is an advanced feature from the "nested tasks" rubric,
      *                   and is therefore not needed and can be set to null.
      */
-    // default constructor
     public Task(String name, String description, TaskList taskList, Task parentTask) {
         if (name == null || taskList == null)
             throw new IllegalArgumentException("Name and parent TaskList must not be null");
@@ -31,7 +43,12 @@ public class Task {
         
         this.parentTask = parentTask;
     }
-    
+
+    //empty constructor for the object mapper
+    @SuppressWarnings("unused")
+    public Task() {
+    }
+
     public String getName() {
         return this.name;
     }
