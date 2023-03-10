@@ -20,7 +20,7 @@ public class TaskList {
     private String name;
 
 
-
+    private TaskList(){}
     TaskList(String name, Board parentBoard){
         if(name == null || parentBoard == null){
             throw new IllegalArgumentException("Name and parent board must not be null");
