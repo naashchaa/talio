@@ -10,7 +10,8 @@ import java.util.Objects;
 public class Board {
 
     @Id
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
+    @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
