@@ -30,7 +30,7 @@ public class TaskList {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -40,8 +40,14 @@ public class TaskList {
         this.name = name;
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(long l){this.id = l;}
+
     public Board getParentBoard() {
-        return parentBoard;
+        return this.parentBoard;
     }
 
     public void setParentBoard(Board parentBoard) {
@@ -56,20 +62,20 @@ public class TaskList {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskList taskList = (TaskList) o;
-        return name.equals(taskList.name) && parentBoard.equals(taskList.parentBoard);
+        return this.name.equals(taskList.name) && this.parentBoard.equals(taskList.parentBoard);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(this.name);
     }
 
     @Override
     public String toString() {
         return "TaskList{" +
-                "parentBoard=" + parentBoard +
-                ", id=" + id +
-                ", name='" + name + '\'' +
+                "parentBoard=" + this.parentBoard +
+                ", id=" + this.id +
+                ", name='" + this.name + '\'' +
                 '}';
     }
 }
