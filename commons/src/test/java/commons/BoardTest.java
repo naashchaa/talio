@@ -36,12 +36,6 @@ class BoardTest {
     }
 
     @Test
-    void getTaskLists() {
-        assertEquals(0, b1.getTaskLists().size());
-//        test for setting a list needed but no implementation of taskList yet
-    }
-
-    @Test
     void testHashEquals() {
         b1.setId(1L);
         assertEquals(b1, b1);

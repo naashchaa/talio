@@ -1,8 +1,6 @@
 package commons;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,8 +17,8 @@ public class Board {
 
     private String password;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
-    private List<TaskList> taskLists = new ArrayList<>();
+    @SuppressWarnings("unused")
+    private Board(){}
 
     public Board(String name) {
         if (name == null) throw new IllegalArgumentException("Name must not be null");
@@ -61,26 +59,18 @@ public class Board {
         this.password = password;
      }
 
-     public List<TaskList> getTaskLists(){
-        return this.taskLists;
-     }
-
-     public void setTaskLists(List<TaskList> list){
-        this.taskLists = list;
-     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
         return Objects.equals(this.id, board.id) && Objects.equals(this.name, board.name)
-                && Objects.equals(this.taskLists, board.taskLists) && Objects.equals(this.password, board.password);
+                && Objects.equals(this.password, board.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.taskLists, this.password);
+        return Objects.hash(this.id, this.name, this.password);
     }
 
     @Override
