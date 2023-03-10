@@ -46,7 +46,7 @@ public class Task {
 
     //empty constructor for the object mapper
     @SuppressWarnings("unused")
-    public Task() {
+    private Task() {
     }
 
     public String getName() {
