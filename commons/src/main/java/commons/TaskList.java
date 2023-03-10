@@ -1,22 +1,76 @@
 package commons;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public interface TaskList {
+import javax.persistence.*;
+import java.util.Objects;
 
-    String getName(); // returns the TaskList name
+@Entity
+@Table(name = "TaskList")
+public class TaskList {
 
-    void setName(); // sets the TaskList name
+    @ManyToOne
+    @JoinColumn(name = "Board_id", nullable = false)
+    private Board parentBoard;
 
-    List<Task> getTasks(); // returns a list of all Tasks in the TaskList
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true, nullable = false)
+    private Long id;
 
-    void addTask(Task task); // adds a Task to the list
+    @Column(nullable = false, length = 50)
+    private String name;
 
-    // returns and removes a task if it is present, does nothing and returns null otherwise
-    Task removeTask(Task task);
+    @SuppressWarnings("unused")
+    private TaskList(){}
 
-    Board getParentBoard(); // returns the parent Board
+    TaskList(@NotNull String name, @NotNull Board parentBoard){
+        this.name = name;
+        this.parentBoard = parentBoard;
+    }
 
-    void setParentBoard(Board parent); // sets the parent board
+    public String getName() {
+        return this.name;
+    }
 
+    public void setName(@NotNull String name) {
+        this.name = name;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(long l){this.id = l;}
+
+    public Board getParentBoard() {
+        return this.parentBoard;
+    }
+
+    public void setParentBoard(@NotNull Board parentBoard) {
+        this.parentBoard = parentBoard;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskList taskList = (TaskList) o;
+        return this.name.equals(taskList.name) && this.parentBoard.equals(taskList.parentBoard);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name);
+    }
+
+    @Override
+    public String toString() {
+        return "TaskList{" +
+                "parentBoard=" + this.parentBoard +
+                ", id=" + this.id +
+                ", name='" + this.name + '\'' +
+                '}';
+    }
 }
+

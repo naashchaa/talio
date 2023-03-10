@@ -47,7 +47,4 @@ public class TaskController {
         Task saved = this.repo.save(task);
         return ResponseEntity.ok(saved);
     }
-
-
-
 }
