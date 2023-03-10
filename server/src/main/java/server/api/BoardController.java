@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Random;
 
 import commons.Board;
 import server.database.BoardRepository;
@@ -13,27 +12,37 @@ import server.database.BoardRepository;
 @RequestMapping("/api/boards")
 public class BoardController {
 
-    private final Random random;
     private final BoardRepository repo;
 
-    public BoardController(Random random, BoardRepository repo) {
-        this.random = random;
+    public BoardController(BoardRepository repo) {
         this.repo = repo;
     }
 
+    /**
+     * @return a list of all boards in the repository
+     */
     @GetMapping(path = {"", "/" })
     public List<Board> getAll() {
-        return repo.findAll();
+        return this.repo.findAll();
     }
 
+    /**
+     * @param id of the board to be gotten
+     * @return the ResponseEntity with the board
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Board> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
+        if (id < 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(repo.findById(id).get());
+        return ResponseEntity.ok(this.repo.findById(id).get());
     }
 
+    /**
+     * Adds a board to the repository.
+     * @param board to be added
+     * @return ResponseEntity
+     */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Board> add(@RequestBody Board board) {
 
@@ -41,14 +50,7 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         }
 
-        Board saved = repo.save(board);
+        Board saved = this.repo.save(board);
         return ResponseEntity.ok(saved);
-    }
-
-    @GetMapping("rnd")
-    public ResponseEntity<Board> getRandom() {
-        var boards = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(boards.get(idx));
     }
 }
