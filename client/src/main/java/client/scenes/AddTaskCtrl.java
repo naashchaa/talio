@@ -24,12 +24,21 @@ public class AddTaskCtrl {
         this.server = server;
     }
 
+    /**
+     * Cancels creating a task and goes back to the previous scene.
+     * @param event An event triggered by user
+     */
     public void cancelTask(ActionEvent event) {
         System.out.println("cancelling task");
-        mainCtrl.showBoard();
+        this.mainCtrl.showBoard();
     }
 
+    /**
+     * Creates a task and adds it to a task list.
+     * @param event An event triggered by user
+     */
     public void createTask(ActionEvent event) {
+        //TODO create task
         System.out.println("creating task");
     }
 }
