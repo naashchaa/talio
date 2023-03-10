@@ -1,5 +1,7 @@
 package commons;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -19,12 +21,10 @@ public class TaskList {
     @Column(nullable = false, length = 50)
     private String name;
 
-
+    @SuppressWarnings("unused")
     private TaskList(){}
-    TaskList(String name, Board parentBoard){
-        if(name == null || parentBoard == null){
-            throw new IllegalArgumentException("Name and parent board must not be null");
-        }
+
+    TaskList(@NotNull String name, @NotNull Board parentBoard){
         this.name = name;
         this.parentBoard = parentBoard;
     }
@@ -33,10 +33,7 @@ public class TaskList {
         return this.name;
     }
 
-    public void setName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("Task name cannot be null");
-        }
+    public void setName(@NotNull String name) {
         this.name = name;
     }
 
@@ -50,10 +47,7 @@ public class TaskList {
         return this.parentBoard;
     }
 
-    public void setParentBoard(Board parentBoard) {
-        if(parentBoard == null){
-            throw new IllegalArgumentException("parent board cannot be null");
-        }
+    public void setParentBoard(@NotNull Board parentBoard) {
         this.parentBoard = parentBoard;
     }
 
@@ -79,3 +73,4 @@ public class TaskList {
                 '}';
     }
 }
+

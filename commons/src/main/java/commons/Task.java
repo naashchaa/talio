@@ -1,5 +1,6 @@
 package commons;
 
+import org.jetbrains.annotations.NotNull;
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ public class Task {
     @Column
     private String description;
     @ManyToOne
-    @JoinColumn(name = TaskList_id)
+    @JoinColumn(name = "TaskList_id")
     private TaskList parentTaskList;
     @ManyToOne
     @JoinColumn(name = "Task_id")
@@ -32,32 +33,26 @@ public class Task {
      *                   This is an advanced feature from the "nested tasks" rubric,
      *                   and is therefore not needed and can be set to null.
      */
-    public Task(String name, String description, TaskList taskList, Task parentTask) {
-        if (name == null || taskList == null)
-            throw new IllegalArgumentException("Name and parent TaskList must not be null");
+    public Task(@NotNull String name, @NotNull String description,
+                @NotNull TaskList taskList, Task parentTask) {
         this.name = name;
+        this.description = description;
         this.parentTaskList = taskList;
-        
-        if (description == null)
-            this.description = "Description goes here";
-        
         this.parentTask = parentTask;
     }
 
     //empty constructor for the object mapper
     @SuppressWarnings("unused")
-    public Task() {
+    private Task() {
     }
 
     public String getName() {
         return this.name;
     }
     
-    public void setName(String name) {
+    public void setName(@NotNull String name) {
         // this could potentially be very troublesome, 
         // input will have to be sanitized somewhere more thoroughly
-        if (name == null)
-            throw new IllegalArgumentException("Task name cannot be null");
         this.name = name;
     }
     
@@ -69,13 +64,8 @@ public class Task {
      * and therefore doesn't need to be used at the basic level.
      * @param description The string with the description
      */
-    public void setDescription(String description) {
-        if (description == null) {
-            this.description = "Description goes here";
-        }
-        else {
-            this.description = description;
-        }
+    public void setDescription(@NotNull String description) {
+        this.description = description;
     }
     
     public TaskList getParentTaskList() {
@@ -86,14 +76,9 @@ public class Task {
      * To make sure the specified TaskList actually exists.
      * @param parent Reference to the parent TaskList
      */
-    public void setParentTaskList(TaskList parent) {
+    public void setParentTaskList(@NotNull TaskList parent) {
         // validation for an existing task list should be done elsewhere
-        if (parent == null) {
-            throw new IllegalArgumentException("parent cannot be null");
-        }
-        else {
-            this.parentTaskList = parent;
-        }
+        this.parentTaskList = parent;
     }
     
     public Task getParentTask() {
