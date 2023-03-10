@@ -22,17 +22,21 @@ public class TaskController {
 
     @GetMapping(path = {"", "/"})
     public List<Task> getAll() {
-        return repo.findAll();
+        return this.repo.findAll();
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Task> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
+        if (id < 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(repo.findById(id).get());
+        return ResponseEntity.ok(this.repo.findById(id).get());
     }
 
+    /** This is a POST endpoint for adding a new Task.
+     * @param task The Task sent through in the request body
+     * @return The response (whether the creation was successful)
+     */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Task> add(@RequestBody Task task) {
 
@@ -40,10 +44,7 @@ public class TaskController {
             return ResponseEntity.badRequest().build();
         }
 
-        Task saved = repo.save(task);
+        Task saved = this.repo.save(task);
         return ResponseEntity.ok(saved);
     }
-
-
-
 }
