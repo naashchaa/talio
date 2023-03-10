@@ -50,14 +50,14 @@ public class Board {
         this.name = name;
     }
 
-     public String getPassword(){
+    public String getPassword(){
         return this.password;
-     }
+    }
 
 //     input will probably have to be sanitized
-     public void setPassword(String password){
+    public void setPassword(String password){
         this.password = password;
-     }
+    }
 
     @Override
     public boolean equals(Object o) {
