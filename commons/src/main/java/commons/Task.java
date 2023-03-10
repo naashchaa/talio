@@ -31,7 +31,12 @@ public class Task {
         
         this.parentTask = parentTask;
     }
-    
+
+    //empty constructor for the object mapper
+    @SuppressWarnings("unused")
+    private Task() {
+    }
+
     public String getName() {
         return this.name;
     }
