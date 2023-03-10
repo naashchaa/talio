@@ -10,6 +10,7 @@ public interface Board {
 
     void setName(); // sets the Board name
 
+
     List<TaskList> getTaskLists(); // returns a list of all TaskLists in the Board
 
     void addTaskList(TaskList taskList); // adds a new TaskList to the Board
