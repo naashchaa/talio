@@ -14,9 +14,9 @@ public class TaskList {
     private Board parentBoard;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @Column(nullable = false, length = 50)
     private String name;
@@ -61,15 +61,15 @@ public class TaskList {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name);
+        return Objects.hash(this.id, this.name);
     }
 
     @Override
     public String toString() {
         return "TaskList{" +
-                "parentBoard=" + this.parentBoard +
-                ", id=" + this.id +
-                ", name='" + this.name + '\'' +
+                "parentBoard= " + this.parentBoard.getName() +
+                ", id= " + this.id +
+                ", name= '" + this.name + '\'' +
                 '}';
     }
 }
