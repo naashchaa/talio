@@ -1,5 +1,7 @@
 package commons;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -8,11 +10,12 @@ import java.util.Objects;
 public class Board {
 
     @Id
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
+    @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
     private String password;
@@ -20,16 +23,14 @@ public class Board {
     @SuppressWarnings("unused")
     private Board(){}
 
-    public Board(String name) {
+    public Board(@NotNull String name) {
         if (name == null) throw new IllegalArgumentException("Name must not be null");
         this.name = name;
     }
 
 //    constructor for when a password is entered
-    public Board(String name, String password){
-        if (name == null) throw new IllegalArgumentException("Name must not be null");
+    public Board(@NotNull String name, @NotNull String password){
         this.name = name;
-        if (password == null) throw new IllegalArgumentException("Password must not be null");
         this.password = password;
     }
 
@@ -38,15 +39,14 @@ public class Board {
     }
 
     //only to be used for testing
-    public void setId(long l){this.id = l;}
+    public void setId(@NotNull long l){this.id = l;}
 
     public String getName() {
         return this.name;
     }
 
 //    input will probably have to be sanitized
-    public void setName(String name){
-        if (name == null) throw new IllegalArgumentException("Name cannot be null");
+    public void setName(@NotNull String name){
         this.name = name;
     }
 
@@ -55,7 +55,7 @@ public class Board {
     }
 
 //     input will probably have to be sanitized
-    public void setPassword(String password){
+    public void setPassword(@NotNull String password){
         this.password = password;
     }
 
