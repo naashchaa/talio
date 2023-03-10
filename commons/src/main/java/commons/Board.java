@@ -1,79 +1,23 @@
 package commons;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.List;
 
-import javax.persistence.*;
-import java.util.Objects;
+public interface Board {
 
-@Entity
-@Table(name = "board")
-public class Board {
+    String getID(); // returns the unique board ID
 
-    @Id
-    @Column(unique = true)
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    String getName(); // returns the Board name
 
-    @Column(nullable = false)
-    private String name;
+    void setName(); // sets the Board name
 
-    private String password;
+    List<TaskList> getTaskLists(); // returns a list of all TaskLists in the Board
 
-    @SuppressWarnings("unused")
-    private Board(){}
+    void addTaskList(TaskList taskList); // adds a new TaskList to the Board
 
-    public Board(@NotNull String name) {
-        this.name = name;
-    }
+    // returns and removes a TaskList if it is present, does nothing and returns null otherwise
+    TaskList removeTaskList(TaskList taskList);
 
-//    constructor for when a password is entered
-    public Board(@NotNull String name, @NotNull String password){
-        this.name = name;
-        this.password = password;
-    }
+    // String getPassword(String password); // gets the board password
 
-    public long getId(){
-        return this.id;
-    }
-
-    //only to be used for testing
-    public void setId(@NotNull long l){this.id = l;}
-
-    public String getName() {
-        return this.name;
-    }
-
-//    input will probably have to be sanitized
-    public void setName(@NotNull String name){
-        this.name = name;
-    }
-
-    public String getPassword(){
-        return this.password;
-    }
-
-//     input will probably have to be sanitized
-    public void setPassword(@NotNull String password){
-        this.password = password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Board board = (Board) o;
-        return Objects.equals(this.id, board.id) && Objects.equals(this.name, board.name)
-                && Objects.equals(this.password, board.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.name, this.password);
-    }
-
-    @Override
-    public String toString(){
-        return "Board: " + this.name + ", " + this.id;
-    }
+    // void setPassword(String password); // sets the board password
 }
