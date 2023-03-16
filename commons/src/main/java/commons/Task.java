@@ -6,7 +6,7 @@ import java.util.Objects;
 
 // Task class
 @Entity
-@Table(name = "TaskList")
+@Table(name = "Task")
 public class Task {
 
     @Id
