@@ -7,22 +7,18 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="456.0" prefWidth="702.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCtrl">
-   <top>
-      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label alignment="CENTER" prefHeight="100.0" prefWidth="801.0" text="APPLICATION">
-               <font>
-                  <Font name="System Font" size="30.0" />
-               </font></Label>
-         </children>
-      </HBox>
-   </top>
    <center>
-      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
+      <HBox maxWidth="1.7976931348623157E308" prefHeight="315.0" prefWidth="702.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#addTask" text="Add Task" />
             <Button mnemonicParsing="false" onAction="#addTaskList" text="Add Task List" />
          </children>
       </HBox>
    </center>
+   <top>
+      <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="59.0" prefWidth="702.0" text="APPLICATION" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Label>
+   </top>
 </BorderPane>
