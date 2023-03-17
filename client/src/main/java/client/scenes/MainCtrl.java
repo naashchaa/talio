@@ -38,9 +38,11 @@ public class MainCtrl {
      * @param boardCtrl
      * @param addTask
      * @param addTaskList
+     * @param taskList
      */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
-            Pair<AddTaskCtrl, Parent> addTask, Pair<AddTaskListCtrl, Parent> addTaskList, Pair<TaskListCtrl, Parent> taskList) {
+            Pair<AddTaskCtrl, Parent> addTask, Pair<AddTaskListCtrl, Parent> addTaskList,
+                           Pair<TaskListCtrl, Parent> taskList) {
         this.primaryStage = primaryStage;
 
         this.boardCtrl = boardCtrl.getKey();
@@ -77,7 +79,7 @@ public class MainCtrl {
     }
 
     public void showTaskList() {
-        primaryStage.setTitle("Task List");
-        primaryStage.setScene(taskList);
+        this.primaryStage.setTitle("Task List");
+        this.primaryStage.setScene(this.taskList);
     }
 }

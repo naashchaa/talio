@@ -17,6 +17,6 @@ public class TaskListCtrl extends Node{
     }
 
     public void addTask() {
-        mainCtrl.showAddTask();
+        this.mainCtrl.showAddTask();
     }
 }
