@@ -1,46 +1,58 @@
 package commons;
 
+import org.jetbrains.annotations.NotNull;
+import javax.persistence.*;
 import java.util.Objects;
 
 // Task class
+@Entity
+@Table(name = "Task")
 public class Task {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true, nullable = false)
+    public long id;
+    @Column(nullable = false)
     private String name;
+    @Column
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "TaskList_id")
     private TaskList parentTaskList;
+    @ManyToOne
+    @JoinColumn(name = "Task_id")
     private Task parentTask;
 
     /** The constructor for the Task class.
      * @param name "name", content or header of the task.
      * @param description Task description. It is an advanced feature,
      *                    usage of it is not required yet.
-     * @param taskList Reference to the parent TaskList, aka the TaskList this Task belongs to.
+     * @param parentTaskList Reference to the parent TaskList this Task belongs to.
      * @param parentTask Reference to the ParentTask.
      *                   This is an advanced feature from the "nested tasks" rubric,
      *                   and is therefore not needed and can be set to null.
      */
-    // default constructor
-    public Task(String name, String description, TaskList taskList, Task parentTask) {
-        if (name == null || taskList == null)
-            throw new IllegalArgumentException("Name and parent TaskList must not be null");
+    public Task(@NotNull String name, String description,
+                @NotNull TaskList parentTaskList, Task parentTask) {
         this.name = name;
-        this.parentTaskList = taskList;
-        
-        if (description == null)
-            this.description = "Description goes here";
-        
+        this.description = description;
+        this.parentTaskList = parentTaskList;
         this.parentTask = parentTask;
     }
-    
+
+    //empty constructor for the object mapper
+    @SuppressWarnings("unused")
+    private Task() {
+    }
+
     public String getName() {
         return this.name;
     }
     
-    public void setName(String name) {
-        // this could potentially be very troublesome, 
-        // input will have to be sanitized somewhere more thoroughly
-        if (name == null)
-            throw new IllegalArgumentException("Task name cannot be null");
+    public void setName(@NotNull String name) {
+        if (name.equals(""))
+            throw new IllegalArgumentException("Task name cannot be empty");
         this.name = name;
     }
     
@@ -53,12 +65,7 @@ public class Task {
      * @param description The string with the description
      */
     public void setDescription(String description) {
-        if (description == null) {
-            this.description = "Description goes here";
-        }
-        else {
-            this.description = description;
-        }
+        this.description = description;
     }
     
     public TaskList getParentTaskList() {
@@ -69,14 +76,9 @@ public class Task {
      * To make sure the specified TaskList actually exists.
      * @param parent Reference to the parent TaskList
      */
-    public void setParentTaskList(TaskList parent) {
+    public void setParentTaskList(@NotNull TaskList parent) {
         // validation for an existing task list should be done elsewhere
-        if (parent == null) {
-            throw new IllegalArgumentException("parent cannot be null");
-        }
-        else {
-            this.parentTaskList = parent;
-        }
+        this.parentTaskList = parent;
     }
     
     public Task getParentTask() {
