@@ -1,65 +1,84 @@
 package commons;
 
+import org.jetbrains.annotations.NotNull;
+import javax.persistence.*;
 import java.util.Objects;
 
 // Task class
+@Entity
+@Table(name = "Task")
 public class Task {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true, nullable = false)
+    public long id;
+    @Column(nullable = false)
     private String name;
+    @Column
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "TaskList_id")
     private TaskList parentTaskList;
+    @ManyToOne
+    @JoinColumn(name = "Task_id")
     private Task parentTask;
 
-    // default constructor
-    public Task(String name, String description, TaskList taskList, Task parentTask) {
-        if (name == null || taskList == null)
-            throw new IllegalArgumentException("Name and parent TaskList must not be null");
+    /** The constructor for the Task class.
+     * @param name "name", content or header of the task.
+     * @param description Task description. It is an advanced feature,
+     *                    usage of it is not required yet.
+     * @param parentTaskList Reference to the parent TaskList this Task belongs to.
+     * @param parentTask Reference to the ParentTask.
+     *                   This is an advanced feature from the "nested tasks" rubric,
+     *                   and is therefore not needed and can be set to null.
+     */
+    public Task(@NotNull String name, String description,
+                @NotNull TaskList parentTaskList, Task parentTask) {
         this.name = name;
-        this.parentTaskList = taskList;
-        
-        if (description == null)
-            this.description = "Description goes here";
-        
+        this.description = description;
+        this.parentTaskList = parentTaskList;
         this.parentTask = parentTask;
     }
-    
+
+    //empty constructor for the object mapper
+    @SuppressWarnings("unused")
+    private Task() {
+    }
+
     public String getName() {
         return this.name;
     }
     
-    public void setName(String name) {
-        // this could potentially be very troublesome, 
-        // input will have to be sanitized somewhere more thoroughly
-        if (name == null)
-            throw new IllegalArgumentException("Task name cannot be null");
+    public void setName(@NotNull String name) {
+        if (name.equals(""))
+            throw new IllegalArgumentException("Task name cannot be empty");
         this.name = name;
     }
     
     public String getDescription() {
         return this.description;
     }
-    
+
+    /** This method sets the description of the Task. It is an advanced feature,
+     * and therefore doesn't need to be used at the basic level.
+     * @param description The string with the description
+     */
     public void setDescription(String description) {
-        if (description == null) {
-            this.description = "Description goes here";
-        }
-        else {
-            this.description = description;
-        }
+        this.description = description;
     }
     
     public TaskList getParentTaskList() {
         return this.parentTaskList;
     }
-    
-    public void setParentTaskList(TaskList parent) {
+
+    /** This method sets the parent TaskList of a Task. It is your responsibility
+     * To make sure the specified TaskList actually exists.
+     * @param parent Reference to the parent TaskList
+     */
+    public void setParentTaskList(@NotNull TaskList parent) {
         // validation for an existing task list should be done elsewhere
-        if (parent == null) {
-            throw new IllegalArgumentException("parent cannot be null");
-        }
-        else {
-            this.parentTaskList = parent;
-        }
+        this.parentTaskList = parent;
     }
     
     public Task getParentTask() {
@@ -75,12 +94,12 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return name.equals(task.name) &&
-            Objects.equals(description, task.description);
+        return this.name.equals(task.name) &&
+            Objects.equals(this.description, task.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description);
+        return Objects.hash(this.name, this.description);
     }
 }

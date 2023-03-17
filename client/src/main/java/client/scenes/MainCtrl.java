@@ -29,10 +29,16 @@ public class MainCtrl {
     private Scene addTask;
     private AddTaskListCtrl addTaskListCtrl;
     private Scene addTaskList;
-
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
 
+    /**
+     * Initializes the main controller, its stage, scenes, and associated controllers.
+     * @param primaryStage the window for the app
+     * @param boardCtrl
+     * @param addTask
+     * @param addTaskList
+     */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
             Pair<AddTaskCtrl, Parent> addTask, Pair<AddTaskListCtrl, Parent> addTaskList, Pair<TaskListCtrl, Parent> taskList) {
         this.primaryStage = primaryStage;
@@ -49,25 +55,25 @@ public class MainCtrl {
         this.taskListCtrl = taskList.getKey();
         this.taskList = new Scene(taskList.getValue());
 
-        showBoard();
-        primaryStage.show();
+        this.showBoard();
+        this.primaryStage.show();
     }
 
     public void showBoard() {
-        primaryStage.setTitle("Board");
-        primaryStage.setScene(board);
+        this.primaryStage.setTitle("Board");
+        this.primaryStage.setScene(this.board);
 //        boardCtrl.refresh();
     }
 
     public void showAddTask() {
-        primaryStage.setTitle("Add New Task");
-        primaryStage.setScene(addTask);
+        this.primaryStage.setTitle("Add New Task");
+        this.primaryStage.setScene(this.addTask);
 //        addTask.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
     public void showAddTaskList() {
-        primaryStage.setTitle("Add New Task List");
-        primaryStage.setScene(addTaskList);
+        this.primaryStage.setTitle("Add New Task List");
+        this.primaryStage.setScene(this.addTaskList);
     }
 
     public void showTaskList() {

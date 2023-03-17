@@ -6,7 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
 /**
- * AddTaskList is currently connected to MainCtrl, but after the board is done will be connected to board and task.
+ * AddTaskList is currently connected to MainCtrl, but
+ * the board is done will be connected to board and task.
  */
 public class AddTaskListCtrl {
     private final ServerUtils server;
@@ -22,12 +23,13 @@ public class AddTaskListCtrl {
     }
 
     /**
-     * Undoes the action of creating a task list by deleting the value of the textField filled by the user,
+     * Undoes the action of creating a task list by deleting
+     * the value of the textField filled by the user,
      * and returns to the overview.
      */
     public void cancel() {
-        name.clear();
-        mainCtrl.showBoard();
+        this.name.clear();
+        this.mainCtrl.showBoard();
     }
 
     public void create() {
