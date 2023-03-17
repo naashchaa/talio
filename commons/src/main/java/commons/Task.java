@@ -6,7 +6,7 @@ import java.util.Objects;
 
 // Task class
 @Entity
-@Table(name = "TaskList")
+@Table(name = "Task")
 public class Task {
 
     @Id
@@ -28,16 +28,16 @@ public class Task {
      * @param name "name", content or header of the task.
      * @param description Task description. It is an advanced feature,
      *                    usage of it is not required yet.
-     * @param taskList Reference to the parent TaskList, aka the TaskList this Task belongs to.
+     * @param parentTaskList Reference to the parent TaskList this Task belongs to.
      * @param parentTask Reference to the ParentTask.
      *                   This is an advanced feature from the "nested tasks" rubric,
      *                   and is therefore not needed and can be set to null.
      */
-    public Task(@NotNull String name, @NotNull String description,
-                @NotNull TaskList taskList, Task parentTask) {
+    public Task(@NotNull String name, String description,
+                @NotNull TaskList parentTaskList, Task parentTask) {
         this.name = name;
         this.description = description;
-        this.parentTaskList = taskList;
+        this.parentTaskList = parentTaskList;
         this.parentTask = parentTask;
     }
 
@@ -51,8 +51,8 @@ public class Task {
     }
     
     public void setName(@NotNull String name) {
-        // this could potentially be very troublesome, 
-        // input will have to be sanitized somewhere more thoroughly
+        if (name.equals(""))
+            throw new IllegalArgumentException("Task name cannot be empty");
         this.name = name;
     }
     
@@ -64,7 +64,7 @@ public class Task {
      * and therefore doesn't need to be used at the basic level.
      * @param description The string with the description
      */
-    public void setDescription(@NotNull String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
     
