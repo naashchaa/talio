@@ -24,7 +24,7 @@ public class TaskList {
     @SuppressWarnings("unused")
     private TaskList(){}
 
-    TaskList(@NotNull String name, @NotNull Board parentBoard){
+    public TaskList(@NotNull String name, @NotNull Board parentBoard){
         this.name = name;
         this.parentBoard = parentBoard;
     }
