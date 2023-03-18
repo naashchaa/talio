@@ -17,7 +17,7 @@ public class Task {
     private String name;
     @Column
     private String description;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TaskList_id")
     private TaskList parentTaskList;
     @ManyToOne

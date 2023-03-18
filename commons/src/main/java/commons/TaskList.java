@@ -9,7 +9,7 @@ import java.util.Objects;
 @Table(name = "TaskList")
 public class TaskList {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "Board_id", nullable = false)
     private Board parentBoard;
 
@@ -24,7 +24,7 @@ public class TaskList {
     @SuppressWarnings("unused")
     private TaskList(){}
 
-    TaskList(@NotNull String name, @NotNull Board parentBoard){
+    public TaskList(@NotNull String name, @NotNull Board parentBoard){
         this.name = name;
         this.parentBoard = parentBoard;
     }

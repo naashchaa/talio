@@ -35,6 +35,7 @@ public class AddTaskListCtrl {
     public void create() {
        //ToDo: Method that creates a new task list with the name that the user inputs.
         // Needs endpoints.
+        this.mainCtrl.showTaskList();
     }
 
 }

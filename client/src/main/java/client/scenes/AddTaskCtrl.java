@@ -2,6 +2,9 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Board;
+import commons.Task;
+import commons.TaskList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -24,6 +27,13 @@ public class AddTaskCtrl {
         this.server = server;
     }
 
+    public Task getTask() {
+        var t = this.textField.getText();
+        Board board = new Board("test board");
+        TaskList taskList = new TaskList("test tasklist", board);
+        return new Task(t, "test description", taskList, null);
+    }
+
     /**
      * Cancels creating a task and goes back to the previous scene.
      * @param event An event triggered by user
@@ -40,5 +50,11 @@ public class AddTaskCtrl {
     public void createTask(ActionEvent event) {
         //TODO create task
         System.out.println("creating task");
+        try {
+            this.server.addTask(this.getTask());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
