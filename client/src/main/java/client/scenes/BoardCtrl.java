@@ -17,11 +17,16 @@ public class BoardCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-    public void addTaskList() {
-        this.mainCtrl.showAddTaskList();
+    public void addTask() {
+        this.mainCtrl.showAddTask();
     }
 
-    public HBox getContainer() {
-        return this.container;
+//        //object TaskList takes the parameters introduced by the user
+//        and creates a new instance with them
+//        TaskListCtrl taskList = new TaskListCtrl(server, mainCtrl, "hello");
+//        //the TaskList is added to the list of children of the HBox
+//        container.getChildren().add(taskList);
+    public void addTaskList() {
+        this.mainCtrl.showAddTaskList();
     }
 }
