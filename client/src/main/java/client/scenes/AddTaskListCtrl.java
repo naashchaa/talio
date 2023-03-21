@@ -2,17 +2,8 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
-import commons.TaskList;
-import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
-
-import java.io.IOException;
 
 /**
  * AddTaskList is currently connected to MainCtrl, but
@@ -42,32 +33,9 @@ public class AddTaskListCtrl {
     }
 
     public void create() {
-       try {
-           //adds task list to database
-           this.server.addTaskList(getTaskList());
-           //adds task list to board scene
-           try {
-               TaskListCtrl.initialize();
-           } catch (IOException e) {
-               System.out.println("here");
-               e.printStackTrace();
-           }
-
-       }
-       catch (WebApplicationException e) {
-           var alert = new Alert(Alert.AlertType.ERROR);
-           alert.initModality(Modality.APPLICATION_MODAL);
-           alert.setContentText(e.getMessage());
-           alert.showAndWait();
-           System.out.println(":(");
-           e.printStackTrace();
-       }
-       this.name.clear();
-       this.mainCtrl.showBoard();
+       //ToDo: Method that creates a new task list with the name that the user inputs.
+        // Needs endpoints.
+        this.mainCtrl.showTaskList();
     }
 
-    public TaskList getTaskList() {
-        Board b = new Board("test");
-        return new TaskList(name.getText(), b);
-    }
 }
