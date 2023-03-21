@@ -16,10 +16,13 @@
 package client.scenes;
 
 import commons.Board;
+import commons.TaskList;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.util.List;
 
 public class MainCtrl {
 
@@ -31,16 +34,17 @@ public class MainCtrl {
     private Scene addTask;
     private AddTaskListCtrl addTaskListCtrl;
     private Scene addTaskList;
+    private List<TaskList> taskListList;
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
 
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
      * @param primaryStage the window for the app
-     * @param boardCtrl
-     * @param addTask
-     * @param addTaskList
-     * @param taskList
+     * @param boardCtrl pair that has board controller and its related scene
+     * @param addTask pair that has addTask controller and its related scene
+     * @param addTaskList pair that has ddTaskList controller and its related scene
+     * @param taskList pair that has taskList controller and its related scene
      */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
             Pair<AddTaskCtrl, Parent> addTask, Pair<AddTaskListCtrl, Parent> addTaskList,
@@ -60,6 +64,7 @@ public class MainCtrl {
         this.taskList = new Scene(taskList.getValue());
 
         this.loadBoard();
+        this.loadTaskLists();
 
         this.showBoard();
         this.primaryStage.show();
@@ -89,5 +94,13 @@ public class MainCtrl {
 
     public void loadBoard() {
         this.currentBoard = this.boardCtrl.getBoard();
+    }
+
+    public Board getCurrentBoard() {
+        return this.currentBoard;
+    }
+
+    public void loadTaskLists() {
+        this.taskListList = this.addTaskListCtrl.getTaskLists();
     }
 }

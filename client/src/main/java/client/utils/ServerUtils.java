@@ -25,6 +25,7 @@ import java.util.List;
 
 import commons.Board;
 import commons.Task;
+import commons.TaskList;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -88,5 +89,21 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(board, APPLICATION_JSON), Board.class);
+    }
+
+    public TaskList addTaskList(TaskList tasklist) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/taskList")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(tasklist, APPLICATION_JSON), TaskList.class);
+    }
+
+    public List<TaskList> getTaskLists() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/taskList") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<TaskList>>() {});
     }
 }
