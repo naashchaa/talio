@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import commons.Board;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -25,6 +26,7 @@ public class MainCtrl {
     private Stage primaryStage;
     private BoardCtrl boardCtrl;
     private Scene board;
+    private Board currentBoard;
     private AddTaskCtrl addTaskCtrl;
     private Scene addTask;
     private AddTaskListCtrl addTaskListCtrl;
@@ -57,6 +59,8 @@ public class MainCtrl {
         this.taskListCtrl = taskList.getKey();
         this.taskList = new Scene(taskList.getValue());
 
+        this.loadBoard();
+
         this.showBoard();
         this.primaryStage.show();
     }
@@ -81,5 +85,9 @@ public class MainCtrl {
     public void showTaskList() {
         this.primaryStage.setTitle("Task List");
         this.primaryStage.setScene(this.taskList);
+    }
+
+    public void loadBoard() {
+        this.currentBoard = this.boardCtrl.getBoard();
     }
 }

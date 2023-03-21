@@ -2,9 +2,9 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
+//import commons.Board;
 import commons.Task;
-import commons.TaskList;
+//import commons.TaskList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -28,10 +28,11 @@ public class AddTaskCtrl {
     }
 
     public Task getTask() {
-        var t = this.textField.getText();
-        Board board = new Board("test board");
-        TaskList taskList = new TaskList("test tasklist", board);
-        return new Task(t, "test description", taskList, null);
+//        var t = this.textField.getText();
+//        Board board = new Board("test board");
+//        TaskList taskList = new TaskList("test tasklist", board);
+//        return new Task(t, "test description", taskList, null);
+        return null;
     }
 
     /**
