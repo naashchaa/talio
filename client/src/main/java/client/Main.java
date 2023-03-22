@@ -16,6 +16,7 @@
 package client;
 
 import static com.google.inject.Guice.createInjector;
+import static javafx.application.ConditionalFeature.FXML;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -29,7 +30,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
-    private static final MyFXML FXML = new MyFXML(INJECTOR);
+    public static final MyFXML FXML = new MyFXML(INJECTOR);
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
@@ -37,24 +38,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-
-//        try {
-//            Parent root = FXMLLoader.load(getClass().getClassLoader()
-//                    .getResource("client/scenes/Board.fxml"));
-//            Scene scene = new Scene(root);
-//            primaryStage.setScene(scene);
-//            primaryStage.show();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
         var board  = FXML.load(BoardCtrl.class, "client", "scenes", "Board.fxml");
         var addTask  = FXML.load(AddTaskCtrl.class, "client", "scenes", "AddTask.fxml");
         var addTaskList = FXML.load(AddTaskListCtrl.class, "client", "scenes", "AddTaskList.fxml");
-        var taskList = FXML.load(TaskListCtrl.class, "client", "scenes", "TaskList.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, board, addTask, addTaskList, taskList);
+        mainCtrl.initialize(primaryStage, board, addTaskList, addTask);
 //
     }
 }

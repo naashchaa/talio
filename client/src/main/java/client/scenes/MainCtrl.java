@@ -29,33 +29,24 @@ public class MainCtrl {
     private Scene addTask;
     private AddTaskListCtrl addTaskListCtrl;
     private Scene addTaskList;
-    private TaskListCtrl taskListCtrl;
-    private Scene taskList;
 
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
      * @param primaryStage the window for the app
      * @param boardCtrl
-     * @param addTask
      * @param addTaskList
-     * @param taskList
      */
-    public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
-            Pair<AddTaskCtrl, Parent> addTask, Pair<AddTaskListCtrl, Parent> addTaskList,
-                           Pair<TaskListCtrl, Parent> taskList) {
+    public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl, Pair<AddTaskListCtrl, Parent> addTaskList, Pair<AddTaskCtrl, Parent> addTask) {
         this.primaryStage = primaryStage;
 
         this.boardCtrl = boardCtrl.getKey();
         this.board = new Scene(boardCtrl.getValue());
 
-        this.addTaskCtrl = addTask.getKey();
-        this.addTask = new Scene(addTask.getValue());
-
         this.addTaskListCtrl = addTaskList.getKey();
         this.addTaskList = new Scene(addTaskList.getValue());
 
-        this.taskListCtrl = taskList.getKey();
-        this.taskList = new Scene(taskList.getValue());
+        this.addTaskCtrl = addTask.getKey();
+        this.addTask = new Scene(addTask.getValue());
 
         this.showBoard();
         this.primaryStage.show();
@@ -78,8 +69,4 @@ public class MainCtrl {
         this.primaryStage.setScene(this.addTaskList);
     }
 
-    public void showTaskList() {
-        this.primaryStage.setTitle("Task List");
-        this.primaryStage.setScene(this.taskList);
-    }
 }
