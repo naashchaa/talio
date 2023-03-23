@@ -48,7 +48,7 @@ public class AddTaskCtrl {
      * @param event An event triggered by user
      */
     public void createTask(ActionEvent event) {
-        //TODO create task
+
         System.out.println("creating task");
         try {
             this.server.addTask(this.getTask());
@@ -56,5 +56,7 @@ public class AddTaskCtrl {
         catch (Exception e) {
             e.printStackTrace();
         }
+        this.textField.clear();
+        this.mainCtrl.showBoard();
     }
 }

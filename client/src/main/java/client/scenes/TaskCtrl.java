@@ -22,6 +22,6 @@ public class TaskCtrl {
 
     public void deleteTask() { System.out.println("Deleting task...");}
 
-    public void openTaskOverview() { System.out.println("Opening task overview..."); }
+    public void openTaskOverview() { System.out.println("Opening task overview for task " + taskTitle.getText()); }
 
 }
