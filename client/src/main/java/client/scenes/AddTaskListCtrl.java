@@ -6,13 +6,10 @@ import commons.Board;
 import commons.TaskList;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 
-import java.io.IOException;
 
 /**
  * AddTaskList is currently connected to MainCtrl, but
@@ -46,8 +43,8 @@ public class AddTaskListCtrl {
 
     public void create() {
         try {
-            this.server.addTaskList(getTaskList());
-            boardCtrl.addTaskListToBoard();
+            this.server.addTaskList(this.getTaskList());
+            this.boardCtrl.addTaskListToBoard();
         }
         catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -63,6 +60,6 @@ public class AddTaskListCtrl {
 
     public TaskList getTaskList() {
         Board b = new Board("test");
-        return new TaskList(name.getText(), b);
+        return new TaskList(this.name.getText(), b);
     }
 }
