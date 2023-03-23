@@ -10,11 +10,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 
-
-/**
- * AddTaskList is currently connected to MainCtrl, but
- * the board is done will be connected to board and task.
- */
 public class AddTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -41,6 +36,9 @@ public class AddTaskListCtrl {
         this.mainCtrl.showBoard();
     }
 
+    /**
+     * Adds a new instance of TaskList to the board overview and the database.
+     */
     public void create() {
         try {
             this.server.addTaskList(this.getTaskList());
@@ -58,6 +56,10 @@ public class AddTaskListCtrl {
         this.mainCtrl.showBoard();
     }
 
+    /**
+     * Creates a new instance of TaskList to be added in the create method with the user's input
+     * @return a new instance of TaskList with the name the user introduced
+     */
     public TaskList getTaskList() {
         Board b = new Board("test");
         return new TaskList(this.name.getText(), b);

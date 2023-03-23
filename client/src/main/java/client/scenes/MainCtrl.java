@@ -33,12 +33,13 @@ public class MainCtrl {
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
      * @param primaryStage the window for the app
-     * @param boardCtrl
-     * @param addTaskList
-     * @param addTask
+     * @param boardCtrl -
+     * @param addTaskList -
+     * @param addTask -
      */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
-                           Pair<AddTaskListCtrl, Parent> addTaskList, Pair<AddTaskCtrl, Parent> addTask) {
+                           Pair<AddTaskListCtrl, Parent> addTaskList,
+                           Pair<AddTaskCtrl, Parent> addTask) {
         this.primaryStage = primaryStage;
 
         this.boardCtrl = boardCtrl.getKey();

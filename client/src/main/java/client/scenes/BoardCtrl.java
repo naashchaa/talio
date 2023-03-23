@@ -23,6 +23,9 @@ public class BoardCtrl {
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * Adds a new task list to the board
+     */
     public void addTaskListToBoard() {
         try{
             Pair<TaskListCtrl, Parent> pair =
@@ -36,10 +39,16 @@ public class BoardCtrl {
         }
     }
 
+    /**
+     * Sends the user into the newTask scene to create a new task
+     */
     public void addTask() {
         this.mainCtrl.showAddTask();
     }
 
+    /**
+     * Sends the user into the newTaskList scene to create a new task list
+     */
     public void addTaskList() {
         this.mainCtrl.showAddTaskList();
 
