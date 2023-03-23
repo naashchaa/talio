@@ -16,14 +16,17 @@ import java.util.List;
 public class AddTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+
+    private final BoardCtrl boardCtrl;
     @FXML
     private TextField name;
 
 
     @Inject
-    public AddTaskListCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AddTaskListCtrl(ServerUtils server, MainCtrl mainCtrl, BoardCtrl boardCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.boardCtrl = boardCtrl;
     }
 
     /**
@@ -46,13 +49,13 @@ public class AddTaskListCtrl {
         TaskList tasklist = new TaskList(this.name.getText(), this.mainCtrl.getCurrentBoard());
         try {
             this.server.addTaskList(tasklist);
-            this.mainCtrl.loadTaskLists();
+            this.boardCtrl.addTaskListToBoard(tasklist.getName());
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-
-        this.mainCtrl.showTaskList();
+        this.name.clear();
+        this.mainCtrl.showBoard();
     }
 
     /**
@@ -66,7 +69,6 @@ public class AddTaskListCtrl {
         catch (Exception e) {
             e.printStackTrace();
         }
-        return new ArrayList<TaskList>();
+        return new ArrayList<>();
     }
-
 }

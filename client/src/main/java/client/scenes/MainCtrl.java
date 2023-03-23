@@ -44,24 +44,20 @@ public class MainCtrl {
      * @param boardCtrl pair that has board controller and its related scene
      * @param addTask pair that has addTask controller and its related scene
      * @param addTaskList pair that has ddTaskList controller and its related scene
-     * @param taskList pair that has taskList controller and its related scene
      */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
-            Pair<AddTaskCtrl, Parent> addTask, Pair<AddTaskListCtrl, Parent> addTaskList,
-                           Pair<TaskListCtrl, Parent> taskList) {
+                           Pair<AddTaskListCtrl, Parent> addTaskList,
+                           Pair<AddTaskCtrl, Parent> addTask) {
         this.primaryStage = primaryStage;
 
         this.boardCtrl = boardCtrl.getKey();
         this.board = new Scene(boardCtrl.getValue());
 
-        this.addTaskCtrl = addTask.getKey();
-        this.addTask = new Scene(addTask.getValue());
-
         this.addTaskListCtrl = addTaskList.getKey();
         this.addTaskList = new Scene(addTaskList.getValue());
 
-        this.taskListCtrl = taskList.getKey();
-        this.taskList = new Scene(taskList.getValue());
+        this.addTaskCtrl = addTask.getKey();
+        this.addTask = new Scene(addTask.getValue());
 
         this.loadBoard();
         this.loadTaskLists();
@@ -102,5 +98,8 @@ public class MainCtrl {
 
     public void loadTaskLists() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
+        for (TaskList t : this.taskListList) {
+            this.boardCtrl.addTaskListToBoard(t.getName());
+        }
     }
 }
