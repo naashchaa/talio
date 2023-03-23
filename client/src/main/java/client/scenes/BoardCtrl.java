@@ -3,13 +3,17 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
 
 
+
+import java.util.List;
 
 public class BoardCtrl {
     private final ServerUtils server;
@@ -25,11 +29,14 @@ public class BoardCtrl {
 
     /**
      * Adds a new task list to the board.
+     * @param text the name for the task list
      */
-    public void addTaskListToBoard() {
+    public void addTaskListToBoard(String text) {
         try{
             Pair<TaskListCtrl, Parent> pair =
                     Main.FXML.load(TaskListCtrl.class, "client", "scenes", "TaskList.fxml");
+            Label label = (Label) pair.getValue().lookup("#taskListName");
+            label.setText(text);
             Node button = this.container.getChildren().get(this.container.getChildren().size()-1);
             this.container.getChildren().
                     set(this.container.getChildren().size()-1, pair.getValue());
@@ -52,5 +59,26 @@ public class BoardCtrl {
     public void addTaskList() {
         this.mainCtrl.showAddTaskList();
 
+    }
+
+    /**
+     * Returns the first of the list of boards from the database.
+     * If the database has no boards, it creates one with the name "Default Board".
+     * @return returns the board from the database.
+     */
+    public Board getBoard() {
+        try {
+            List<Board> boards = this.server.getBoard();
+            if (boards.size() == 0) {
+                Board newBoard = new Board("Default Board");
+                this.server.addBoard(newBoard);
+                return this.server.getBoard().get(0);
+            }
+            return boards.get(0);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

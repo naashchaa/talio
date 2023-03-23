@@ -10,7 +10,7 @@
 
 <AnchorPane prefHeight="527.0" prefWidth="289.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskListCtrl">
    <children>
-      <Label alignment="CENTER" prefHeight="50.0" prefWidth="289.0" text="Task List Name">
+      <Label fx:id="taskListName" alignment="CENTER" prefHeight="50.0" prefWidth="289.0" text="Task List Name">
          <font>
             <Font size="24.0" />
          </font>
