@@ -37,7 +37,8 @@ public class AddTaskListCtrl {
     }
 
     /**
-     * Adds a new instance of TaskList to the board overview and the database.
+     * Adds a new instance of TaskList to the board overview
+     * and the database.
      */
     public void create() {
         try {
@@ -57,8 +58,10 @@ public class AddTaskListCtrl {
     }
 
     /**
-     * Creates a new instance of TaskList to be added in the create method with the user's input
-     * @return a new instance of TaskList with the name the user introduced
+     * Creates a new instance of TaskList to be added
+     * in the create method with the user's input.
+     * @return a new instance of TaskList with the name
+     * the user introduced
      */
     public TaskList getTaskList() {
         Board b = new Board("test");
