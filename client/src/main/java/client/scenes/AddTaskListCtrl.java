@@ -2,14 +2,17 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
 import commons.TaskList;
-import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * AddTaskList is currently connected to MainCtrl, but
+ * the board is done will be connected to board and task.
+ */
 public class AddTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -37,20 +40,18 @@ public class AddTaskListCtrl {
     }
 
     /**
-     * Adds a new instance of TaskList to the board overview
-     * and the database.
+     * When button in fxml file is pressed, a new tasks list is created and added
+     * to the database.
      */
     public void create() {
+       //ToDo: Method that creates a new task list with the name that the user inputs.
+        // Needs endpoints.
+        TaskList tasklist = new TaskList(this.name.getText(), this.mainCtrl.getCurrentBoard());
         try {
-            this.server.addTaskList(this.getTaskList());
-            this.boardCtrl.addTaskListToBoard();
+            this.server.addTaskList(tasklist);
+            this.boardCtrl.addTaskListToBoard(tasklist.getName());
         }
-        catch (WebApplicationException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            System.out.println(":(");
+        catch (Exception e) {
             e.printStackTrace();
         }
         this.name.clear();
@@ -58,13 +59,16 @@ public class AddTaskListCtrl {
     }
 
     /**
-     * Creates a new instance of TaskList to be added
-     * in the create method with the user's input.
-     * @return a new instance of TaskList with the name
-     * the user introduced
+     * Returns the tasks lists from the database if there are any.
+     * @return the list of task lists.
      */
-    public TaskList getTaskList() {
-        Board b = new Board("test");
-        return new TaskList(this.name.getText(), b);
+    public List<TaskList> getTaskLists() {
+        try {
+            return this.server.getTaskLists();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

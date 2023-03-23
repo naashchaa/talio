@@ -15,27 +15,35 @@
  */
 package client.scenes;
 
+import commons.Board;
+import commons.TaskList;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.util.List;
 
 public class MainCtrl {
 
     private Stage primaryStage;
     private BoardCtrl boardCtrl;
     private Scene board;
+    private Board currentBoard;
     private AddTaskCtrl addTaskCtrl;
     private Scene addTask;
     private AddTaskListCtrl addTaskListCtrl;
     private Scene addTaskList;
+    private List<TaskList> taskListList;
+    private TaskListCtrl taskListCtrl;
+    private Scene taskList;
 
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
      * @param primaryStage the window for the app
-     * @param boardCtrl -
-     * @param addTaskList -
-     * @param addTask -
+     * @param boardCtrl pair that has board controller and its related scene
+     * @param addTask pair that has addTask controller and its related scene
+     * @param addTaskList pair that has ddTaskList controller and its related scene
      */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
                            Pair<AddTaskListCtrl, Parent> addTaskList,
@@ -50,6 +58,9 @@ public class MainCtrl {
 
         this.addTaskCtrl = addTask.getKey();
         this.addTask = new Scene(addTask.getValue());
+
+        this.loadBoard();
+        this.loadTaskLists();
 
         this.showBoard();
         this.primaryStage.show();
@@ -72,4 +83,23 @@ public class MainCtrl {
         this.primaryStage.setScene(this.addTaskList);
     }
 
+    public void showTaskList() {
+        this.primaryStage.setTitle("Task List");
+        this.primaryStage.setScene(this.taskList);
+    }
+
+    public void loadBoard() {
+        this.currentBoard = this.boardCtrl.getBoard();
+    }
+
+    public Board getCurrentBoard() {
+        return this.currentBoard;
+    }
+
+    public void loadTaskLists() {
+        this.taskListList = this.addTaskListCtrl.getTaskLists();
+        for (TaskList t : this.taskListList) {
+            this.boardCtrl.addTaskListToBoard(t.getName());
+        }
+    }
 }
