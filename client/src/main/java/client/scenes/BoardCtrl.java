@@ -4,6 +4,7 @@ import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -27,16 +28,17 @@ public class BoardCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-    /**
-     * Adds a new task list to the board.
-     * @param text the name for the task list
+
+    /** Adds a new task list to the board.
+     * @param taskList corresponding taskList instance
      */
-    public void addTaskListToBoard(String text) {
+    public void addTaskListToBoard(TaskList taskList) {
         try{
             Pair<TaskListCtrl, Parent> pair =
                     Main.FXML.load(TaskListCtrl.class, "client", "scenes", "TaskList.fxml");
             Label label = (Label) pair.getValue().lookup("#taskListName");
-            label.setText(text);
+            label.setText(taskList.getName());
+            pair.getKey().setTaskList(taskList);
             Node button = this.container.getChildren().get(this.container.getChildren().size()-1);
             this.container.getChildren().
                     set(this.container.getChildren().size()-1, pair.getValue());
@@ -47,18 +49,10 @@ public class BoardCtrl {
     }
 
     /**
-     * Sends the user into the newTask scene to create a new task.
-     */
-    public void addTask() {
-        this.mainCtrl.showAddTask();
-    }
-
-    /**
      * Sends the user into the newTaskList scene to create a new task list.
      */
     public void addTaskList() {
         this.mainCtrl.showAddTaskList();
-
     }
 
     /**
