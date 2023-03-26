@@ -2,13 +2,9 @@ package server.api;
 
 import commons.Task;
 import commons.TaskList;
-import org.springframework.data.jpa.repository.query.Jpa21Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.TaskRepository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.util.List;
 import java.util.Random;
 
@@ -57,8 +53,15 @@ public class TaskController {
         return ResponseEntity.ok(saved);
     }
 
+    /** This is a POST mapping that updates an existing Task with the given ID
+     * to match the supplied object.
+     * @param id The ID of the task to modify
+     * @param modifiedTask The modified task object
+     * @return The modified task if successful, an error otherwise
+     */
     @PostMapping(path = "{id}/update")
-    public ResponseEntity<Task> update(@PathVariable("id") long id, @RequestBody Task modifiedTask) {
+    public ResponseEntity<Task> update(@PathVariable("id") long id,
+                                       @RequestBody Task modifiedTask) {
         if (id < 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
@@ -91,6 +94,10 @@ public class TaskController {
         return ResponseEntity.ok(task);
     }
 
+    /** This is a DELETE mapping that deletes a task by ID.
+     * @param id ID of the task to delete
+     * @return message if delete was successful, error otherwise
+     */
     @DeleteMapping(path = "{id}")
     public ResponseEntity<String> delete(@PathVariable("id") long id) {
         if (id < 0 || !this.repo.existsById(id)) {
