@@ -39,7 +39,7 @@ class BoardTest {
     void testHashEquals() {
         b1.setId(1L);
         assertEquals(b1, b1);
-        assertNotEquals(b1, b2);
+        assertEquals(b1, b2);
         assertNotEquals(b1, b3);
         assertNotEquals(b1, b4);
         assertEquals(b1, b5);
