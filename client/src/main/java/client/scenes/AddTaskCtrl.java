@@ -2,9 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
 import commons.Task;
-import commons.TaskList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,6 +12,7 @@ public class AddTaskCtrl {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils server;
+    private TaskListCtrl parentTaskListCtrl;
     @FXML
     private TextField textField;
     @FXML
@@ -25,13 +24,6 @@ public class AddTaskCtrl {
     public AddTaskCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-    }
-
-    public Task getTask() {
-        var t = this.textField.getText();
-        Board board = new Board("test board");
-        TaskList taskList = new TaskList("test tasklist", board);
-        return new Task(t, "test description", taskList, null);
     }
 
     /**
@@ -48,13 +40,20 @@ public class AddTaskCtrl {
      * @param event An event triggered by user
      */
     public void createTask(ActionEvent event) {
-        //TODO create task
-        System.out.println("creating task");
+        Task task = new Task(this.textField.getText(), null,
+                this.parentTaskListCtrl.getTaskList(), null);
         try {
-            this.server.addTask(this.getTask());
+            this.server.addTask(task);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+        this.parentTaskListCtrl.addTaskToList(task.getName());
+        this.textField.clear();
+        this.mainCtrl.showBoard();
+    }
+
+    public void setParentTaskListCtrl(TaskListCtrl parentTaskListCtrl) {
+        this.parentTaskListCtrl = parentTaskListCtrl;
     }
 }
