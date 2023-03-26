@@ -30,7 +30,7 @@ public class TaskListController {
      * @param id of the Task List to be gotten
      * @return the ResponseEntity with the board
      */
-    @GetMapping("/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<TaskList> getById(@PathVariable("id") long id) {
         if (id < 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
