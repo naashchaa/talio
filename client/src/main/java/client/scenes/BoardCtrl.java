@@ -1,9 +1,20 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Board;
+import commons.TaskList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.util.Pair;
+
+
+
+import java.util.List;
 
 public class BoardCtrl {
     private final ServerUtils server;
@@ -17,16 +28,51 @@ public class BoardCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-    public void addTask() {
-        this.mainCtrl.showAddTask();
+
+    /** Adds a new task list to the board.
+     * @param taskList corresponding taskList instance
+     */
+    public void addTaskListToBoard(TaskList taskList) {
+        try{
+            Pair<TaskListCtrl, Parent> pair =
+                    Main.FXML.load(TaskListCtrl.class, "client", "scenes", "TaskList.fxml");
+            Label label = (Label) pair.getValue().lookup("#taskListName");
+            label.setText(taskList.getName());
+            pair.getKey().setTaskList(taskList);
+            Node button = this.container.getChildren().get(this.container.getChildren().size()-1);
+            this.container.getChildren().
+                    set(this.container.getChildren().size()-1, pair.getValue());
+            this.container.getChildren().add(button);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-//        //object TaskList takes the parameters introduced by the user
-//        and creates a new instance with them
-//        TaskListCtrl taskList = new TaskListCtrl(server, mainCtrl, "hello");
-//        //the TaskList is added to the list of children of the HBox
-//        container.getChildren().add(taskList);
+    /**
+     * Sends the user into the newTaskList scene to create a new task list.
+     */
     public void addTaskList() {
         this.mainCtrl.showAddTaskList();
+    }
+
+    /**
+     * Returns the first of the list of boards from the database.
+     * If the database has no boards, it creates one with the name "Default Board".
+     * @return returns the board from the database.
+     */
+    public Board getBoard() {
+        try {
+            List<Board> boards = this.server.getBoard();
+            if (boards.size() == 0) {
+                Board newBoard = new Board("Default Board");
+                this.server.addBoard(newBoard);
+                return this.server.getBoard().get(0);
+            }
+            return boards.get(0);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

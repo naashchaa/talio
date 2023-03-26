@@ -9,7 +9,7 @@ import java.util.Objects;
 @Table(name = "TaskList")
 public class TaskList {
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "Board_id", nullable = false)
     private Board parentBoard;
 
