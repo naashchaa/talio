@@ -3,4 +3,6 @@
 dependencies {
 	implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '2.2.3'
     implementation 'org.jetbrains:annotations:23.0.0'
+    implementation group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.0-api', version: '1.0.0.Final'
+//Thanks for using https://jar-download.com
 }
