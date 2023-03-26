@@ -72,8 +72,7 @@ public class MainCtrl {
 //        boardCtrl.refresh();
     }
 
-    public void showAddTask(TaskListCtrl taskListCtrl) {
-        this.addTaskCtrl.setParentTaskListCtrl(taskListCtrl);
+    public void showAddTask() {
         this.primaryStage.setTitle("Add New Task");
         this.primaryStage.setScene(this.addTask);
 //        addTask.setOnKeyPressed(e -> addCtrl.keyPressed(e));
@@ -100,7 +99,7 @@ public class MainCtrl {
     public void loadTaskLists() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
         for (TaskList t : this.taskListList) {
-            this.boardCtrl.addTaskListToBoard(t);
+            this.boardCtrl.addTaskListToBoard(t.getName());
         }
     }
 }

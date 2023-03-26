@@ -44,13 +44,12 @@ public class AddTaskListCtrl {
      * to the database.
      */
     public void create() {
+       //ToDo: Method that creates a new task list with the name that the user inputs.
+        // Needs endpoints.
         TaskList tasklist = new TaskList(this.name.getText(), this.mainCtrl.getCurrentBoard());
         try {
             this.server.addTaskList(tasklist);
-            for (TaskList list :
-                    this.server.getTaskLists()) {
-                if (list.equals(tasklist)) {this.boardCtrl.addTaskListToBoard(list); break;}
-            }
+            this.boardCtrl.addTaskListToBoard(tasklist.getName());
         }
         catch (Exception e) {
             e.printStackTrace();

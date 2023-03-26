@@ -12,7 +12,6 @@ public class AddTaskCtrl {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils server;
-    private TaskListCtrl parentTaskListCtrl;
     @FXML
     private TextField textField;
     @FXML
@@ -24,6 +23,15 @@ public class AddTaskCtrl {
     public AddTaskCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+    }
+
+    public Task getTask() {
+//        var t = this.textField.getText();
+//        Board board = new Board("test board");
+//        TaskList taskList = new TaskList("test tasklist", board);
+//        return new Task(t, "test description", taskList, null);
+        // return new Task(this.textField, null, )
+        return null;
     }
 
     /**
@@ -40,20 +48,13 @@ public class AddTaskCtrl {
      * @param event An event triggered by user
      */
     public void createTask(ActionEvent event) {
-        Task task = new Task(this.textField.getText(), null,
-                this.parentTaskListCtrl.getTaskList(), null);
+        //TODO create task
+        System.out.println("creating task");
         try {
-            this.server.addTask(task);
+            this.server.addTask(this.getTask());
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        this.parentTaskListCtrl.addTaskToList(task.getName());
-        this.textField.clear();
-        this.mainCtrl.showBoard();
-    }
-
-    public void setParentTaskListCtrl(TaskListCtrl parentTaskListCtrl) {
-        this.parentTaskListCtrl = parentTaskListCtrl;
     }
 }
