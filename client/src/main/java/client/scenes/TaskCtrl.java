@@ -5,8 +5,6 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-import java.awt.event.ActionEvent;
-
 public class TaskCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -22,6 +20,8 @@ public class TaskCtrl {
 
     public void deleteTask() { System.out.println("Deleting task...");}
 
-    public void openTaskOverview() { System.out.println("Opening task overview for task " + taskTitle.getText()); }
+    public void openTaskOverview() {
+        System.out.println("Opening task overview for task " + this.taskTitle.getText());
+    }
 
 }
