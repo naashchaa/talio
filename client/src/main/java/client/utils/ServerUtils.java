@@ -106,4 +106,17 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<TaskList>>() {});
     }
+
+    /**
+     * I'm not yet sure this works.
+     * @param tasklist
+     * @return returns a list of tasks.
+     */
+    public List<Task> getTasks(TaskList tasklist) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/get_by_parent") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Task>>() {});
+    }
 }

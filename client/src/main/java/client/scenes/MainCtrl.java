@@ -16,6 +16,7 @@
 package client.scenes;
 
 import commons.Board;
+import commons.Task;
 import commons.TaskList;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -100,6 +101,14 @@ public class MainCtrl {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
         for (TaskList t : this.taskListList) {
             this.boardCtrl.addTaskListToBoard(t.getName());
+            this.loadTasks(t);
+        }
+    }
+
+    public void loadTasks(TaskList tasklist) {
+        List<Task> tasks = this.addTaskCtrl.getTasks(tasklist);
+        for (Task t : tasks) {
+            System.out.println();
         }
     }
 }
