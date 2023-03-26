@@ -17,9 +17,15 @@ public class Task {
     private String name;
     @Column
     private String description;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "TaskList_id")
     private TaskList parentTaskList;
+
+    @OneToOne
+    private Task nextTask;
+    @OneToOne
+    private Task prevTask;
+
     @ManyToOne
     @JoinColumn(name = "Task_id")
     private Task parentTask;
@@ -39,6 +45,8 @@ public class Task {
         this.description = description;
         this.parentTaskList = parentTaskList;
         this.parentTask = parentTask;
+        this.nextTask = null;
+        this.prevTask = null;
     }
 
     //empty constructor for the object mapper
@@ -87,6 +95,22 @@ public class Task {
     
     public void setParentTask(Task parent) {
         this.parentTask = parent;
+    }
+
+    public Task getNextTask() {
+        return this.nextTask;
+    }
+
+    public void setNextTask(Task next) {
+        this.nextTask = next;
+    }
+
+    public Task getPrevTask() {
+        return this.prevTask;
+    }
+
+    public void setPrevTask(Task prev) {
+        this.prevTask = prev;
     }
 
     @Override
