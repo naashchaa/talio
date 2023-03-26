@@ -112,9 +112,10 @@ public class ServerUtils {
      * @param tasklist
      * @return returns a list of tasks.
      */
-    public List<Task> getTasks(TaskList tasklist) {
+    public List<Task>getTasks(TaskList tasklist) {
+        String id = Long.toString(tasklist.getId());
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasks/get_by_parent") //
+                .target(SERVER).path("api/tasks/get_by_parent/" + id) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Task>>() {});
