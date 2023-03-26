@@ -59,7 +59,7 @@ public class Board {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
-        return Objects.equals(this.id, board.id) && Objects.equals(this.name, board.name)
+        return Objects.equals(this.name, board.name)
                 && Objects.equals(this.password, board.password);
     }
 
