@@ -1,7 +1,6 @@
 package server.api;
 
 import commons.Task;
-import commons.TaskList;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.TaskRepository;
@@ -33,9 +32,9 @@ public class TaskController {
         return ResponseEntity.ok(this.repo.findById(id).get());
     }
 
-    @GetMapping(path = "/get_by_parent")
-    public ResponseEntity<List<Task>> getAllByParentTaskList(@RequestBody TaskList list) {
-        return ResponseEntity.ok(this.repo.getAllByParentTaskList(list));
+    @GetMapping(path = "/get_by_parent/{id}")
+    public ResponseEntity<List<Task>> getAllByParentTaskList(@PathVariable("id") long id) {
+        return ResponseEntity.ok(this.repo.findAllByParentTaskList_Id(id));
     }
 
     /** This is a POST endpoint for adding a new Task.
