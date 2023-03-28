@@ -54,7 +54,7 @@ public class AddTaskCtrl {
         }
         this.parentTaskListCtrl.addTaskToList(task.getName());
         this.textField.clear();
-        this.mainCtrl.showBoard();
+        this.mainCtrl.hidePopUp();
     }
 
     public void setParentTaskListCtrl(TaskListCtrl parentTaskListCtrl) {

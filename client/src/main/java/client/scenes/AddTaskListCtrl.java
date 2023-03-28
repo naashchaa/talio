@@ -56,7 +56,7 @@ public class AddTaskListCtrl {
             e.printStackTrace();
         }
         this.name.clear();
-        this.mainCtrl.showBoard();
+        this.mainCtrl.hidePopUp();
     }
 
     /**

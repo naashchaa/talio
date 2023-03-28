@@ -28,6 +28,7 @@ import java.util.List;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage popup;
     private BoardCtrl boardCtrl;
     private Scene board;
     private Board currentBoard;
@@ -36,8 +37,6 @@ public class MainCtrl {
     private AddTaskListCtrl addTaskListCtrl;
     private Scene addTaskList;
     private List<TaskList> taskListList;
-    private TaskListCtrl taskListCtrl;
-    private Scene taskList;
 
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
@@ -50,6 +49,7 @@ public class MainCtrl {
                            Pair<AddTaskListCtrl, Parent> addTaskList,
                            Pair<AddTaskCtrl, Parent> addTask) {
         this.primaryStage = primaryStage;
+        this.popup = new Stage();
 
         this.boardCtrl = boardCtrl.getKey();
         this.board = new Scene(boardCtrl.getValue());
@@ -75,19 +75,16 @@ public class MainCtrl {
 
     public void showAddTask(TaskListCtrl taskListCtrl) {
         this.addTaskCtrl.setParentTaskListCtrl(taskListCtrl);
-        this.primaryStage.setTitle("Add New Task");
-        this.primaryStage.setScene(this.addTask);
+        this.popup.setTitle("Add New Task");
+        this.popup.setScene(this.addTask);
+        this.showPopUp();
 //        addTask.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
     public void showAddTaskList() {
-        this.primaryStage.setTitle("Add New Task List");
-        this.primaryStage.setScene(this.addTaskList);
-    }
-
-    public void showTaskList() {
-        this.primaryStage.setTitle("Task List");
-        this.primaryStage.setScene(this.taskList);
+        this.popup.setTitle("Add New Task List");
+        this.popup.setScene(this.addTaskList);
+        this.showPopUp();
     }
 
     public void loadBoard() {
@@ -111,5 +108,13 @@ public class MainCtrl {
 //        for (Task t : tasks) {
 //            this.taskListCtrl.addTaskToList(t.getName());
 //        }
+    }
+
+    public void showPopUp() {
+        this.popup.show();
+    }
+
+    public void hidePopUp() {
+        this.popup.hide();
     }
 }
