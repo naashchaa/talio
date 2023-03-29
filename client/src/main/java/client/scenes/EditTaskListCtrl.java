@@ -22,7 +22,7 @@ public class EditTaskListCtrl {
     }
 
     /**
-     * Cancels the modification of the task list
+     * Cancels the modification of the task list.
      */
     public void cancel() {
         this.name.clear();

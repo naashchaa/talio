@@ -57,8 +57,7 @@ public class TaskList {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskList taskList = (TaskList) o;
-        return this.parentBoard == taskList.parentBoard && this.id == taskList.id
-                && Objects.equals(this.name, taskList.name);
+        return parentBoard == taskList.parentBoard && id == taskList.id && Objects.equals(name, taskList.name);
     }
 
     @Override
