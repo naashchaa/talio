@@ -24,7 +24,7 @@ public class BoardCtrlTest {
     }
 
     @Test
-    public void test1() {
+    public void getBoardCorrectlyReturnsBoard() {
         Board expected = new Board("testBoard");
         BoardCtrl sutSpy = spy(sut);
         doReturn(expected).when(sutSpy).getBoard();
@@ -32,16 +32,15 @@ public class BoardCtrlTest {
     }
 
     @Test
-    public void test2() {
+    public void addTaskListCallsMainCtrlCorrectly() {
         sut.addTaskList();
         verify(mainCtrl, times(1)).showAddTaskList();
     }
 
     @Test
-    public void test3() {
+    public void addTaskListToBoardReturnsTaskListCtrl() {
         TaskList taskList = mock(TaskList.class);
         TaskListCtrl expected = new TaskListCtrl(sUtils, mainCtrl, "test");
-//        when(sut.addTaskListToBoard(any(TaskList.class))).thenReturn(expected);
         BoardCtrl sutSpy = spy(sut);
         doReturn(expected).when(sutSpy).addTaskListToBoard(any(TaskList.class));
         Assertions.assertEquals(expected, sutSpy.addTaskListToBoard(taskList));
