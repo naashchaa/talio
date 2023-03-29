@@ -33,8 +33,8 @@ public class TaskListCtrl extends Node {
     public void addTaskToList(String name) {
         Pair<TaskCtrl, Parent> pair =
                 Main.FXML.load(TaskCtrl.class, "client", "scenes", "Task.fxml");
-        Label label = (Label) pair.getValue().lookup("#taskTitle");
-        label.setText(name);
+        Label taskName = (Label) pair.getValue().lookup("#taskTitle");
+        taskName.setText(name);
         this.taskContainer.getChildren().add(pair.getValue());
     }
 

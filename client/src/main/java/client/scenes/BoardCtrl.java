@@ -11,11 +11,11 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
-
-
-
 import java.util.List;
 
+/**
+ * Controller for board
+ */
 public class BoardCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -28,9 +28,8 @@ public class BoardCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-
     /** Adds a new task list to the board.
-     * @param taskList corresponding taskList instance
+     * @param taskList - corresponding taskList instance
      * @return returns a controller for the task list
      */
     public TaskListCtrl addTaskListToBoard(TaskList taskList) {
@@ -45,7 +44,7 @@ public class BoardCtrl {
                     set(this.container.getChildren().size()-1, pair.getValue());
             this.container.getChildren().add(button);
             return pair.getKey();
-        } catch (Exception e) {
+        }catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

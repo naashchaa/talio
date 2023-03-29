@@ -5,10 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.TaskList;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.util.Pair;
 
 import java.util.List;
 
@@ -35,7 +32,7 @@ public class EditTaskListCtrl {
         this.taskList.setName(newName);
         this.server.updateTaskList(this.taskList);
 
-       List<TaskListCtrl> taskLists = this.mainCtrl.getTaskListCtrls();
+        List<TaskListCtrl> taskLists = this.mainCtrl.getTaskListCtrls();
         for (TaskListCtrl listCtrl : taskLists) {
             if (this.taskList.equals(listCtrl.getTaskList())) {
                 listCtrl.setTaskListName(newName);

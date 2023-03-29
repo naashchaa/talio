@@ -53,7 +53,8 @@ public class MainCtrl {
      * @param primaryStage the window for the app
      * @param boardCtrl pair that has board controller and its related scene
      * @param addTask pair that has addTask controller and its related scene
-     * @param addTaskList pair that has ddTaskList controller and its related scene
+     * @param addTaskList pair that has dddTaskList controller and its related scene
+     * @param editTaskList pair that has editTaskList controller and its related scene
      */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
                            Pair<AddTaskListCtrl, Parent> addTaskList,
