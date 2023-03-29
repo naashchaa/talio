@@ -3,10 +3,14 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Task;
+import commons.TaskList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddTaskCtrl {
 
@@ -55,5 +59,20 @@ public class AddTaskCtrl {
 
     public void setParentTaskListCtrl(TaskListCtrl parentTaskListCtrl) {
         this.parentTaskListCtrl = parentTaskListCtrl;
+    }
+
+    /**
+     * Gets the tasks associated to a task list and returns them.
+     * @param tasklist the parent task list the tasks are associated to.
+     * @return a list of tasks.
+     */
+    public List<Task> getTasks(TaskList tasklist) {
+        try {
+            return this.server.getTasks(tasklist);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

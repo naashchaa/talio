@@ -16,6 +16,7 @@
 package client.scenes;
 
 import commons.Board;
+import commons.Task;
 import commons.TaskList;
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -23,9 +24,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainCtrl {
 
@@ -40,6 +40,7 @@ public class MainCtrl {
     private List<TaskList> taskListList;
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
+    private List<TaskListCtrl> taskListCtrls;
 
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
@@ -62,6 +63,9 @@ public class MainCtrl {
         this.addTaskCtrl = addTask.getKey();
         this.addTask = new Scene(addTask.getValue());
 
+        this.taskListCtrls = new ArrayList<>();
+        this.loadBoard();
+        
         new Thread(() -> {
             while (true) {
                 try {
@@ -72,7 +76,12 @@ public class MainCtrl {
                 Platform.runLater(this::refresh);
             }
         }).start();
+
+        this.showBoard();
+        this.primaryStage.show();
+
     }
+
 
     public void refresh() {
         this.boardCtrl.refresh();
@@ -112,7 +121,24 @@ public class MainCtrl {
     public void loadTaskLists() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
         for (TaskList t : this.taskListList) {
-            this.boardCtrl.addTaskListToBoard(t);
+            this.taskListCtrls.add(this.boardCtrl.addTaskListToBoard(t));
+            this.loadTasks(t);
+        }
+    }
+
+    /**
+     * Gets all tasks from the database and checks to see if they have to be
+     * loaded in the task lists in the board.
+     * @param tasklist the task list from where the tasks are from
+     */
+    public void loadTasks(TaskList tasklist) {
+        List<Task> tasks = this.addTaskCtrl.getTasks(tasklist);
+        for (Task t : tasks) {
+            for (TaskListCtrl listCtrl : this.taskListCtrls) {
+                if (t.getParentTaskList().equals(listCtrl.getTaskList())) {
+                    listCtrl.addTaskToList(t.getName());
+                }
+            }
         }
     }
 }
