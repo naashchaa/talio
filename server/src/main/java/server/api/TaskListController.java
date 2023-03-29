@@ -1,9 +1,11 @@
 package server.api;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import commons.TaskList;
 import server.database.TaskListRepository;
@@ -53,4 +55,19 @@ public class TaskListController {
         TaskList saved = this.repo.save(taskList);
         return ResponseEntity.ok(saved);
     }
+
+    @PostMapping(path = {"", "/update"})
+    public ResponseEntity<TaskList> update(@RequestBody TaskList tasklist) {
+        try {
+            Optional<TaskList> o = this.repo.findById(tasklist.getId());
+            if(o.isPresent()) {
+                TaskList modifiedTaskList = this.repo.save(tasklist);
+                return new ResponseEntity<>(modifiedTaskList, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

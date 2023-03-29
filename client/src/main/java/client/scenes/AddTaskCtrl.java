@@ -35,8 +35,8 @@ public class AddTaskCtrl {
      * @param event An event triggered by user
      */
     public void cancelTask(ActionEvent event) {
-        System.out.println("cancelling task");
-        this.mainCtrl.showBoard();
+        this.textField.clear();
+        this.mainCtrl.hidePopUp();
     }
 
     /**

@@ -43,4 +43,8 @@ public class TaskListCtrl extends Node {
     public TaskList getTaskList() {
         return this.taskList;
     }
+
+    public void edit() {
+        this.mainCtrl.showEditTaskList(this.taskList);
+    }
 }

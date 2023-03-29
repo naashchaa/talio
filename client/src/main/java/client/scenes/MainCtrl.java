@@ -29,14 +29,20 @@ public class MainCtrl {
 
     private Stage primaryStage;
     private Stage popup;
+
     private BoardCtrl boardCtrl;
     private Scene board;
+
     private Board currentBoard;
     private AddTaskCtrl addTaskCtrl;
     private Scene addTask;
     private AddTaskListCtrl addTaskListCtrl;
     private Scene addTaskList;
     private List<TaskList> taskListList;
+
+    private EditTaskListCtrl editTaskListCtrl;
+    private Scene editTaskList;
+
 
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
@@ -47,7 +53,7 @@ public class MainCtrl {
      */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
                            Pair<AddTaskListCtrl, Parent> addTaskList,
-                           Pair<AddTaskCtrl, Parent> addTask) {
+                           Pair<AddTaskCtrl, Parent> addTask, Pair<EditTaskListCtrl, Parent> editTaskList) {
         this.primaryStage = primaryStage;
         this.popup = new Stage();
 
@@ -59,6 +65,9 @@ public class MainCtrl {
 
         this.addTaskCtrl = addTask.getKey();
         this.addTask = new Scene(addTask.getValue());
+
+        this.editTaskListCtrl = editTaskList.getKey();
+        this.editTaskList = new Scene(editTaskList.getValue());
 
         this.loadBoard();
         this.loadTaskLists();
@@ -116,5 +125,12 @@ public class MainCtrl {
 
     public void hidePopUp() {
         this.popup.hide();
+    }
+
+    public void showEditTaskList(TaskList taskList) {
+        this.popup.setTitle("Edit Task List");
+        this.popup.setScene(editTaskList);
+        this.editTaskListCtrl.setTaskList(taskList);
+        this.showPopUp();
     }
 }
