@@ -17,12 +17,15 @@ package client.scenes;
 
 import commons.Board;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainCtrl {
 
@@ -59,11 +62,20 @@ public class MainCtrl {
         this.addTaskCtrl = addTask.getKey();
         this.addTask = new Scene(addTask.getValue());
 
-        this.loadBoard();
-        this.loadTaskLists();
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(this::refresh);
+            }
+        }).start();
+    }
 
-        this.showBoard();
-        this.primaryStage.show();
+    public void refresh() {
+        this.boardCtrl.refresh();
     }
 
     public void showBoard() {
