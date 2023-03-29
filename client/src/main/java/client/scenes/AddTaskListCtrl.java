@@ -44,12 +44,14 @@ public class AddTaskListCtrl {
      * to the database.
      */
     public void create() {
-        TaskList tasklist = new TaskList(this.name.getText(), this.mainCtrl.getCurrentBoard().getId());
+        TaskList tasklist = new TaskList(this.name.getText(),
+                this.mainCtrl.getCurrentBoard().getId());
         try {
             this.server.addTaskList(tasklist);
             for (TaskList list :
                     this.server.getTaskLists()) {
-                if (list.equals(tasklist)) {this.boardCtrl.addTaskListToBoard(list); break;}
+                if (list.equals(tasklist)) {
+                    this.boardCtrl.addTaskListToBoard(list); break;}
             }
         }
         catch (Exception e) {

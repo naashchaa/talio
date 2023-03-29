@@ -14,7 +14,7 @@ import javafx.util.Pair;
 import java.util.List;
 
 /**
- * Controller for board
+ * Controller for board.
  */
 public class BoardCtrl {
     private final ServerUtils server;

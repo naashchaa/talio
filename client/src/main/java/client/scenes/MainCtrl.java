@@ -58,7 +58,8 @@ public class MainCtrl {
      */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
                            Pair<AddTaskListCtrl, Parent> addTaskList,
-                           Pair<AddTaskCtrl, Parent> addTask, Pair<EditTaskListCtrl, Parent> editTaskList) {
+                           Pair<AddTaskCtrl, Parent> addTask,
+                           Pair<EditTaskListCtrl, Parent> editTaskList) {
         this.primaryStage = primaryStage;
         this.popup = new Stage();
 
@@ -145,7 +146,7 @@ public class MainCtrl {
 
     public void showEditTaskList(TaskList taskList) {
         this.popup.setTitle("Edit Task List");
-        this.popup.setScene(editTaskList);
+        this.popup.setScene(this.editTaskList);
         this.editTaskListCtrl.setTaskList(taskList);
         this.showPopUp();
     }

@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.TaskList;
@@ -22,11 +21,18 @@ public class EditTaskListCtrl {
         this.server = server;
     }
 
+    /**
+     * Cancels the modification of the task list
+     */
     public void cancel() {
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }
 
+    /**
+     * Takes the user's input passes it to the database and
+     * then loads the new name in the task list controller.
+     */
     public void confirm() {
         String newName = this.name.getText();
         this.taskList.setName(newName);
@@ -38,14 +44,13 @@ public class EditTaskListCtrl {
                 listCtrl.setTaskListName(newName);
             }
         }
-
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }
 
     public void setTaskList(TaskList taskList) {
         this.taskList = taskList;
-        name.setText(taskList.getName());
+        this.name.setText(taskList.getName());
 
     }
 }

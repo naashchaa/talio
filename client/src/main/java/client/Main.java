@@ -41,7 +41,8 @@ public class Main extends Application {
         var board  = FXML.load(BoardCtrl.class, "client", "scenes", "Board.fxml");
         var addTask  = FXML.load(AddTaskCtrl.class, "client", "scenes", "AddTask.fxml");
         var addTaskList = FXML.load(AddTaskListCtrl.class, "client", "scenes", "AddTaskList.fxml");
-        var editTaskList = FXML.load(EditTaskListCtrl.class,"client", "scenes", "EditTaskList.fxml");
+        var editTaskList =
+                FXML.load(EditTaskListCtrl.class,"client", "scenes", "EditTaskList.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, board, addTaskList, addTask, editTaskList);
