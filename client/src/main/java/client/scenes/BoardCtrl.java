@@ -31,8 +31,9 @@ public class BoardCtrl {
 
     /** Adds a new task list to the board.
      * @param taskList corresponding taskList instance
+     * @return returns a controller for the task list
      */
-    public void addTaskListToBoard(TaskList taskList) {
+    public TaskListCtrl addTaskListToBoard(TaskList taskList) {
         try{
             Pair<TaskListCtrl, Parent> pair =
                     Main.FXML.load(TaskListCtrl.class, "client", "scenes", "TaskList.fxml");
@@ -43,6 +44,7 @@ public class BoardCtrl {
             this.container.getChildren().
                     set(this.container.getChildren().size()-1, pair.getValue());
             this.container.getChildren().add(button);
+            return pair.getKey();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

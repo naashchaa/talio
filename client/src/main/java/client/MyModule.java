@@ -28,7 +28,7 @@ public class MyModule implements Module {
         binder.bind(BoardCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AddTaskCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AddTaskListCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(TaskListCtrl.class).in(Scopes.SINGLETON);
+        //binder.bind(TaskListCtrl.class).in(Scopes.SINGLETON);
         binder.bind(TaskCtrl.class).in(Scopes.SINGLETON);
 
         binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
