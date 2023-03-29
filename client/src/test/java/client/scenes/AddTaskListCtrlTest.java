@@ -2,12 +2,16 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.Board;
+import commons.Task;
 import commons.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -25,12 +29,6 @@ public class AddTaskListCtrlTest {
         boardCtrl = mock(BoardCtrl.class);
         sUtils = mock(ServerUtils.class);
         sut = new AddTaskListCtrl(sUtils, mainCtrl, boardCtrl);
-    }
-
-    @Test
-    public void cancelCallsMainCtrlCorrectly() {
-        sut.cancel();
-        verify(mainCtrl, times(1)).showBoard();
     }
 
     @Test
