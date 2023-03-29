@@ -1,11 +1,16 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.TaskList;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.util.Pair;
+
+import java.util.List;
 
 public class EditTaskListCtrl {
     private final ServerUtils server;
@@ -26,9 +31,17 @@ public class EditTaskListCtrl {
     }
 
     public void confirm() {
+        String newName = this.name.getText();
+        this.taskList.setName(newName);
         this.server.updateTaskList(this.taskList);
-        Label label = (Label) taskList.lookup("#taskListName");
-        label.setText(taskList.getName());
+
+       List<TaskListCtrl> taskLists = this.mainCtrl.getTaskListCtrls();
+        for (TaskListCtrl listCtrl : taskLists) {
+            if (this.taskList.equals(listCtrl.getTaskList())) {
+                listCtrl.setTaskListName(newName);
+            }
+        }
+
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }

@@ -17,6 +17,8 @@ public class TaskListCtrl extends Node {
     private TaskList taskList;
     @FXML
     private VBox taskContainer;
+    @FXML
+    private Label taskListName;
 
     @Inject
     public TaskListCtrl(ServerUtils server, MainCtrl mainCtrl, String name) {
@@ -46,5 +48,9 @@ public class TaskListCtrl extends Node {
 
     public void edit() {
         this.mainCtrl.showEditTaskList(this.taskList);
+    }
+
+    public void setTaskListName(String newName) {
+        this.taskListName.setText(newName);
     }
 }
