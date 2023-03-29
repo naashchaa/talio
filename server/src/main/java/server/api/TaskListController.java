@@ -49,11 +49,11 @@ public class TaskListController {
     public ResponseEntity<TaskList> add(@RequestBody TaskList taskList) {
 
         if (taskList.getName() == null){
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
         TaskList saved = this.repo.save(taskList);
-        return ResponseEntity.ok(saved);
+        return new ResponseEntity<>(saved, HttpStatus.OK);
     }
 
     @PostMapping(path = {"", "/update"})

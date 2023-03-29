@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskListTest {
     Board b1 = new Board("a");
     Board b2 = new Board("b");
-    TaskList a1 = new TaskList("a", b1);
-    TaskList a2 = new TaskList("a", b1);
-    TaskList a3 = new TaskList("b", b1);
-    TaskList a4 = new TaskList("a", b2);
+    TaskList a1 = new TaskList("a", b1.getId());
+    TaskList a2 = new TaskList("a", b1.getId());
+    TaskList a3 = new TaskList("b", b1.getId());
+    TaskList a4 = new TaskList("a", b2.getId());
     TaskList a5 = a1;
 
 
@@ -31,7 +31,7 @@ class TaskListTest {
     @Test
     void testParentBoard() {
         assertEquals(b1, a1.getParentBoard());
-        a1.setParentBoard(b2);
+        a1.setParentBoard(b2.getId());
         assertEquals(b2, a1.getParentBoard());
     }
 
