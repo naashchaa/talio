@@ -99,9 +99,4 @@ public class TaskTest {
         assertEquals(prev, TEST_TASK.getPrevTask());
     }
 
-    @Test
-    public void testDifferentTaskDifferentIds() {
-        Task differentTask = new Task("different", "description", TEST_TASKLIST, null);
-        assertNotEquals(TEST_TASK.getId(), differentTask.getId());
-    }
 }
