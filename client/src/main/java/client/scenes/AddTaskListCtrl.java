@@ -36,7 +36,7 @@ public class AddTaskListCtrl {
      */
     public void cancel() {
         this.name.clear();
-        this.mainCtrl.showBoard();
+        this.mainCtrl.hidePopUp();
     }
 
     /**
@@ -44,19 +44,12 @@ public class AddTaskListCtrl {
      * to the database.
      */
     public void create() {
-        TaskList tasklist = new TaskList(this.name.getText(), this.mainCtrl.getCurrentBoard());
-        try {
-            this.server.addTaskList(tasklist);
-            for (TaskList list :
-                    this.server.getTaskLists()) {
-                if (list.equals(tasklist)) {this.boardCtrl.addTaskListToBoard(list); break;}
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        TaskList tasklist = new TaskList(this.name.getText(),
+                this.mainCtrl.getCurrentBoard());
+        this.server.addTaskList(tasklist);
+        this.boardCtrl.addTaskListToBoard(tasklist);
         this.name.clear();
-        this.mainCtrl.showBoard();
+        this.mainCtrl.hidePopUp();
     }
 
     /**

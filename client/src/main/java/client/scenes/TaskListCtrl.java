@@ -17,6 +17,8 @@ public class TaskListCtrl extends Node {
     private TaskList taskList;
     @FXML
     private VBox taskContainer;
+    @FXML
+    private Label taskListName;
 
     @Inject
     public TaskListCtrl(ServerUtils server, MainCtrl mainCtrl, String name) {
@@ -31,8 +33,8 @@ public class TaskListCtrl extends Node {
     public void addTaskToList(String name) {
         Pair<TaskCtrl, Parent> pair =
                 Main.FXML.load(TaskCtrl.class, "client", "scenes", "Task.fxml");
-        Label label = (Label) pair.getValue().lookup("#taskTitle");
-        label.setText(name);
+        Label taskName = (Label) pair.getValue().lookup("#taskTitle");
+        taskName.setText(name);
         this.taskContainer.getChildren().add(pair.getValue());
     }
 
@@ -42,5 +44,13 @@ public class TaskListCtrl extends Node {
 
     public TaskList getTaskList() {
         return this.taskList;
+    }
+
+    public void edit() {
+        this.mainCtrl.showEditTaskList(this.taskList);
+    }
+
+    public void setTaskListName(String newName) {
+        this.taskListName.setText(newName);
     }
 }
