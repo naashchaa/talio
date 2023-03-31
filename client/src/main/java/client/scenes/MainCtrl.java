@@ -30,14 +30,21 @@ import java.util.List;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage popup;
+
     private BoardCtrl boardCtrl;
     private Scene board;
+
     private Board currentBoard;
     private AddTaskCtrl addTaskCtrl;
     private Scene addTask;
     private AddTaskListCtrl addTaskListCtrl;
     private Scene addTaskList;
     private List<TaskList> taskListList;
+
+    private EditTaskListCtrl editTaskListCtrl;
+    private Scene editTaskList;
+
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
     private List<TaskListCtrl> taskListCtrls;
@@ -47,12 +54,15 @@ public class MainCtrl {
      * @param primaryStage the window for the app
      * @param boardCtrl pair that has board controller and its related scene
      * @param addTask pair that has addTask controller and its related scene
-     * @param addTaskList pair that has ddTaskList controller and its related scene
+     * @param addTaskList pair that has dddTaskList controller and its related scene
+     * @param editTaskList pair that has editTaskList controller and its related scene
      */
     public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
                            Pair<AddTaskListCtrl, Parent> addTaskList,
-                           Pair<AddTaskCtrl, Parent> addTask) {
+                           Pair<AddTaskCtrl, Parent> addTask,
+                           Pair<EditTaskListCtrl, Parent> editTaskList) {
         this.primaryStage = primaryStage;
+        this.popup = new Stage();
 
         this.boardCtrl = boardCtrl.getKey();
         this.board = new Scene(boardCtrl.getValue());
@@ -62,6 +72,9 @@ public class MainCtrl {
 
         this.addTaskCtrl = addTask.getKey();
         this.addTask = new Scene(addTask.getValue());
+
+        this.editTaskListCtrl = editTaskList.getKey();
+        this.editTaskList = new Scene(editTaskList.getValue());
 
         this.taskListCtrls = new ArrayList<>();
         this.loadBoard();
@@ -95,19 +108,16 @@ public class MainCtrl {
 
     public void showAddTask(TaskListCtrl taskListCtrl) {
         this.addTaskCtrl.setParentTaskListCtrl(taskListCtrl);
-        this.primaryStage.setTitle("Add New Task");
-        this.primaryStage.setScene(this.addTask);
+        this.popup.setTitle("Add New Task");
+        this.popup.setScene(this.addTask);
+        this.showPopUp();
 //        addTask.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
     public void showAddTaskList() {
-        this.primaryStage.setTitle("Add New Task List");
-        this.primaryStage.setScene(this.addTaskList);
-    }
-
-    public void showTaskList() {
-        this.primaryStage.setTitle("Task List");
-        this.primaryStage.setScene(this.taskList);
+        this.popup.setTitle("Add New Task List");
+        this.popup.setScene(this.addTaskList);
+        this.showPopUp();
     }
 
     public void loadBoard() {
@@ -140,5 +150,24 @@ public class MainCtrl {
                 }
             }
         }
+    }
+
+    public void showPopUp() {
+        this.popup.show();
+    }
+
+    public void hidePopUp() {
+        this.popup.hide();
+    }
+
+    public void showEditTaskList(TaskList taskList) {
+        this.popup.setTitle("Edit Task List");
+        this.popup.setScene(this.editTaskList);
+        this.editTaskListCtrl.setTaskList(taskList);
+        this.showPopUp();
+    }
+
+    public List<TaskListCtrl> getTaskListCtrls() {
+        return this.taskListCtrls;
     }
 }
