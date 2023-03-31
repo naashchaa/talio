@@ -1,7 +1,6 @@
 package server.api;
 
 import commons.Task;
-import commons.TaskList;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,10 +54,9 @@ public class TestTaskRepository implements TaskRepository {
 
     @Override
     public void deleteById(Long aLong) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getId() == aLong) list.remove(list.get(i));
+        for (int i = 0; i < this.list.size(); i++) {
+            if (this.list.get(i).getId() == aLong) this.list.remove(this.list.get(i));
         }
-//        this.list.removeIf(x -> x.getId() == aLong);
     }
 
     @Override
@@ -177,7 +175,8 @@ public class TestTaskRepository implements TaskRepository {
     }
 
     @Override
-    public <S extends Task, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends Task, R> R findBy(Example<S> example,
+                    Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
 }

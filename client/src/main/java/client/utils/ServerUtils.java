@@ -121,6 +121,11 @@ public class ServerUtils {
                 .get(new GenericType<List<Task>>() {});
     }
 
+    /** Retrieves the provided TaskList from the repository
+     * (used for TaskList objects without assigned IDs).
+     * @param taskList TaskList to be returned
+     * @return the TaskList entry from the database
+     */
     public TaskList getTaskList(TaskList taskList) {
         String id = Long.toString(taskList.getId());
 
