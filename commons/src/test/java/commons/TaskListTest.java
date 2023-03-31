@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskListTest {
     Board b1 = new Board("a");
     Board b2 = new Board("b");
-    TaskList a1 = new TaskList("a", b1.getId());
-    TaskList a2 = new TaskList("a", b1.getId());
-    TaskList a3 = new TaskList("b", b1.getId());
-    TaskList a4 = new TaskList("a", b2.getId());
+    TaskList a1 = new TaskList("a", b1);
+    TaskList a2 = new TaskList("a", b1);
+    TaskList a3 = new TaskList("b", b1);
+    TaskList a4 = new TaskList("a", b2);
     TaskList a5 = a1;
 
 
@@ -30,17 +30,16 @@ class TaskListTest {
 
     @Test
     void testParentBoard() {
-        assertEquals(b1.getId(), a1.getParentBoard());
-        a1.setParentBoard(b2.getId());
-        assertEquals(b2.getId(), a1.getParentBoard());
+        assertEquals(b1, a1.getParentBoard());
+        a1.setParentBoard(b2);
+        assertEquals(b2, a1.getParentBoard());
     }
 
     @Test
     void testEquals() {
-        System.out.println(b1.getId() + " " + b2.getId());
         assertEquals(a1, a2);
         assertNotEquals(a1, a3);
-//        assertNotEquals(a1, a4);
+        assertNotEquals(a1, a4);
         assertEquals(a1, a5);
     }
 
@@ -52,6 +51,6 @@ class TaskListTest {
 
     @Test
     void testToString() {
-        assertEquals("TaskList{parentBoardId= 0, id= 0, name= 'a'}", a1.toString());
+        assertEquals("TaskList{parentBoard= a, id= 0, name= 'a'}", a1.toString());
     }
 }

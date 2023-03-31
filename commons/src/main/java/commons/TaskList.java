@@ -9,10 +9,10 @@ import java.util.Objects;
 @Table(name = "TaskList")
 public class TaskList {
 
-//    @ManyToOne(cascade = CascadeType.MERGE)
-//    @JoinColumn(name = "Board_id", nullable = false)
-    @Column(name = "Board_id")
-    private long parentBoard;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "Board_id", nullable = false)
+
+    private Board parentBoard;
 
     @Id
     @Column(unique = true, nullable = false)
@@ -25,7 +25,7 @@ public class TaskList {
     @SuppressWarnings("unused")
     private TaskList(){}
 
-    public TaskList(@NotNull String name, @NotNull long parentBoard){
+    public TaskList(@NotNull String name, @NotNull Board parentBoard){
         this.name = name;
         this.parentBoard = parentBoard;
     }
@@ -44,11 +44,11 @@ public class TaskList {
 
     public void setId(long l){this.id = l;}
 
-    public long getParentBoard() {
+    public Board getParentBoard() {
         return this.parentBoard;
     }
 
-    public void setParentBoard(@NotNull long parentBoard) {
+    public void setParentBoard(@NotNull Board parentBoard) {
         this.parentBoard = parentBoard;
     }
 
@@ -57,20 +57,20 @@ public class TaskList {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskList taskList = (TaskList) o;
-        return this.parentBoard == taskList.parentBoard
-                && this.id == taskList.id
+        return this.id == taskList.id &&
+                Objects.equals(this.parentBoard, taskList.parentBoard)
                 && Objects.equals(this.name, taskList.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name);
+        return Objects.hash(this.parentBoard, this.id, this.name);
     }
 
     @Override
     public String toString() {
         return "TaskList{" +
-                "parentBoardId= " + this.parentBoard +
+                "parentBoard= " + this.parentBoard.getName() +
                 ", id= " + this.id +
                 ", name= '" + this.name + '\'' +
                 '}';

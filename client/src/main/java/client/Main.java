@@ -16,7 +16,6 @@
 package client;
 
 import static com.google.inject.Guice.createInjector;
-import static javafx.application.ConditionalFeature.FXML;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

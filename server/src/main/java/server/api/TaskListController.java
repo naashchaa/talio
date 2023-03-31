@@ -56,7 +56,12 @@ public class TaskListController {
         return new ResponseEntity<>(saved, HttpStatus.OK);
     }
 
-    @PostMapping(path = {"", "/update"})
+    /**
+     * Modifies the task list that already exists in the database.
+     * @param tasklist to be updated
+     * @return ResponseEntity
+     */
+    @PostMapping(path = {"/update"})
     public ResponseEntity<TaskList> update(@RequestBody TaskList tasklist) {
         try {
             Optional<TaskList> o = this.repo.findById(tasklist.getId());
