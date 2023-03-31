@@ -84,4 +84,24 @@ public class TaskTest {
         Task task2 = new Task("task", "description", TEST_TASKLIST, null);
         assertEquals(TEST_TASK.hashCode(), task2.hashCode());
     }
+
+    @Test
+    public void testNextTask() {
+        Task next = new Task("next", "description", TEST_TASKLIST, null);
+        TEST_TASK.setNextTask(next);
+        assertEquals(next, TEST_TASK.getNextTask());
+    }
+
+    @Test
+    public void testPreviousTask() {
+        Task prev = new Task("prev", "description", TEST_TASKLIST, null);
+        TEST_TASK.setPrevTask(prev);
+        assertEquals(prev, TEST_TASK.getPrevTask());
+    }
+
+    @Test
+    public void testDifferentTaskDifferentIds() {
+        Task differentTask = new Task("different", "description", TEST_TASKLIST, null);
+        assertNotEquals(TEST_TASK.getId(), differentTask.getId());
+    }
 }
