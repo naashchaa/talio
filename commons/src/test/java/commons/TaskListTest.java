@@ -2,6 +2,8 @@ package commons;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskListTest {
@@ -47,6 +49,10 @@ class TaskListTest {
 
     @Test
     void testHashCode() {
+        Long id = a1.getId();
+        String name = a1.getName();
+        int expectedHash = Objects.hash(b1, id, name);
+        assertEquals(expectedHash, a1.hashCode());
     }
 
     @Test
