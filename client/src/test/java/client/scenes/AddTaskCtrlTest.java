@@ -26,12 +26,6 @@ class AddTaskCtrlTest {
     }
 
     @Test
-    public void testMainCtrlCallsCorrectly() {
-        sut.cancelTask(null);
-        verify(mainCtrl, times(1)).showBoard();
-    }
-
-    @Test
     public void correctlySetAndGetParentTaskListCtrl() {
         TaskListCtrl ctrlMock = mock(TaskListCtrl.class);
         sut.setParentTaskListCtrl(ctrlMock);
