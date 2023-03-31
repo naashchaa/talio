@@ -120,4 +120,14 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Task>>() {});
     }
+
+    public TaskList getTaskList(TaskList taskList) {
+        String id = Long.toString(taskList.getId());
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/taskList/" + id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<TaskList>() {});
+    }
 }
