@@ -5,20 +5,26 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.TaskList;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
+
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Controller for board.
  */
-public class BoardCtrl {
+public class BoardCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private ObservableList<TaskList> data;
     @FXML
     private HBox container;
 
@@ -26,6 +32,13 @@ public class BoardCtrl {
     public BoardCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.server.registerForTaskLists("/topic/taskList", taskList -> {
+            this.data.add(taskList);
+        });
     }
 
     /** Adds a new task list to the board.

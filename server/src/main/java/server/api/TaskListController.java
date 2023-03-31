@@ -2,6 +2,8 @@ package server.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -75,4 +77,10 @@ public class TaskListController {
         }
     }
 
+    @MessageMapping("/taskList") // /app/quotes
+    @SendTo("/topic/taskList")
+    public TaskList addTaskList(TaskList taskList) {
+        this.add(taskList);
+        return taskList;
+    }
 }
