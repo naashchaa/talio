@@ -51,7 +51,7 @@ class TaskListTest {
     void testHashCode() {
         Long id = a1.getId();
         String name = a1.getName();
-        int expectedHash = Objects.hash(id, name);
+        int expectedHash = Objects.hash(b1, id, name);
         assertEquals(expectedHash, a1.hashCode());
     }
 
