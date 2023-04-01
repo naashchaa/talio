@@ -61,6 +61,10 @@ public class AddTaskCtrl {
         this.parentTaskListCtrl = parentTaskListCtrl;
     }
 
+    public TaskListCtrl getParentTaskListCtrl() {
+        return this.parentTaskListCtrl;
+    }
+
     /**
      * Gets the tasks associated to a task list and returns them.
      * @param tasklist the parent task list the tasks are associated to.

@@ -78,12 +78,6 @@ public class MainCtrl {
 
         this.taskListCtrls = new ArrayList<>();
 
-//        this.board.addPreLayoutPulseListener(() -> {
-//            Long refreshTime = System.nanoTime();
-//            System.out.println("refresh after " + (refreshTime - this.lastRefreshTime));
-//            this.lastRefreshTime = refreshTime;
-//        });
-
         this.loadBoard();
         this.loadTaskLists();
 
@@ -94,7 +88,6 @@ public class MainCtrl {
     public void showBoard() {
         this.primaryStage.setTitle("Board");
         this.primaryStage.setScene(this.board);
-//        boardCtrl.refresh();
     }
 
     public void showAddTask(TaskListCtrl taskListCtrl) {
@@ -120,14 +113,16 @@ public class MainCtrl {
     }
 
     /**
-     * aaaa.
+     * The method that first removes tasks lists and then loads them again
+     * from the server/database.
      */
     public void loadTaskLists() {
         Platform.runLater(this::loadTaskListsHelper);
     }
 
     /**
-     * aa.
+     * This helped is made so that loading task lists with long polling has
+     * no JAVAFX thread errors.
      */
     public void loadTaskListsHelper() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
@@ -177,7 +172,5 @@ public class MainCtrl {
     public void addTaskList(TaskList taskList) {
         this.taskListList.add(taskList);
     }
-
-    private Long lastRefreshTime = 0L;
 
 }

@@ -2,6 +2,8 @@ package commons;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
@@ -57,5 +59,14 @@ class BoardTest {
         assertEquals("Board: bb, 0", b4.toString());
         b1.setId(1L);
         assertEquals("Board: b, 1", b1.toString());
+    }
+
+    @Test
+    public void testHash() {
+        Long id = b3.getId();
+        String name = b3.getName();
+        String pass = b3.getPassword();
+        int expectedHash = Objects.hash(id, name, pass);
+        assertEquals(expectedHash, b3.hashCode());
     }
 }

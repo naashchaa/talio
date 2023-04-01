@@ -28,6 +28,10 @@ public class BoardCtrl implements Initializable {
     @FXML
     private HBox container;
 
+    /** Initializes the board controller and starts polling for updates.
+     * @param server server utils instance
+     * @param mainCtrl main controller instance
+     */
     @Inject
     public BoardCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
@@ -37,12 +41,7 @@ public class BoardCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        this.server.registerForTaskLists("/topic/taskList", taskList -> {
-//            this.data.add(taskList);
-//        });
-        // long polling
         this.server.registerForTaskListsL(taskList -> {
-            //this.data.add(taskList);
             this.mainCtrl.addTaskList(taskList);
             this.mainCtrl.loadTaskLists();
         });
@@ -96,17 +95,14 @@ public class BoardCtrl implements Initializable {
         return null;
     }
 
+    /**
+     * Removes all children in horizontal box but the button.
+     */
     public void removeTaskLists() {
         while (this.container.getChildren().size() > 1) {
             this.container.getChildren().remove(0);
         }
     }
-
-    public void removeTaskListsLater() {
-
-    }
-
-    // long polling stuff
 
     public void stop() {
         this.server.stop();
