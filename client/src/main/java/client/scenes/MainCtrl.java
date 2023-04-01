@@ -77,33 +77,17 @@ public class MainCtrl {
         this.editTaskList = new Scene(editTaskList.getValue());
 
         this.taskListCtrls = new ArrayList<>();
+
         this.loadBoard();
-        
-        new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Platform.runLater(this::refresh);
-            }
-        }).start();
+        this.loadTaskLists();
 
         this.showBoard();
         this.primaryStage.show();
-
-    }
-
-
-    public void refresh() {
-        this.boardCtrl.refresh();
     }
 
     public void showBoard() {
         this.primaryStage.setTitle("Board");
         this.primaryStage.setScene(this.board);
-//        boardCtrl.refresh();
     }
 
     public void showAddTask(TaskListCtrl taskListCtrl) {
@@ -128,8 +112,21 @@ public class MainCtrl {
         return this.currentBoard;
     }
 
+    /**
+     * The method that first removes tasks lists and then loads them again
+     * from the server/database.
+     */
     public void loadTaskLists() {
+        Platform.runLater(this::loadTaskListsHelper);
+    }
+
+    /**
+     * This helped is made so that loading task lists with long polling has
+     * no JAVAFX thread errors.
+     */
+    public void loadTaskListsHelper() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
+        this.boardCtrl.removeTaskLists();
         for (TaskList t : this.taskListList) {
             this.taskListCtrls.add(this.boardCtrl.addTaskListToBoard(t));
             this.loadTasks(t);
@@ -158,6 +155,7 @@ public class MainCtrl {
 
     public void hidePopUp() {
         this.popup.hide();
+        this.loadTaskLists();
     }
 
     public void showEditTaskList(TaskList taskList) {
@@ -170,4 +168,9 @@ public class MainCtrl {
     public List<TaskListCtrl> getTaskListCtrls() {
         return this.taskListCtrls;
     }
+
+    public void addTaskList(TaskList taskList) {
+        this.taskListList.add(taskList);
+    }
+
 }

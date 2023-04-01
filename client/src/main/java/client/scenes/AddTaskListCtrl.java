@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
@@ -44,11 +45,19 @@ public class AddTaskListCtrl {
      * to the database.
      */
     public void create() {
+        Platform.runLater(this::createHelper);
+    }
+
+    /**
+     * This helped is created to be able to run later so that there are not JAVAFX thread errors.
+     */
+    public void createHelper() {
         TaskList tasklist = new TaskList(this.name.getText(),
                 this.mainCtrl.getCurrentBoard());
-        try {
+        //this.server.send("/app/taskList", tasklist);
+        try { // might need a platform.runlater
             this.server.addTaskList(tasklist);
-            tasklist = this.server.getTaskList(tasklist);
+            tasklist = this.server.getTaskList(tasklist); // delete if not work!
             this.boardCtrl.addTaskListToBoard(tasklist);
         }
         catch (Exception e) {
@@ -64,7 +73,8 @@ public class AddTaskListCtrl {
      */
     public List<TaskList> getTaskLists() {
         try {
-            return this.server.getTaskLists();
+            var lists = this.server.getTaskLists();
+            return lists;
         }
         catch (Exception e) {
             e.printStackTrace();

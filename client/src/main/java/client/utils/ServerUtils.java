@@ -20,18 +20,31 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
@@ -143,4 +156,83 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
     }
+
+    private StompSession session = this.connect("ws://localhost:8080/websocket");
+
+    /**
+     * Default connect method from documentation.
+     * @param url the url
+     * @return a stomp session
+     */
+    private StompSession connect(String url) {
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        catch (ExecutionException e) {
+            throw new RuntimeException();
+        }
+        throw new IllegalStateException();
+    }
+
+    /**
+     * Let me cook.
+     * @param dest
+     * @param consumer
+     */
+    public void registerForTaskLists(String dest, Consumer<TaskList> consumer) {
+        this.session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return TaskList.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((TaskList) payload);
+            }
+        });
+    }
+
+    /**
+     * Sends an object to a destination.
+     * @param dest destination
+     * @param o object
+     */
+    public void send(String dest, Object o) {
+        this.session.send(dest, o);
+    }
+
+    private static ExecutorService EXEC = Executors.newSingleThreadExecutor();
+
+    /**
+     * Detects if there has been any changes in the board to a task list.
+     * @param consumer a consumer
+     */
+    public void registerForTaskListsL(Consumer<TaskList> consumer) {
+        EXEC.submit(() -> {
+            while (!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/taskList/updates") //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .get(Response.class);
+                if (res.getStatus() == 204) {
+                    continue;
+                }
+                var taskList = res.readEntity(TaskList.class);
+                consumer.accept(taskList);
+            }
+        });
+    }
+
+    public void stop() {
+        EXEC.shutdownNow();
+    }
+
 }

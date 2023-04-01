@@ -5,21 +5,26 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.TaskList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.util.Pair;
+
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Controller for board.
  */
-public class BoardCtrl {
+public class BoardCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private ObservableList<TaskList> data;
+
     @FXML
     private HBox container;
 
@@ -31,14 +36,15 @@ public class BoardCtrl {
     public BoardCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.data =  FXCollections.observableArrayList();
     }
-    
-    public void refresh() {
-        Button button = (Button) this.container.getChildren()
-                .get(this.container.getChildren().size()-1);
-        this.container.getChildren().clear();
-        this.container.getChildren().add(button);
-        this.mainCtrl.loadTaskLists();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.server.registerForTaskListsL(taskList -> {
+            this.mainCtrl.addTaskList(taskList);
+            this.mainCtrl.loadTaskLists();
+        });
     }
 
     /** Adds a new task list to the board.
@@ -47,8 +53,7 @@ public class BoardCtrl {
      */
     public TaskListCtrl addTaskListToBoard(TaskList taskList) {
         try{
-            Pair<TaskListCtrl, Parent> pair =
-                    Main.FXML.load(TaskListCtrl.class, "client", "scenes", "TaskList.fxml");
+            var pair = (Main.FXML.load(TaskListCtrl.class, "client", "scenes", "TaskList.fxml"));
             Label label = (Label) pair.getValue().lookup("#taskListName");
             label.setText(taskList.getName());
             pair.getKey().setTaskList(taskList);
@@ -88,5 +93,18 @@ public class BoardCtrl {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Removes all children in horizontal box but the button.
+     */
+    public void removeTaskLists() {
+        while (this.container.getChildren().size() > 1) {
+            this.container.getChildren().remove(0);
+        }
+    }
+
+    public void stop() {
+        this.server.stop();
     }
 }
