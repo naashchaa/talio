@@ -46,8 +46,14 @@ public class AddTaskListCtrl {
     public void create() {
         TaskList tasklist = new TaskList(this.name.getText(),
                 this.mainCtrl.getCurrentBoard());
-        this.server.addTaskList(tasklist);
-        this.boardCtrl.addTaskListToBoard(tasklist);
+        try {
+            this.server.addTaskList(tasklist);
+            tasklist = this.server.getTaskList(tasklist);
+            this.boardCtrl.addTaskListToBoard(tasklist);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }

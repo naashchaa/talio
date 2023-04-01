@@ -5,17 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.TaskRepository;
 import java.util.List;
-import java.util.Random;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    private final Random random;
     private final TaskRepository repo;
 
-    public TaskController(Random random, TaskRepository repo) {
-        this.random = random;
+    public TaskController(TaskRepository repo) {
         this.repo = repo;
     }
 
