@@ -18,6 +18,7 @@ package client.scenes;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -77,6 +78,12 @@ public class MainCtrl {
 
         this.taskListCtrls = new ArrayList<>();
 
+//        this.board.addPreLayoutPulseListener(() -> {
+//            Long refreshTime = System.nanoTime();
+//            System.out.println("refresh after " + (refreshTime - this.lastRefreshTime));
+//            this.lastRefreshTime = refreshTime;
+//        });
+
         this.loadBoard();
         this.loadTaskLists();
 
@@ -112,8 +119,19 @@ public class MainCtrl {
         return this.currentBoard;
     }
 
+    /**
+     * aaaa.
+     */
     public void loadTaskLists() {
+        Platform.runLater(this::loadTaskListsHelper);
+    }
+
+    /**
+     * aa.
+     */
+    public void loadTaskListsHelper() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
+        this.boardCtrl.removeTaskLists();
         for (TaskList t : this.taskListList) {
             this.taskListCtrls.add(this.boardCtrl.addTaskListToBoard(t));
             this.loadTasks(t);
@@ -142,6 +160,7 @@ public class MainCtrl {
 
     public void hidePopUp() {
         this.popup.hide();
+        this.loadTaskLists();
     }
 
     public void showEditTaskList(TaskList taskList) {
@@ -154,4 +173,11 @@ public class MainCtrl {
     public List<TaskListCtrl> getTaskListCtrls() {
         return this.taskListCtrls;
     }
+
+    public void addTaskList(TaskList taskList) {
+        this.taskListList.add(taskList);
+    }
+
+    private Long lastRefreshTime = 0L;
+
 }

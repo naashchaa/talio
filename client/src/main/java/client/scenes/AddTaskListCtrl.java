@@ -46,8 +46,8 @@ public class AddTaskListCtrl {
     public void create() {
         TaskList tasklist = new TaskList(this.name.getText(),
                 this.mainCtrl.getCurrentBoard());
-        this.server.send("/app/taskList", tasklist);
-        //this.server.addTaskList(tasklist);
+        //this.server.send("/app/taskList", tasklist);
+        this.server.addTaskList(tasklist);
         this.boardCtrl.addTaskListToBoard(tasklist);
         this.name.clear();
         this.mainCtrl.hidePopUp();
@@ -59,7 +59,8 @@ public class AddTaskListCtrl {
      */
     public List<TaskList> getTaskLists() {
         try {
-            return this.server.getTaskLists();
+            var lists = this.server.getTaskLists();
+            return lists;
         }
         catch (Exception e) {
             e.printStackTrace();

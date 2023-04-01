@@ -24,11 +24,14 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -189,4 +192,38 @@ public class ServerUtils {
     public void send(String dest, Object o) {
         this.session.send(dest, o);
     }
+
+    /**
+     * For long polling:
+     * Do the register for updates. Done in server
+     *
+     */
+
+    private static ExecutorService EXEC = Executors.newSingleThreadExecutor();
+
+    /**
+     * a.
+     * @param consumer
+     */
+    public void registerForTaskListsL(Consumer<TaskList> consumer) {
+        EXEC.submit(() -> {
+            while (!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/taskList/updates") //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .get(Response.class);
+                if (res.getStatus() == 204) {
+                    continue;
+                }
+                var taskList = res.readEntity(TaskList.class);
+                consumer.accept(taskList);
+            }
+        });
+    }
+
+    public void stop() {
+        EXEC.shutdownNow();
+    }
+
 }

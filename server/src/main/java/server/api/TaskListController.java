@@ -6,10 +6,14 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import commons.TaskList;
+import org.springframework.web.context.request.async.DeferredResult;
 import server.database.TaskListRepository;
 
 @RestController
@@ -54,6 +58,11 @@ public class TaskListController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
+        // long polling
+        this.listeners.forEach((k, l) -> {
+            l.accept(taskList);
+        });
+
         TaskList saved = this.repo.save(taskList);
         return new ResponseEntity<>(saved, HttpStatus.OK);
     }
@@ -83,4 +92,28 @@ public class TaskListController {
         this.add(taskList);
         return taskList;
     }
+
+    private Map<Object, Consumer<TaskList>> listeners = new HashMap<>();
+
+    /**
+     * a.
+     * @return a.
+     */
+    @GetMapping("/updates")
+    public DeferredResult<ResponseEntity<TaskList>> getUpdates() {
+
+        var noContent = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        var res = new DeferredResult<ResponseEntity<TaskList>>(5000L, noContent);
+
+        var key = new Object();
+        this.listeners.put(key, taskList -> {
+            res.setResult(ResponseEntity.ok(taskList));
+        });
+        res.onCompletion(() -> {
+            this.listeners.remove(key);
+        });
+
+        return res;
+    }
+
 }
