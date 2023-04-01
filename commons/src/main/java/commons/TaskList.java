@@ -11,6 +11,7 @@ public class TaskList {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "Board_id", nullable = false)
+
     private Board parentBoard;
 
     @Id
@@ -56,12 +57,14 @@ public class TaskList {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskList taskList = (TaskList) o;
-        return this.name.equals(taskList.name) && this.parentBoard.equals(taskList.parentBoard);
+        return this.id == taskList.id &&
+                Objects.equals(this.parentBoard, taskList.parentBoard)
+                && Objects.equals(this.name, taskList.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name);
+        return Objects.hash(this.parentBoard, this.id, this.name);
     }
 
     @Override

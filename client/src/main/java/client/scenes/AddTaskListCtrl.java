@@ -36,7 +36,7 @@ public class AddTaskListCtrl {
      */
     public void cancel() {
         this.name.clear();
-        this.mainCtrl.showBoard();
+        this.mainCtrl.hidePopUp();
     }
 
     /**
@@ -44,7 +44,8 @@ public class AddTaskListCtrl {
      * to the database.
      */
     public void create() {
-        TaskList tasklist = new TaskList(this.name.getText(), this.mainCtrl.getCurrentBoard());
+        TaskList tasklist = new TaskList(this.name.getText(),
+                this.mainCtrl.getCurrentBoard());
         try {
             this.server.addTaskList(tasklist);
             tasklist = this.server.getTaskList(tasklist);
@@ -54,7 +55,7 @@ public class AddTaskListCtrl {
             e.printStackTrace();
         }
         this.name.clear();
-        this.mainCtrl.showBoard();
+        this.mainCtrl.hidePopUp();
     }
 
     /**

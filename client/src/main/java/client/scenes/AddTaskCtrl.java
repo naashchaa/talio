@@ -35,8 +35,8 @@ public class AddTaskCtrl {
      * @param event An event triggered by user
      */
     public void cancelTask(ActionEvent event) {
-        System.out.println("cancelling task");
-        this.mainCtrl.showBoard();
+        this.textField.clear();
+        this.mainCtrl.hidePopUp();
     }
 
     /**
@@ -54,11 +54,15 @@ public class AddTaskCtrl {
         }
         this.parentTaskListCtrl.addTaskToList(task.getName());
         this.textField.clear();
-        this.mainCtrl.showBoard();
+        this.mainCtrl.hidePopUp();
     }
 
     public void setParentTaskListCtrl(TaskListCtrl parentTaskListCtrl) {
         this.parentTaskListCtrl = parentTaskListCtrl;
+    }
+
+    public TaskListCtrl getParentTaskListCtrl() {
+        return this.parentTaskListCtrl;
     }
 
     /**
