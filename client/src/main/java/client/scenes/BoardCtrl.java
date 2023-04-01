@@ -95,6 +95,10 @@ public class BoardCtrl implements Initializable {
         return null;
     }
 
+    public void reconnect() {
+        this.mainCtrl.showConnectToServer();
+    }
+
     /**
      * Removes all children in horizontal box but the button.
      */
