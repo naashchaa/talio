@@ -51,6 +51,7 @@ public class TaskListCtrl extends Node {
     }
 
     public void delete() {
+        this.server.deleteTasksParentTaskList(this.taskList);
         this.server.deleteTaskList(this.taskList);
         var list = this.server.getTaskLists();
         System.out.println();

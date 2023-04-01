@@ -137,6 +137,19 @@ public class ServerUtils {
                 .get(new GenericType<List<Task>>() {});
     }
 
+    /**
+     * Gets the id of a task list and by that removes all of its internal tasks.
+     * @param taskList the task list whose tasks need to be removed.
+     */
+    public void deleteTasksParentTaskList(TaskList taskList) {
+        var a = ClientBuilder.newClient(new ClientConfig())
+                            .target(SERVER).path("api/tasks/delete_by_parent/" + taskList.getId())
+                            .request(APPLICATION_JSON)
+                            .accept(APPLICATION_JSON)
+                                .delete();
+        System.out.println();
+    }
+
     /** This method modifies the SERVER connection string.
      * @param string the string to set SERVER to
      * @return true if the connection was successful, false otherwise
