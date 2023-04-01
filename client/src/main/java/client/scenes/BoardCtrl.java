@@ -8,6 +8,7 @@ import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
@@ -22,10 +23,22 @@ public class BoardCtrl {
     @FXML
     private HBox container;
 
+    /** Initializes the board controller and starts polling for updates.
+     * @param server server utils instance
+     * @param mainCtrl main controller instance
+     */
     @Inject
     public BoardCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+    }
+    
+    public void refresh() {
+        Button button = (Button) this.container.getChildren()
+                .get(this.container.getChildren().size()-1);
+        this.container.getChildren().clear();
+        this.container.getChildren().add(button);
+        this.mainCtrl.loadTaskLists();
     }
 
     /** Adds a new task list to the board.

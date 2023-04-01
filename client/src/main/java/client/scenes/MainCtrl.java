@@ -18,6 +18,7 @@ package client.scenes;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -76,12 +77,27 @@ public class MainCtrl {
         this.editTaskList = new Scene(editTaskList.getValue());
 
         this.taskListCtrls = new ArrayList<>();
-
         this.loadBoard();
-        this.loadTaskLists();
+        
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(this::refresh);
+            }
+        }).start();
 
         this.showBoard();
         this.primaryStage.show();
+
+    }
+
+
+    public void refresh() {
+        this.boardCtrl.refresh();
     }
 
     public void showBoard() {
