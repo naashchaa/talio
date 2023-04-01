@@ -20,7 +20,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
+//import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -38,9 +38,10 @@ import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompFrameHandler;
-import org.springframework.messaging.simp.stomp.StompHeaders;
+//import org.springframework.messaging.simp.stomp.StompFrameHandler;
+//import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -112,6 +113,14 @@ public class ServerUtils {
                 .post(Entity.entity(tasklist, APPLICATION_JSON), TaskList.class);
     }
 
+    public void deleteTaskList(TaskList taskList) {
+        ClientBuilder.newClient(new ClientConfig())
+        .target(SERVER).path("api/taskList/" + taskList.getId())
+        .request(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+            .delete();
+    }
+
     public List<TaskList> getTaskLists() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/taskList") //
@@ -157,7 +166,7 @@ public class ServerUtils {
                 .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
     }
 
-    private StompSession session = this.connect("ws://localhost:8080/websocket");
+    //private StompSession session = this.connect("ws://localhost:8080/websocket");
 
     /**
      * Default connect method from documentation.
@@ -186,17 +195,17 @@ public class ServerUtils {
      * @param consumer
      */
     public void registerForTaskLists(String dest, Consumer<TaskList> consumer) {
-        this.session.subscribe(dest, new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return TaskList.class;
-            }
-
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-                consumer.accept((TaskList) payload);
-            }
-        });
+//        this.session.subscribe(dest, new StompFrameHandler() {
+//            @Override
+//            public Type getPayloadType(StompHeaders headers) {
+//                return TaskList.class;
+//            }
+//
+//            @Override
+//            public void handleFrame(StompHeaders headers, Object payload) {
+//                consumer.accept((TaskList) payload);
+//            }
+//        });
     }
 
     /**
@@ -205,7 +214,7 @@ public class ServerUtils {
      * @param o object
      */
     public void send(String dest, Object o) {
-        this.session.send(dest, o);
+//        this.session.send(dest, o);
     }
 
     private static ExecutorService EXEC = Executors.newSingleThreadExecutor();

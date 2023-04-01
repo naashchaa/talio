@@ -68,6 +68,21 @@ public class TaskListController {
     }
 
     /**
+     * Mapping for deleting a task list.
+     * @param id the id of the taks list to be found in the database
+     * @return the response
+     */
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") long id) {
+        if (id < 0 || !this.repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        this.repo.deleteById(id);
+        return ResponseEntity.ok("delete successful");
+    }
+
+    /**
      * Modifies the task list that already exists in the database.
      * @param tasklist to be updated
      * @return ResponseEntity

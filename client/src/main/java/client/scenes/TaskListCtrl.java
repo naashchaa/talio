@@ -50,6 +50,13 @@ public class TaskListCtrl extends Node {
         this.mainCtrl.showEditTaskList(this.taskList);
     }
 
+    public void delete() {
+        this.server.deleteTaskList(this.taskList);
+        var list = this.server.getTaskLists();
+        System.out.println();
+        this.mainCtrl.deleteTaskList(this);
+    }
+
     public void setTaskListName(String newName) {
         this.taskListName.setText(newName);
     }
