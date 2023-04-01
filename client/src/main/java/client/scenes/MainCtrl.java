@@ -30,8 +30,9 @@ import java.util.List;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private ConnectToServerCtrl connectToServerCtrl;
+    private Scene connectToServer;
     private Stage popup;
-
     private BoardCtrl boardCtrl;
     private Scene board;
 
@@ -52,17 +53,24 @@ public class MainCtrl {
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
      * @param primaryStage the window for the app
+     * @param connectToServerCtrl pair that has the controller for "the connect to server" screen
+     *                            and its related scene
      * @param boardCtrl pair that has board controller and its related scene
      * @param addTask pair that has addTask controller and its related scene
      * @param addTaskList pair that has dddTaskList controller and its related scene
      * @param editTaskList pair that has editTaskList controller and its related scene
      */
-    public void initialize(Stage primaryStage, Pair<BoardCtrl, Parent> boardCtrl,
+    public void initialize(Stage primaryStage,
+                           Pair<ConnectToServerCtrl, Parent> connectToServerCtrl,
+                           Pair<BoardCtrl, Parent> boardCtrl,
                            Pair<AddTaskListCtrl, Parent> addTaskList,
                            Pair<AddTaskCtrl, Parent> addTask,
                            Pair<EditTaskListCtrl, Parent> editTaskList) {
         this.primaryStage = primaryStage;
         this.popup = new Stage();
+
+        this.connectToServerCtrl = connectToServerCtrl.getKey();
+        this.connectToServer = new Scene(connectToServerCtrl.getValue());
 
         this.boardCtrl = boardCtrl.getKey();
         this.board = new Scene(boardCtrl.getValue());
@@ -78,11 +86,13 @@ public class MainCtrl {
 
         this.taskListCtrls = new ArrayList<>();
 
-        this.loadBoard();
-        this.loadTaskLists();
-
-        this.showBoard();
+        this.showConnectToServer();
         this.primaryStage.show();
+    }
+
+    public void showConnectToServer() {
+        this.primaryStage.setTitle("Connect to a server:");
+        this.primaryStage.setScene(this.connectToServer);
     }
 
     public void showBoard() {

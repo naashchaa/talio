@@ -57,7 +57,7 @@ public class AddTaskListCtrl {
         //this.server.send("/app/taskList", tasklist);
         try { // might need a platform.runlater
             this.server.addTaskList(tasklist);
-            tasklist = this.server.getTaskList(tasklist); // delete if not work!
+//            tasklist = this.server.getTaskList(tasklist); // delete if not work!
             this.boardCtrl.addTaskListToBoard(tasklist);
         }
         catch (Exception e) {

@@ -20,27 +20,22 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
-
 import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompFrameHandler;
-import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -48,7 +43,7 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private static String SERVER = "http://localhost:8080/";
 
     /**
      * Opens a connection with the localhost and reads the quotes directly.
@@ -134,6 +129,23 @@ public class ServerUtils {
                 .get(new GenericType<List<Task>>() {});
     }
 
+    /** This method modifies the SERVER connection string.
+     * @param string the string to set SERVER to
+     * @return true if the connection was successful, false otherwise
+     */
+    public boolean setConnectionString(String string) {
+        String temp = SERVER;
+        try {
+            SERVER = string;
+            List<Board> boards = this.getBoard();
+            return true;
+        }
+        catch (RuntimeException e){
+            SERVER = temp;
+            return false;
+        }
+    }
+
     /** Retrieves the provided TaskList from the repository
      * (used for TaskList objects without assigned IDs).
      * @param taskList TaskList to be returned
@@ -157,7 +169,7 @@ public class ServerUtils {
                 .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
     }
 
-    private StompSession session = this.connect("ws://localhost:8080/websocket");
+//    private StompSession session = this.connect("ws://localhost:8080/websocket");
 
     /**
      * Default connect method from documentation.
@@ -185,28 +197,28 @@ public class ServerUtils {
      * @param dest
      * @param consumer
      */
-    public void registerForTaskLists(String dest, Consumer<TaskList> consumer) {
-        this.session.subscribe(dest, new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return TaskList.class;
-            }
-
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-                consumer.accept((TaskList) payload);
-            }
-        });
-    }
+//    public void registerForTaskLists(String dest, Consumer<TaskList> consumer) {
+//        this.session.subscribe(dest, new StompFrameHandler() {
+//            @Override
+//            public Type getPayloadType(StompHeaders headers) {
+//                return TaskList.class;
+//            }
+//
+//            @Override
+//            public void handleFrame(StompHeaders headers, Object payload) {
+//                consumer.accept((TaskList) payload);
+//            }
+//        });
+//    }
 
     /**
      * Sends an object to a destination.
      * @param dest destination
      * @param o object
      */
-    public void send(String dest, Object o) {
-        this.session.send(dest, o);
-    }
+//    public void send(String dest, Object o) {
+//        this.session.send(dest, o);
+//    }
 
     private static ExecutorService EXEC = Executors.newSingleThreadExecutor();
 
