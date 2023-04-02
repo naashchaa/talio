@@ -108,6 +108,10 @@ public class BoardCtrl implements Initializable {
         }
     }
 
+    public void refresh() {
+        this.mainCtrl.loadTaskListsHelper();
+    }
+
     public void stop() {
         this.server.stop();
     }
