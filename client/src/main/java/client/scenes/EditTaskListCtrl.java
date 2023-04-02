@@ -38,12 +38,12 @@ public class EditTaskListCtrl {
         this.taskList.setName(newName);
         this.server.updateTaskList(this.taskList);
 
-//        List<TaskListCtrl> taskLists = this.mainCtrl.getTaskListCtrls();
-//        for (TaskListCtrl listCtrl : taskLists) {
-//            if (this.taskList.equals(listCtrl.getTaskList())) {
-//                listCtrl.setTaskListName(newName);
-//            }
-//        }
+        List<TaskListCtrl> taskLists = this.mainCtrl.getTaskListCtrls();
+        for (TaskListCtrl listCtrl : taskLists) {
+            if (this.taskList.equals(listCtrl.getTaskList())) {
+                listCtrl.setTaskListName(newName);
+            }
+        }
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }
