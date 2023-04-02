@@ -78,6 +78,10 @@ public class TaskListController {
             return ResponseEntity.badRequest().build();
         }
 
+        this.listeners.forEach((k, l) -> {
+            l.accept(null);
+        });
+
         this.repo.deleteById(id);
         return ResponseEntity.ok("delete successful");
     }
