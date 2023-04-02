@@ -144,6 +144,9 @@ public class MainCtrl {
         }
     }
 
+    /**
+     * This safely disconnect the STOMP session from a task list controller.
+     */
     public void safelyRemoveTaskListCtrls() {
         for (TaskListCtrl tlc : this.taskListCtrls) {
             tlc.disconnectStompSession();
