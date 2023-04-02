@@ -23,7 +23,6 @@ public class TaskListCtrl extends Node implements Initializable {
     private final MainCtrl mainCtrl;
     private TaskList taskList;
     private ObservableList<Task> data;
-    private boolean initialized;
     @FXML
     private VBox taskContainer;
     @FXML
@@ -33,16 +32,10 @@ public class TaskListCtrl extends Node implements Initializable {
     public TaskListCtrl(ServerUtils server, MainCtrl mainCtrl, String name) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.initialized = false;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (this.initialized) {
-            return;
-        }
-        System.out.println("\n\n\n Registered \n\n\n");
-        System.out.println(this.mainCtrl.getTaskListCtrls().size() + " controllers");
         // The task list ctrl gets subscribed to the following path.
         // Now it can receive updates that are sent back from the server to this path.
         this.server.registerForMessages("/topic/tasks/add", Task.class, task -> {
@@ -52,7 +45,6 @@ public class TaskListCtrl extends Node implements Initializable {
                 this.loadTasksLater(task);
             }
         });
-        this.initialized = true;
     }
 
     /**

@@ -153,7 +153,6 @@ public class MainCtrl {
         }
         this.taskListCtrls.clear();
     }
-
     /**
      * Gets all tasks from the database and checks to see if they have to be
      * loaded in the task lists in the board.
