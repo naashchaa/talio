@@ -103,4 +103,22 @@ public class TaskController {
         this.repo.deleteById(id);
         return ResponseEntity.ok("delete successful");
     }
+
+    /**
+     * Gets all the tasks associated to a task list and deleted them one by one
+     * from the repository.
+     * @param id the id of the parent task list.
+     * @return return a response entity with the status and body of the operation.
+     */
+    @DeleteMapping(path = "/delete_by_parent/{id}")
+    public ResponseEntity<String> deleteByParentId(@PathVariable("id") long id) {
+        List<Task> tasks = this.repo.findAllByParentTaskList_Id(id);
+        if (tasks.size() == 0) {
+            return ResponseEntity.ok("no tasks deleted");
+        }
+        for (Task t : tasks) {
+            this.repo.deleteById(t.getId());
+        }
+        return ResponseEntity.ok("delete successful");
+    }
 }

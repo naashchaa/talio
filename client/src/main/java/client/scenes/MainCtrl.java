@@ -175,6 +175,12 @@ public class MainCtrl {
         this.showPopUp();
     }
 
+    public void deleteTaskList(TaskListCtrl ctrl) {
+        this.taskListList.remove(ctrl.getTaskList());
+        this.taskListCtrls.remove(ctrl);
+        this.loadTaskLists();
+    }
+
     public List<TaskListCtrl> getTaskListCtrls() {
         return this.taskListCtrls;
     }

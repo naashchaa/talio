@@ -36,7 +36,7 @@
           <Menu mnemonicParsing="false" text="i">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#edit" text="EDIT" />
-                  <MenuItem mnemonicParsing="false" text="DELETE" />
+                  <MenuItem mnemonicParsing="false" onAction="#delete" text="DELETE" />
             </items>
           </Menu>
         </menus>

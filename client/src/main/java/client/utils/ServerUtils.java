@@ -107,6 +107,14 @@ public class ServerUtils {
                 .post(Entity.entity(tasklist, APPLICATION_JSON), TaskList.class);
     }
 
+    public void deleteTaskList(TaskList taskList) {
+        ClientBuilder.newClient(new ClientConfig())
+        .target(SERVER).path("api/taskList/" + taskList.getId())
+        .request(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+            .delete();
+    }
+
     public List<TaskList> getTaskLists() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/taskList") //
@@ -127,6 +135,19 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Task>>() {});
+    }
+
+    /**
+     * Gets the id of a task list and by that removes all of its internal tasks.
+     * @param taskList the task list whose tasks need to be removed.
+     */
+    public void deleteTasksParentTaskList(TaskList taskList) {
+        var a = ClientBuilder.newClient(new ClientConfig())
+                            .target(SERVER).path("api/tasks/delete_by_parent/" + taskList.getId())
+                            .request(APPLICATION_JSON)
+                            .accept(APPLICATION_JSON)
+                                .delete();
+        System.out.println();
     }
 
     /** This method modifies the SERVER connection string.
@@ -169,7 +190,7 @@ public class ServerUtils {
                 .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
     }
 
-//    private StompSession session = this.connect("ws://localhost:8080/websocket");
+    //private StompSession session = this.connect("ws://localhost:8080/websocket");
 
     /**
      * Default connect method from documentation.
@@ -197,7 +218,7 @@ public class ServerUtils {
      * @param dest
      * @param consumer
      */
-//    public void registerForTaskLists(String dest, Consumer<TaskList> consumer) {
+    public void registerForTaskLists(String dest, Consumer<TaskList> consumer) {
 //        this.session.subscribe(dest, new StompFrameHandler() {
 //            @Override
 //            public Type getPayloadType(StompHeaders headers) {
@@ -209,16 +230,16 @@ public class ServerUtils {
 //                consumer.accept((TaskList) payload);
 //            }
 //        });
-//    }
+    }
 
     /**
      * Sends an object to a destination.
      * @param dest destination
      * @param o object
      */
-//    public void send(String dest, Object o) {
+    public void send(String dest, Object o) {
 //        this.session.send(dest, o);
-//    }
+    }
 
     private static ExecutorService EXEC = Executors.newSingleThreadExecutor();
 
