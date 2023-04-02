@@ -137,18 +137,11 @@ public class MainCtrl {
     public void loadTaskListsHelper() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
         this.boardCtrl.removeTaskLists();
-        this.safelyRemoveTaskListCtrls();
+        this.taskListCtrls.clear();
         for (TaskList t : this.taskListList) {
             this.taskListCtrls.add(this.boardCtrl.addTaskListToBoard(t));
             this.loadTasks(t);
         }
-    }
-
-    public void safelyRemoveTaskListCtrls() {
-        for (TaskListCtrl tlc : this.taskListCtrls) {
-            tlc.disconnectStompSession();
-        }
-        this.taskListCtrls.clear();
     }
 
     /**
