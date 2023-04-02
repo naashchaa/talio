@@ -6,13 +6,16 @@ import commons.Task;
 import commons.TaskList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class AddTaskCtrl {
+public class AddTaskCtrl implements Initializable {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils server;
@@ -28,6 +31,17 @@ public class AddTaskCtrl {
     public AddTaskCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.connectToWebSockets();
+
+    }
+
+    public void connectToWebSockets() {
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
     }
 
     /**
