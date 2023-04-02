@@ -39,19 +39,21 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         var connectToServer =
             FXML.load(ConnectToServerCtrl.class, "client", "scenes", "ConnectToServer.fxml");
-        var board  =
+        var board =
             FXML.load(BoardCtrl.class, "client", "scenes", "Board.fxml");
-        var addTask  =
+        var addTask =
             FXML.load(AddTaskCtrl.class, "client", "scenes", "AddTask.fxml");
         var addTaskList =
             FXML.load(AddTaskListCtrl.class, "client", "scenes", "AddTaskList.fxml");
         var editTaskList =
-                FXML.load(EditTaskListCtrl.class,"client", "scenes", "EditTaskList.fxml");
+            FXML.load(EditTaskListCtrl.class, "client", "scenes", "EditTaskList.fxml");
+        var editTask =
+            FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 
         mainCtrl.initialize(primaryStage, connectToServer, board,
-                            addTaskList, addTask, editTaskList);
+            addTaskList, addTask, editTaskList, editTask);
 
         primaryStage.setOnCloseRequest(e -> {
             board.getKey().stop();

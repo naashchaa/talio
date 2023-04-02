@@ -34,8 +34,10 @@ public class ConnectToServerCtrl {
         }
 
         this.error.setVisible(false);
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
         this.mainCtrl.loadBoard();
-        this.mainCtrl.loadTaskLists();
+        this.mainCtrl.loadTaskListsHelper();
         this.mainCtrl.showBoard();
     }
 }

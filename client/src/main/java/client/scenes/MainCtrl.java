@@ -46,6 +46,9 @@ public class MainCtrl {
     private EditTaskListCtrl editTaskListCtrl;
     private Scene editTaskList;
 
+    private EditTaskCtrl editTaskCtrl;
+    private Scene editTask;
+
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
     private List<TaskListCtrl> taskListCtrls;
@@ -59,13 +62,15 @@ public class MainCtrl {
      * @param addTask pair that has addTask controller and its related scene
      * @param addTaskList pair that has dddTaskList controller and its related scene
      * @param editTaskList pair that has editTaskList controller and its related scene
+     * @param editTask pair that has editTask controller and its related scene
      */
     public void initialize(Stage primaryStage,
                            Pair<ConnectToServerCtrl, Parent> connectToServerCtrl,
                            Pair<BoardCtrl, Parent> boardCtrl,
                            Pair<AddTaskListCtrl, Parent> addTaskList,
                            Pair<AddTaskCtrl, Parent> addTask,
-                           Pair<EditTaskListCtrl, Parent> editTaskList) {
+                           Pair<EditTaskListCtrl, Parent> editTaskList,
+                           Pair<EditTaskCtrl, Parent> editTask) {
         this.primaryStage = primaryStage;
         this.popup = new Stage();
 
@@ -83,6 +88,9 @@ public class MainCtrl {
 
         this.editTaskListCtrl = editTaskList.getKey();
         this.editTaskList = new Scene(editTaskList.getValue());
+
+        this.editTaskCtrl = editTask.getKey();
+        this.editTask = new Scene(editTask.getValue());
 
         this.taskListCtrls = new ArrayList<>();
 
@@ -106,6 +114,13 @@ public class MainCtrl {
         this.popup.setScene(this.addTask);
         this.showPopUp();
 //        addTask.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    }
+
+    public void showEditTask(Task task) {
+        this.popup.setTitle("Edit Task");
+        this.popup.setScene(this.editTask);
+        this.editTaskCtrl.setTask(task);
+        this.showPopUp();
     }
 
     public void showAddTaskList() {
@@ -138,6 +153,9 @@ public class MainCtrl {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
         this.boardCtrl.removeTaskLists();
         this.safelyRemoveTaskListCtrls();
+        for (TaskListCtrl tlc : this.taskListCtrls) {
+            tlc.connectToWebSockets();
+        }
         for (TaskList t : this.taskListList) {
             this.taskListCtrls.add(this.boardCtrl.addTaskListToBoard(t));
             this.loadTasks(t);
@@ -163,7 +181,7 @@ public class MainCtrl {
         for (Task t : tasks) {
             for (TaskListCtrl listCtrl : this.taskListCtrls) {
                 if (t.getParentTaskList().equals(listCtrl.getTaskList())) {
-                    listCtrl.addTaskToList(t.getName());
+                    listCtrl.addTaskToList(t);
                 }
             }
         }
@@ -191,7 +209,7 @@ public class MainCtrl {
         List<Task> tasks = this.addTaskCtrl.getTasks(tasklist);
         for (Task t : tasks) {
             if (t.getParentTaskList().equals(listCtrl.getTaskList())) {
-                listCtrl.addTaskToList(t.getName());
+                listCtrl.addTaskToList(t);
             }
         }
     }
@@ -212,7 +230,7 @@ public class MainCtrl {
         if (listCtrl == null) {
             return;
         }
-        listCtrl.addTaskToList(task.getName());
+        listCtrl.addTaskToList(task);
     }
 
     /**

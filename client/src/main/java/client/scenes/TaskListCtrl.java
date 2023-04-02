@@ -36,6 +36,7 @@ public class TaskListCtrl extends Node implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.connectToWebSockets();
         // The task list ctrl gets subscribed to the following path.
         // Now it can receive updates that are sent back from the server to this path.
         this.server.registerForMessages("/topic/tasks/add", Task.class, task -> {
@@ -71,17 +72,15 @@ public class TaskListCtrl extends Node implements Initializable {
         this.mainCtrl.showAddTask(this);
     }
 
-    /**
-     * Creates a JAVAFX scene and controller for a task and gives it
-     * the assigned name, then adds it to the children of the container
-     * that has all the tasks of the list.
-     * @param name the name to give the task.
+    /** This method adds a certain task to the list so that it could be displayed.
+     * @param task The task to add to the list
      */
-    public void addTaskToList(String name) {
+    public void addTaskToList(Task task) {
         Pair<TaskCtrl, Parent> pair =
                 Main.FXML.load(TaskCtrl.class, "client", "scenes", "Task.fxml");
         Label taskName = (Label) pair.getValue().lookup("#taskTitle");
-        taskName.setText(name);
+        taskName.setText(task.getName());
+        pair.getKey().setTask(task);
         this.taskContainer.getChildren().add(pair.getValue());
     }
 
@@ -121,5 +120,9 @@ public class TaskListCtrl extends Node implements Initializable {
 
     public void disconnectStompSession() {
         this.server.disconnectStompSession();
+    }
+    public void connectToWebSockets() {
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
     }
 }

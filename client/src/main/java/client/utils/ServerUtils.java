@@ -185,6 +185,14 @@ public class ServerUtils {
                 .get(new GenericType<TaskList>() {});
     }
 
+    public Task updateTask(Task task) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+            .target(SERVER).path("/api/tasks/" + task.id + "/update") //
+            .request(APPLICATION_JSON) //
+            .accept(APPLICATION_JSON) //
+            .post(Entity.entity(task, APPLICATION_JSON), Task.class);
+    }
+
     public TaskList updateTaskList(TaskList taskList) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("/api/taskList/update") //
@@ -194,7 +202,24 @@ public class ServerUtils {
     }
 
     // WEB SOCKETS
-    private StompSession session = this.connect("ws://localhost:8080/websocket");
+    private StompSession session;
+
+    /**
+     * This method establishes the websocket connection.
+     */
+    public void establishWebSocketConnection() {
+        String connectionString = "ws" + SERVER.substring(4);
+        if (!connectionString.endsWith("/"))
+            connectionString += "/";
+
+        connectionString += "websocket";
+        this.session = this.connect(connectionString);
+    }
+
+    public void terminateWebSocketConnection() {
+        if (this.session != null)
+            this.session.disconnect();
+    }
 
     /**
      * Default connect method from documentation.
