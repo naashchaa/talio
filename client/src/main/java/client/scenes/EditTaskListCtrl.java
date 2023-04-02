@@ -6,8 +6,6 @@ import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-import java.util.List;
-
 public class EditTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
