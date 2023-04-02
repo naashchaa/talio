@@ -6,8 +6,6 @@ import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-import java.util.List;
-
 public class EditTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -43,7 +41,7 @@ public class EditTaskListCtrl {
 //            if (this.taskList.equals(listCtrl.getTaskList())) {
 //                listCtrl.setTaskListName(newName);
 //            }
-//        }
+//
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }
