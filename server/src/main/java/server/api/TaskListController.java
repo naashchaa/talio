@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import commons.TaskList;
@@ -93,16 +92,19 @@ public class TaskListController {
      */
     @PostMapping(path = {"/update"})
     public ResponseEntity<TaskList> update(@RequestBody TaskList tasklist) {
-        try {
-            Optional<TaskList> o = this.repo.findById(tasklist.getId());
-            if(o.isPresent()) {
-                TaskList modifiedTaskList = this.repo.save(tasklist);
-                return new ResponseEntity<>(modifiedTaskList, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (tasklist.getId() < 0 || !this.repo.existsById(tasklist.getId())) {
+            return ResponseEntity.badRequest().build();
         }
+
+        TaskList saved = this.repo.findById(tasklist.getId()).get();
+        saved.setName(tasklist.getName());
+
+        this.listeners.forEach((k, l) -> {
+            l.accept(saved);
+        });
+
+        this.repo.save(saved);
+        return ResponseEntity.ok(saved);
     }
 
     @MessageMapping("/taskList") // /app/quotes
