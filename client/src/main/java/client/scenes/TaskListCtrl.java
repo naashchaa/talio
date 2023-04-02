@@ -118,4 +118,8 @@ public class TaskListCtrl extends Node implements Initializable {
     public void deleteTasks() {
         this.taskContainer.getChildren().clear();
     }
+
+    public void disconnectStompSession() {
+        this.server.disconnectStompSession();
+    }
 }

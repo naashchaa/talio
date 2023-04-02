@@ -137,13 +137,22 @@ public class MainCtrl {
     public void loadTaskListsHelper() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
         this.boardCtrl.removeTaskLists();
-        this.taskListCtrls.clear();
+        this.safelyRemoveTaskListCtrls();
         for (TaskList t : this.taskListList) {
             this.taskListCtrls.add(this.boardCtrl.addTaskListToBoard(t));
             this.loadTasks(t);
         }
     }
 
+    /**
+     * This safely disconnect the STOMP session from a task list controller.
+     */
+    public void safelyRemoveTaskListCtrls() {
+        for (TaskListCtrl tlc : this.taskListCtrls) {
+            tlc.disconnectStompSession();
+        }
+        this.taskListCtrls.clear();
+    }
     /**
      * Gets all tasks from the database and checks to see if they have to be
      * loaded in the task lists in the board.
