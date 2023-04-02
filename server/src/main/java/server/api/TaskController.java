@@ -2,6 +2,8 @@ package server.api;
 
 import commons.Task;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import server.database.TaskRepository;
 import java.util.List;
@@ -68,11 +70,10 @@ public class TaskController {
         if (task.equals(modifiedTask))
             return ResponseEntity.badRequest().build();
 
-        if (task.getName() != modifiedTask.getName())
+        if (!task.getName().equals(modifiedTask.getName()))
             task.setName(modifiedTask.getName());
 
-        if (task.getDescription() != modifiedTask.getDescription())
-            task.setDescription(modifiedTask.getDescription());
+        task.setDescription(modifiedTask.getDescription());
 
         if (task.getParentTaskList() != modifiedTask.getParentTaskList())
             task.setParentTaskList(modifiedTask.getParentTaskList());
@@ -121,4 +122,15 @@ public class TaskController {
         }
         return ResponseEntity.ok("delete successful");
     }
+
+    @MessageMapping("/tasks/add") // app/tasks
+    @SendTo("/topic/tasks/add")
+    public Task addMessage(Task task) {
+        this.add(task);
+        return task;
+    }
+
+    // might need a delete and update tasks as well
+
+
 }

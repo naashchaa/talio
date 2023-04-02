@@ -46,13 +46,16 @@ public class AddTaskCtrl {
     public void createTask(ActionEvent event) {
         Task task = new Task(this.textField.getText(), null,
                 this.parentTaskListCtrl.getTaskList(), null);
-        try {
-            this.server.addTask(task);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        this.parentTaskListCtrl.addTaskToList(task.getName());
+//        try {
+//            this.server.addTask(task);
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        this.parentTaskListCtrl.addTaskToList(task.getName());
+
+        // Sending the quote through the web socket
+        this.server.send("/app/tasks/add", task);
         this.textField.clear();
         this.mainCtrl.hidePopUp();
     }
