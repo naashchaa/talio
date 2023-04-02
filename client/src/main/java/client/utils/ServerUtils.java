@@ -20,6 +20,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +37,8 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -190,7 +193,8 @@ public class ServerUtils {
                 .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
     }
 
-    //private StompSession session = this.connect("ws://localhost:8080/websocket");
+    // WEB SOCKETS
+    private StompSession session = this.connect("ws://localhost:8080/websocket");
 
     /**
      * Default connect method from documentation.
@@ -214,32 +218,43 @@ public class ServerUtils {
     }
 
     /**
-     * Let me cook.
-     * @param dest
-     * @param consumer
+     * Task list ctrls subscribe to receiving messages from websockets.
+     * @param dest what destination in web sockets to send the message.
+     * @param type the type of class sent to the method.
+     * @param consumer the consumer.
+     * @param <T> type.
      */
-    public void registerForTaskLists(String dest, Consumer<TaskList> consumer) {
-//        this.session.subscribe(dest, new StompFrameHandler() {
-//            @Override
-//            public Type getPayloadType(StompHeaders headers) {
-//                return TaskList.class;
-//            }
-//
-//            @Override
-//            public void handleFrame(StompHeaders headers, Object payload) {
-//                consumer.accept((TaskList) payload);
-//            }
-//        });
+    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
+
+        /**
+         * A ctrl that has registered to receive messages will get subscribed
+         * to the destination that has been passed as an argument. This is a
+         * function of STOMP.
+         */
+        this.session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return type;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((T) payload);
+            }
+        });
     }
 
     /**
-     * Sends an object to a destination.
+     * A ctrl can call send if it needs all the subscribers to
+     * receive the update.
      * @param dest destination
      * @param o object
      */
     public void send(String dest, Object o) {
-//        this.session.send(dest, o);
+        this.session.send(dest, o);
     }
+
+    // LONG POLLING
 
     private static ExecutorService EXEC = Executors.newSingleThreadExecutor();
 

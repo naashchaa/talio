@@ -159,13 +159,68 @@ public class MainCtrl {
         }
     }
 
+    /**
+     * INEFFICIENT METHOD ALERT!
+     * Loads task of specific task list by removing them and adding them again
+     * from the database.
+     * @param tasklist the task list for tasks to be loaded to.
+     */
+    public void loadTasksOfTaskList(TaskList tasklist) {
+        System.out.println("loading tasks of list");
+        TaskListCtrl listCtrl = null;
+        for (TaskListCtrl ctrl : this.taskListCtrls) {
+            if (ctrl.getTaskList().equals(tasklist)) {
+                listCtrl = ctrl;
+                break;
+            }
+        }
+        if (listCtrl == null) {
+            throw new IllegalArgumentException("The task list has no controller associated to it.");
+        }
+        this.removeTasksOfTaskList(listCtrl);
+        List<Task> tasks = this.addTaskCtrl.getTasks(tasklist);
+        for (Task t : tasks) {
+            if (t.getParentTaskList().equals(listCtrl.getTaskList())) {
+                listCtrl.addTaskToList(t.getName());
+            }
+        }
+    }
+
+    /**
+     *
+     * @param taskList
+     * @param task
+     */
+    public void addTaskToList(TaskList taskList, Task task) {
+        TaskListCtrl listCtrl = null;
+        for (TaskListCtrl ctrl : this.taskListCtrls) {
+            if (ctrl.getTaskList().equals(taskList)) {
+                listCtrl = ctrl;
+                break;
+            }
+        }
+        if (listCtrl == null) {
+            return;
+        }
+        listCtrl.addTaskToList(task.getName());
+    }
+
+    /**
+     * Will only remove the tasks visually from the application.
+     * They will remain in the database.
+     * @param listCtrl the controller for the list that will have its tasks deleted.
+     */
+    public void removeTasksOfTaskList(TaskListCtrl listCtrl) {
+        listCtrl.deleteTasks();
+    }
+
     public void showPopUp() {
         this.popup.show();
     }
 
     public void hidePopUp() {
         this.popup.hide();
-        this.loadTaskLists();
+        //this.loadTaskLists();
     }
 
     public void showEditTaskList(TaskList taskList) {
@@ -178,6 +233,8 @@ public class MainCtrl {
     public void deleteTaskList(TaskListCtrl ctrl) {
         this.taskListList.remove(ctrl.getTaskList());
         this.taskListCtrls.remove(ctrl);
+        // should be replaced with method that removes the last task list from the hbox
+        // of board ctrl -> loadTaskLists() is slow.
         this.loadTaskLists();
     }
 
