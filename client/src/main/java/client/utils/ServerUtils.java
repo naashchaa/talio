@@ -254,6 +254,10 @@ public class ServerUtils {
         this.session.send(dest, o);
     }
 
+    public void disconnectStompSession() {
+        this.session.disconnect();
+    }
+
     // LONG POLLING
 
     private static ExecutorService EXEC = Executors.newSingleThreadExecutor();
