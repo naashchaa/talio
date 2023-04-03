@@ -37,7 +37,7 @@
           <Menu mnemonicParsing="false" text="V">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#edit" text="EDIT" />
-                  <MenuItem mnemonicParsing="false" onAction="#delete" text="DELETE" />
+                  <MenuItem mnemonicParsing="false" onAction="#showDeleteTaskList" text="DELETE" />
             </items>
           </Menu>
         </menus>

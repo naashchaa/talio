@@ -49,6 +49,9 @@ public class MainCtrl {
     private EditTaskCtrl editTaskCtrl;
     private Scene editTask;
 
+    private DeleteTaskListCtrl deleteTaskListCtrl;
+    private Scene deleteTaskList;
+
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
     private List<TaskListCtrl> taskListCtrls;
@@ -63,6 +66,7 @@ public class MainCtrl {
      * @param addTaskList pair that has dddTaskList controller and its related scene
      * @param editTaskList pair that has editTaskList controller and its related scene
      * @param editTask pair that has editTask controller and its related scene
+     * @param deleteTaskList pair that has deleteTaskList controller and its related scene
      */
     public void initialize(Stage primaryStage,
                            Pair<ConnectToServerCtrl, Parent> connectToServerCtrl,
@@ -70,7 +74,8 @@ public class MainCtrl {
                            Pair<AddTaskListCtrl, Parent> addTaskList,
                            Pair<AddTaskCtrl, Parent> addTask,
                            Pair<EditTaskListCtrl, Parent> editTaskList,
-                           Pair<EditTaskCtrl, Parent> editTask) {
+                           Pair<EditTaskCtrl, Parent> editTask,
+                           Pair<DeleteTaskListCtrl, Parent> deleteTaskList) {
         this.primaryStage = primaryStage;
         this.popup = new Stage();
 
@@ -91,6 +96,9 @@ public class MainCtrl {
 
         this.editTaskCtrl = editTask.getKey();
         this.editTask = new Scene(editTask.getValue());
+
+        this.deleteTaskListCtrl = deleteTaskList.getKey();
+        this.deleteTaskList = new Scene(deleteTaskList.getValue());
 
         this.taskListCtrls = new ArrayList<>();
 
@@ -134,6 +142,13 @@ public class MainCtrl {
     public void showAddTaskList() {
         this.popup.setTitle("Add New Task List");
         this.popup.setScene(this.addTaskList);
+        this.showPopUp();
+    }
+
+    public void showDeleteTaskList(TaskListCtrl taskListCtrl) {
+        this.popup.setTitle("Delete Task List");
+        this.popup.setScene(this.deleteTaskList);
+        this.deleteTaskListCtrl.setTaskListCtrl(taskListCtrl);
         this.showPopUp();
     }
 

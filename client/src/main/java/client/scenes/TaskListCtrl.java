@@ -106,6 +106,10 @@ public class TaskListCtrl extends Node implements Initializable {
         this.mainCtrl.deleteTaskList(this);
     }
 
+    public void showDeleteTaskList() {
+        this.mainCtrl.showDeleteTaskList(this);
+    }
+
     public void setTaskListName(String newName) {
         this.taskListName.setText(newName);
     }

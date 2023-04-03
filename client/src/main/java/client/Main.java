@@ -49,11 +49,13 @@ public class Main extends Application {
             FXML.load(EditTaskListCtrl.class, "client", "scenes", "EditTaskList.fxml");
         var editTask =
             FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
+        var deleteTaskList =
+            FXML.load(DeleteTaskListCtrl.class, "client", "scenes", "DeleteTaskList.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 
         mainCtrl.initialize(primaryStage, connectToServer, board,
-            addTaskList, addTask, editTaskList, editTask);
+            addTaskList, addTask, editTaskList, editTask, deleteTaskList);
 
         primaryStage.setOnCloseRequest(e -> {
             board.getKey().stop();
