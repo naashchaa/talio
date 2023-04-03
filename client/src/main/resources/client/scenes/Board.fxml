@@ -8,8 +8,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.stage.Screen?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="456.0" prefWidth="702.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCtrl">
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCtrl" prefWidth="${screen.visualBounds.width}"  prefHeight="${screen.visualBounds.height}">
+   <fx:define>
+      <Screen fx:factory="getPrimary" fx:id="screen"/>
+   </fx:define>
+<!-- <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="456.0" prefWidth="702.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCtrl"> -->
    <center>
       <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="488.0" BorderPane.alignment="CENTER">
          <content>
