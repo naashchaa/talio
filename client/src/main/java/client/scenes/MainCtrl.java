@@ -23,9 +23,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainCtrl {
 
@@ -51,7 +51,7 @@ public class MainCtrl {
 
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
-    private List<TaskListCtrl> taskListCtrls;
+    private Map<Long, TaskListCtrl> taskListCtrls;
 
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
@@ -92,7 +92,7 @@ public class MainCtrl {
         this.editTaskCtrl = editTask.getKey();
         this.editTask = new Scene(editTask.getValue());
 
-        this.taskListCtrls = new ArrayList<>();
+        this.taskListCtrls = new HashMap<>();
 
         this.showConnectToServer();
         this.primaryStage.show();
@@ -161,12 +161,12 @@ public class MainCtrl {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
         this.boardCtrl.removeTaskLists();
         this.safelyRemoveTaskListCtrls();
-        for (TaskListCtrl tlc : this.taskListCtrls) {
+        for (TaskListCtrl tlc : this.taskListCtrls.values()) {
             tlc.connectToWebSockets();
         }
-        for (TaskList t : this.taskListList) {
-            this.taskListCtrls.add(this.boardCtrl.addTaskListToBoard(t));
-            this.loadTasks(t);
+        for (TaskList tl : this.taskListList) {
+            this.taskListCtrls.put(tl.getId(), this.boardCtrl.addTaskListToBoard(tl));
+            this.loadTasks(tl);
         }
     }
 
@@ -174,7 +174,7 @@ public class MainCtrl {
      * This safely disconnect the STOMP session from a task list controller.
      */
     public void safelyRemoveTaskListCtrls() {
-        for (TaskListCtrl tlc : this.taskListCtrls) {
+        for (TaskListCtrl tlc : this.taskListCtrls.values()) {
             tlc.disconnectStompSession();
         }
         this.taskListCtrls.clear();
@@ -185,12 +185,7 @@ public class MainCtrl {
      * @param tasklist the task list from where the tasks are from
      */
     public void loadTasks(TaskList tasklist) {
-        TaskListCtrl ctrl = null;
-        for (TaskListCtrl tlc : this.taskListCtrls) {
-            if (tlc.getTaskList().equals(tasklist)) {
-                ctrl = tlc;
-            }
-        }
+        TaskListCtrl ctrl = this.taskListCtrls.get(tasklist.getId());
         if (ctrl == null) {
             throw new IllegalArgumentException("Controller doesnt exist");
         }
@@ -204,45 +199,12 @@ public class MainCtrl {
     }
 
     /**
-     * INEFFICIENT METHOD ALERT!
-     * Loads task of specific task list by removing them and adding them again
-     * from the database.
-     * @param tasklist the task list for tasks to be loaded to.
-     */
-    public void loadTasksOfTaskList(TaskList tasklist) {
-        System.out.println("loading tasks of list");
-        TaskListCtrl listCtrl = null;
-        for (TaskListCtrl ctrl : this.taskListCtrls) {
-            if (ctrl.getTaskList().equals(tasklist)) {
-                listCtrl = ctrl;
-                break;
-            }
-        }
-        if (listCtrl == null) {
-            throw new IllegalArgumentException("The task list has no controller associated to it.");
-        }
-        this.removeTasksOfTaskList(listCtrl);
-        List<Task> tasks = this.addTaskCtrl.getTasks(tasklist);
-        for (Task t : tasks) {
-            if (t.getParentTaskList().equals(listCtrl.getTaskList())) {
-                listCtrl.addTaskToList(t);
-            }
-        }
-    }
-
-    /**
      *
      * @param taskList
      * @param task
      */
     public void addTaskToList(TaskList taskList, Task task) {
-        TaskListCtrl listCtrl = null;
-        for (TaskListCtrl ctrl : this.taskListCtrls) {
-            if (ctrl.getTaskList().equals(taskList)) {
-                listCtrl = ctrl;
-                break;
-            }
-        }
+        TaskListCtrl listCtrl = this.taskListCtrls.get(taskList.getId());
         if (listCtrl == null) {
             return;
         }
@@ -276,13 +238,13 @@ public class MainCtrl {
 
     public void deleteTaskList(TaskListCtrl ctrl) {
         this.taskListList.remove(ctrl.getTaskList());
-        this.taskListCtrls.remove(ctrl);
+        this.taskListCtrls.remove(ctrl.getTaskList().getId());
         // should be replaced with method that removes the last task list from the hbox
         // of board ctrl -> loadTaskLists() is slow.
         this.loadTaskLists();
     }
 
-    public List<TaskListCtrl> getTaskListCtrls() {
+    public Map<Long, TaskListCtrl> getTaskListCtrls() {
         return this.taskListCtrls;
     }
 
