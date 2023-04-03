@@ -19,7 +19,6 @@ import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

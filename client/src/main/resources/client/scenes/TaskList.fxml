@@ -11,29 +11,30 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="527.0" prefWidth="289.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskListCtrl">
+<AnchorPane prefHeight="527.0" prefWidth="289.0" style="-fx-background-color: #FFF1DC; -fx-border-radius: 20px; -fx-background-radius: 20px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskListCtrl">
    <children>
-      <Label fx:id="taskListName" alignment="CENTER" prefHeight="50.0" prefWidth="289.0" text="Task List Name">
+      <Label fx:id="taskListName" alignment="CENTER" prefHeight="50.0" prefWidth="289.0" style="-fx-background-color: #EBBC93; border-top-left-radius: 80px 80px;" text="Task List Name" textFill="WHITE">
          <font>
-            <Font size="24.0" />
+            <Font name="Berlin Sans FB Demi Bold" size="24.0" />
          </font>
       </Label>
-      <ScrollPane hbarPolicy="NEVER" layoutX="23.0" layoutY="56.0" prefHeight="378.0" prefWidth="242.0">
+      <ScrollPane hbarPolicy="NEVER" layoutX="23.0" layoutY="56.0" prefHeight="378.0" prefWidth="242.0" style="-fx-background-color: ntransparentone; -fx-vbar-policy: NEVER;" styleClass="s" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="56.0">
          <content>
-            <VBox fx:id="taskContainer" prefHeight="378.0" prefWidth="227.0" spacing="10.0">
+            <VBox fx:id="taskContainer" minHeight="-Infinity" prefHeight="384.0" prefWidth="227.0" spacing="10.0" style="-fx-background-color: #FFF1DC;">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding></VBox>
+               </padding>
+            </VBox>
          </content>
       </ScrollPane>
-      <Button layoutX="103.0" layoutY="459.0" mnemonicParsing="false" onAction="#addTask" prefHeight="44.0" prefWidth="83.0" text="Add task">
+      <Button layoutX="100.0" layoutY="453.0" mnemonicParsing="false" onAction="#addTask" prefHeight="50.0" prefWidth="90.0" style="-fx-background-color: #FFFFFF;" text="Add task" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="99.0" AnchorPane.topAnchor="453.0">
          <font>
-            <Font size="14.0" />
+            <Font name="Berlin Sans FB" size="14.0" />
          </font>
       </Button>
       <MenuBar layoutX="240.0" layoutY="14.0" prefHeight="26.0" prefWidth="9.0">
         <menus>
-          <Menu mnemonicParsing="false" text="i">
+          <Menu mnemonicParsing="false" text="V">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#edit" text="EDIT" />
                   <MenuItem mnemonicParsing="false" onAction="#delete" text="DELETE" />
