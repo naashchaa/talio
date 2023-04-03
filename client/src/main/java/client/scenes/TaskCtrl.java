@@ -29,7 +29,20 @@ public class TaskCtrl extends Node {
         this.mainCtrl.showEditTask(this.task);
     }
 
-    public void delete() { System.out.println("Deleting task...");}
+    /**
+     * Deletes a task from the server and removes it from the task list.
+     */
+    public void delete() {
+        try{
+            this.server.deleteTask(this.task);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        //might want to come up with a better way to do delete a task from the list
+        // instead of just reloading the whole board.
+        this.mainCtrl.loadTaskLists();
+    }
 
     public void openTaskOverview() {
         System.out.println("Opening task overview for task " + this.taskTitle.getText());
