@@ -177,12 +177,20 @@ public class MainCtrl {
      * @param tasklist the task list from where the tasks are from
      */
     public void loadTasks(TaskList tasklist) {
+        TaskListCtrl ctrl = null;
+        for (TaskListCtrl tlc : this.taskListCtrls) {
+            if (tlc.getTaskList().equals(tasklist)) {
+                ctrl = tlc;
+            }
+        }
+        if (ctrl == null) {
+            throw new IllegalArgumentException("Controller doesnt exist");
+        }
+        ctrl.removeTasks();
         List<Task> tasks = this.addTaskCtrl.getTasks(tasklist);
         for (Task t : tasks) {
-            for (TaskListCtrl listCtrl : this.taskListCtrls) {
-                if (t.getParentTaskList().equals(listCtrl.getTaskList())) {
-                    listCtrl.addTaskToList(t);
-                }
+            if (t.getParentTaskList().equals(ctrl.getTaskList())) {
+                ctrl.addTaskToList(t);
             }
         }
     }
