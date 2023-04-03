@@ -36,6 +36,9 @@ public class EditTaskCtrl {
         this.task.setName(newName);
         this.task = this.server.updateTask(this.task);
 
+        // may need a run later with web sockets
+        this.mainCtrl.loadTasks(this.task.getParentTaskList());
+
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }

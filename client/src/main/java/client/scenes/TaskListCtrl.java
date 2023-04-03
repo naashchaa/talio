@@ -125,4 +125,8 @@ public class TaskListCtrl extends Node implements Initializable {
         this.server.terminateWebSocketConnection();
         this.server.establishWebSocketConnection();
     }
+
+    public void removeTasks() {
+        this.taskContainer.getChildren().clear();
+    }
 }
