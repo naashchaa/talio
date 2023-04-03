@@ -7,29 +7,33 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" onMouseClicked="#openTaskOverview" prefHeight="66.0" prefWidth="243.0" style="-fx-border-radius: 5px; -fx-border-color: black; -fx-background-radius: 5px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskCtrl">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" onMouseClicked="#openTaskOverview" prefHeight="66.0" prefWidth="243.0" style="-fx-border-radius: 5px; -fx-border-color: black; -fx-background-radius: 5px; -fx-background-color: #E8D5C4;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskCtrl">
    <padding>
       <Insets left="15.0" right="5.0" />
    </padding>
    <center>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #E8D5C4;" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="taskTitle" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="275.0" text="Task name" />
+            <Label fx:id="taskTitle" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="275.0" text="Task name" textFill="WHITE">
+               <font>
+                  <Font name="Berlin Sans FB Demi Bold" size="18.0" />
+               </font></Label>
             <BorderPane prefHeight="64.0" prefWidth="0.0">
                <top>
-                  <Button mnemonicParsing="false" onAction="#delete" prefHeight="25.0" prefWidth="0.0" BorderPane.alignment="CENTER">
+                  <Button mnemonicParsing="false" onAction="#delete" prefHeight="25.0" prefWidth="0.0" style="-fx-background-color: trn;" textFill="WHITE" BorderPane.alignment="CENTER">
                      <graphic>
-                        <SVGPath content="M2.64,1.27L7.5,6.13l4.84-4.84C12.5114,1.1076,12.7497,1.0029,13,1c0.5523,0,1,0.4477,1,1c0.0047,0.2478-0.093,0.4866-0.27,0.66L8.84,7.5l4.89,4.89c0.1648,0.1612,0.2615,0.3796,0.27,0.61c0,0.5523-0.4477,1-1,1c-0.2577,0.0107-0.508-0.0873-0.69-0.27L7.5,8.87l-4.85,4.85C2.4793,13.8963,2.2453,13.9971,2,14c-0.5523,0-1-0.4477-1-1c-0.0047-0.2478,0.093-0.4866,0.27-0.66L6.16,7.5L1.27,2.61C1.1052,2.4488,1.0085,2.2304,1,2c0-0.5523,0.4477-1,1-1C2.2404,1.0029,2.4701,1.0998,2.64,1.27z" scaleX="0.75" scaleY="0.75" translateX="1.0" />
+                        <SVGPath content="M2.64,1.27L7.5,6.13l4.84-4.84C12.5114,1.1076,12.7497,1.0029,13,1c0.5523,0,1,0.4477,1,1c0.0047,0.2478-0.093,0.4866-0.27,0.66L8.84,7.5l4.89,4.89c0.1648,0.1612,0.2615,0.3796,0.27,0.61c0,0.5523-0.4477,1-1,1c-0.2577,0.0107-0.508-0.0873-0.69-0.27L7.5,8.87l-4.85,4.85C2.4793,13.8963,2.2453,13.9971,2,14c-0.5523,0-1-0.4477-1-1c-0.0047-0.2478,0.093-0.4866,0.27-0.66L6.16,7.5L1.27,2.61C1.1052,2.4488,1.0085,2.2304,1,2c0-0.5523,0.4477-1,1-1C2.2404,1.0029,2.4701,1.0998,2.64,1.27z" fill="WHITE" scaleX="0.75" scaleY="0.75" translateX="1.0" />
                      </graphic>
                   </Button>
                </top>
                <bottom>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#edit" prefHeight="25.0" prefWidth="0.0" BorderPane.alignment="CENTER">
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#edit" prefHeight="25.0" prefWidth="0.0" style="-fx-background-color: tr;" BorderPane.alignment="CENTER">
                      <graphic>
                         <Group scaleX="0.4" scaleY="0.4">
                            <children>
-                              <SVGPath content="M28.75 21.918l-10.25-5.918 10.25-5.917c0.377-0.22 0.625-0.623 0.625-1.083 0-0.691-0.56-1.25-1.25-1.25-0.23 0-0.446 0.062-0.631 0.171l0.006-0.003-10.25 5.918v-11.835c0-0.69-0.56-1.25-1.25-1.25s-1.25 0.56-1.25 1.25v0 11.835l-10.249-5.918c-0.179-0.105-0.395-0.167-0.625-0.167-0.691 0-1.25 0.56-1.25 1.25 0 0.46 0.249 0.863 0.619 1.080l0.006 0.003 10.249 5.917-10.249 5.918c-0.381 0.219-0.633 0.623-0.633 1.087 0 0.69 0.559 1.25 1.25 1.25 0.234 0 0.452-0.064 0.639-0.176l-0.006 0.003 10.249-5.917v11.835c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0-11.835l10.25 5.917c0.177 0.102 0.39 0.163 0.616 0.163 0.69 0 1.25-0.559 1.25-1.25 0-0.456-0.245-0.856-0.61-1.074l-0.006-0.003z" />
+                              <SVGPath content="M28.75 21.918l-10.25-5.918 10.25-5.917c0.377-0.22 0.625-0.623 0.625-1.083 0-0.691-0.56-1.25-1.25-1.25-0.23 0-0.446 0.062-0.631 0.171l0.006-0.003-10.25 5.918v-11.835c0-0.69-0.56-1.25-1.25-1.25s-1.25 0.56-1.25 1.25v0 11.835l-10.249-5.918c-0.179-0.105-0.395-0.167-0.625-0.167-0.691 0-1.25 0.56-1.25 1.25 0 0.46 0.249 0.863 0.619 1.080l0.006 0.003 10.249 5.917-10.249 5.918c-0.381 0.219-0.633 0.623-0.633 1.087 0 0.69 0.559 1.25 1.25 1.25 0.234 0 0.452-0.064 0.639-0.176l-0.006 0.003 10.249-5.917v11.835c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0-11.835l10.25 5.917c0.177 0.102 0.39 0.163 0.616 0.163 0.69 0 1.25-0.559 1.25-1.25 0-0.456-0.245-0.856-0.61-1.074l-0.006-0.003z" fill="WHITE" />
                            </children>
                         </Group>
                      </graphic>

@@ -98,14 +98,22 @@ public class MainCtrl {
         this.primaryStage.show();
     }
 
+    public void setStageDimensions() {
+        this.primaryStage.sizeToScene();
+        this.primaryStage.setX(0);
+        this.primaryStage.setY(0);
+    }
+
     public void showConnectToServer() {
         this.primaryStage.setTitle("Connect to a server:");
         this.primaryStage.setScene(this.connectToServer);
+        this.primaryStage.setResizable(false);
     }
 
     public void showBoard() {
         this.primaryStage.setTitle("Board");
         this.primaryStage.setScene(this.board);
+        this.setStageDimensions();
     }
 
     public void showAddTask(TaskListCtrl taskListCtrl) {

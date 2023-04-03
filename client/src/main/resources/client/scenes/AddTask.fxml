@@ -8,23 +8,23 @@
 
 <AnchorPane prefHeight="227.0" prefWidth="608.0" style="-fx-border-color: #000000;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddTaskCtrl">
    <children>
-      <AnchorPane layoutX="2.0" prefHeight="77.0" prefWidth="604.0" style="-fx-background-color: #dddddd;">
+      <AnchorPane layoutX="2.0" prefHeight="77.0" prefWidth="604.0" style="-fx-background-color: #3A98B9;">
          <children>
-            <Label layoutX="217.0" layoutY="15.0" style="-fx-text-fill: #000000;" text="NEW TASK">
+            <Label layoutX="245.0" layoutY="25.0" style="-fx-text-fill: #000000;" text="NEW TASK" textFill="WHITE">
                <font>
-                  <Font name="Berlin Sans FB Demi Bold" size="36.0" />
+                  <Font name="Berlin Sans FB Demi Bold" size="24.0" />
                </font>
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane layoutY="74.0" prefHeight="181.0" prefWidth="604.0">
+      <AnchorPane layoutY="74.0" prefHeight="181.0" prefWidth="604.0" style="-fx-background-color: #EEEEEE;">
          <children>
-            <Button fx:id="createButton" layoutX="313.0" layoutY="120.0" mnemonicParsing="false" onAction="#createTask" prefHeight="41.0" prefWidth="87.0" text="Create">
+            <Button fx:id="createButton" layoutX="313.0" layoutY="120.0" mnemonicParsing="false" onAction="#createTask" prefHeight="41.0" prefWidth="87.0" style="-fx-background-color: EBBC93;" text="Create" textFill="WHITE">
                <font>
                   <Font name="Berlin Sans FB Demi Bold" size="18.0" />
                </font>
             </Button>
-            <Button id="cancelTask" fx:id="cancelButton" layoutX="204.0" layoutY="120.0" mnemonicParsing="false" onAction="#cancelTask" prefHeight="41.0" prefWidth="87.0" text="Cancel">
+            <Button id="cancelTask" fx:id="cancelButton" layoutX="204.0" layoutY="120.0" mnemonicParsing="false" onAction="#cancelTask" prefHeight="41.0" prefWidth="87.0" style="-fx-background-color: EBBC93;" text="Cancel" textFill="WHITE">
                <font>
                   <Font name="Berlin Sans FB Demi Bold" size="18.0" />
                </font>
@@ -34,7 +34,7 @@
                   <Font name="Berlin Sans FB Demi Bold" size="21.0" />
                </font>
             </Label>
-            <TextField id="taskName" fx:id="textField" layoutX="156.0" layoutY="60.0" prefHeight="25.0" prefWidth="396.0" />
+            <TextField id="taskName" fx:id="textField" layoutX="156.0" layoutY="60.0" prefHeight="25.0" prefWidth="396.0" style="-fx-background-color: #E8D5C4;" />
          </children>
       </AnchorPane>
    </children>
