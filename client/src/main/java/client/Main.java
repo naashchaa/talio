@@ -19,12 +19,15 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import client.scenes.*;
 import com.google.inject.Injector;
 
 import javafx.application.Application;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 public class Main extends Application {
 
@@ -49,11 +52,22 @@ public class Main extends Application {
             FXML.load(EditTaskListCtrl.class, "client", "scenes", "EditTaskList.fxml");
         var editTask =
             FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
+        var deleteTaskList =
+            FXML.load(DeleteTaskListCtrl.class, "client", "scenes", "DeleteTaskList.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 
-        mainCtrl.initialize(primaryStage, connectToServer, board,
-            addTaskList, addTask, editTaskList, editTask);
+        List<Pair<?, Parent>> scenes = List.of(
+            connectToServer,
+            board,
+            addTaskList,
+            addTask,
+            editTaskList,
+            editTask,
+            deleteTaskList
+        );
+
+        mainCtrl.initialize(primaryStage, scenes);
 
         primaryStage.setOnCloseRequest(e -> {
             board.getKey().stop();
