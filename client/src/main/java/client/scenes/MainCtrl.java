@@ -58,47 +58,33 @@ public class MainCtrl {
 
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
-     * @param primaryStage the window for the app
-     * @param connectToServerCtrl pair that has the controller for "the connect to server" screen
-     *                            and its related scene
-     * @param boardCtrl pair that has board controller and its related scene
-     * @param addTask pair that has addTask controller and its related scene
-     * @param addTaskList pair that has dddTaskList controller and its related scene
-     * @param editTaskList pair that has editTaskList controller and its related scene
-     * @param editTask pair that has editTask controller and its related scene
-     * @param deleteTaskList pair that has deleteTaskList controller and its related scene
+     * @param primaryStage The window for the app.
+     * @param scenes A list of pairs that have the controller and its related scene.
      */
-    public void initialize(Stage primaryStage,
-                           Pair<ConnectToServerCtrl, Parent> connectToServerCtrl,
-                           Pair<BoardCtrl, Parent> boardCtrl,
-                           Pair<AddTaskListCtrl, Parent> addTaskList,
-                           Pair<AddTaskCtrl, Parent> addTask,
-                           Pair<EditTaskListCtrl, Parent> editTaskList,
-                           Pair<EditTaskCtrl, Parent> editTask,
-                           Pair<DeleteTaskListCtrl, Parent> deleteTaskList) {
+    public void initialize(Stage primaryStage, List<Pair<?, Parent>> scenes) {
         this.primaryStage = primaryStage;
         this.popup = new Stage();
 
-        this.connectToServerCtrl = connectToServerCtrl.getKey();
-        this.connectToServer = new Scene(connectToServerCtrl.getValue());
+        this.connectToServerCtrl = (ConnectToServerCtrl) scenes.get(0).getKey();
+        this.connectToServer = new Scene(scenes.get(0).getValue());
 
-        this.boardCtrl = boardCtrl.getKey();
-        this.board = new Scene(boardCtrl.getValue());
+        this.boardCtrl = (BoardCtrl) scenes.get(1).getKey();
+        this.board = new Scene(scenes.get(1).getValue());
 
-        this.addTaskListCtrl = addTaskList.getKey();
-        this.addTaskList = new Scene(addTaskList.getValue());
+        this.addTaskListCtrl = (AddTaskListCtrl) scenes.get(2).getKey();
+        this.addTaskList = new Scene(scenes.get(2).getValue());
 
-        this.addTaskCtrl = addTask.getKey();
-        this.addTask = new Scene(addTask.getValue());
+        this.addTaskCtrl = (AddTaskCtrl) scenes.get(3).getKey();
+        this.addTask = new Scene(scenes.get(3).getValue());
 
-        this.editTaskListCtrl = editTaskList.getKey();
-        this.editTaskList = new Scene(editTaskList.getValue());
+        this.editTaskListCtrl = (EditTaskListCtrl) scenes.get(4).getKey();
+        this.editTaskList = new Scene(scenes.get(4).getValue());
 
-        this.editTaskCtrl = editTask.getKey();
-        this.editTask = new Scene(editTask.getValue());
+        this.editTaskCtrl = (EditTaskCtrl) scenes.get(5).getKey();
+        this.editTask = new Scene(scenes.get(5).getValue());
 
-        this.deleteTaskListCtrl = deleteTaskList.getKey();
-        this.deleteTaskList = new Scene(deleteTaskList.getValue());
+        this.deleteTaskListCtrl = (DeleteTaskListCtrl) scenes.get(6).getKey();
+        this.deleteTaskList = new Scene(scenes.get(6).getValue());
 
         this.taskListCtrls = new ArrayList<>();
 
