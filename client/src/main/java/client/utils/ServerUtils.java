@@ -153,6 +153,14 @@ public class ServerUtils {
         System.out.println();
     }
 
+    public void deleteTask(Task task) {
+        ClientBuilder.newClient(new ClientConfig())
+        .target(SERVER).path("api/tasks/" + task.getId())
+        .request(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+            .delete();
+    }
+
     /** This method modifies the SERVER connection string.
      * @param string the string to set SERVER to
      * @return true if the connection was successful, false otherwise

@@ -129,4 +129,8 @@ public class TaskListCtrl extends Node implements Initializable {
     public void removeTasks() {
         this.taskContainer.getChildren().clear();
     }
+
+    public VBox getContainer() {
+        return this.taskContainer;
+    }
 }
