@@ -8,19 +8,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
-<?import javafx.stage.Screen?>
 
-<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCtrl" prefWidth="${screen.visualBounds.width}"  prefHeight="${screen.visualBounds.height}">
-   <fx:define>
-      <Screen fx:factory="getPrimary" fx:id="screen"/>
-   </fx:define>
-<!-- <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="456.0" prefWidth="702.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCtrl"> -->
+<!--<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCtrl" prefWidth="${screen.visualBounds.width}"  prefHeight="${screen.visualBounds.height}">-->
+<!--   <fx:define>-->
+<!--      <Screen fx:factory="getPrimary" fx:id="screen"/>-->
+<!--   </fx:define>-->
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="456.0" prefWidth="702.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCtrl">
    <center>
       <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="488.0" BorderPane.alignment="CENTER">
          <content>
             <HBox fx:id="container" maxWidth="1.7976931348623157E308" prefHeight="351.0" prefWidth="994.0" spacing="10.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#addTaskList" prefHeight="34.0" prefWidth="94.0" minWidth="94.0" text="Add Task List" HBox.hgrow="ALWAYS" />
+                  <Button minWidth="94.0" mnemonicParsing="false" onAction="#addTaskList" prefHeight="34.0" prefWidth="94.0" text="Add Task List" HBox.hgrow="ALWAYS" />
                </children>
                <padding>
                   <Insets left="30.0" top="20.0" />

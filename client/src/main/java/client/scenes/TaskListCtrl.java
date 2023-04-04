@@ -42,6 +42,7 @@ public class TaskListCtrl extends Node implements Initializable {
         this.server.registerForMessages("/topic/tasks/add", Task.class, task -> {
             // makes sure that the parent task list is the only that shows task on client.
             if (this.taskList.equals(task.getParentTaskList())) {
+                System.out.println("added a task list");
                 // this method is used to call runLater() to avoid JAVAFX thread errors.
                 this.loadTasksLater(task);
             }
@@ -81,8 +82,11 @@ public class TaskListCtrl extends Node implements Initializable {
         Label taskName = (Label) pair.getValue().lookup("#taskTitle");
         taskName.setText(task.getName());
         pair.getKey().setTask(task);
+        pair.getValue().setUserData(task.id);
         this.taskContainer.getChildren().add(pair.getValue());
     }
+
+
 
     public void setTaskList(TaskList taskList) {
         this.taskList = taskList;
@@ -90,6 +94,10 @@ public class TaskListCtrl extends Node implements Initializable {
 
     public TaskList getTaskList() {
         return this.taskList;
+    }
+
+    public VBox getTaskContainer() {
+        return this.taskContainer;
     }
 
     public void edit() {
@@ -129,7 +137,6 @@ public class TaskListCtrl extends Node implements Initializable {
         this.server.terminateWebSocketConnection();
         this.server.establishWebSocketConnection();
     }
-
     public void removeTasks() {
         this.taskContainer.getChildren().clear();
     }

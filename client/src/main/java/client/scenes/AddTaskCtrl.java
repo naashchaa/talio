@@ -27,21 +27,26 @@ public class AddTaskCtrl implements Initializable {
     @FXML
     private Button createButton;
 
+    private boolean isConnected;
+
     @Inject
     public AddTaskCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.isConnected = false;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.connectToWebSockets();
-
+//        this.connectToWebSockets();
     }
 
     public void connectToWebSockets() {
+        if (this.isConnected)
+            return;
         this.server.terminateWebSocketConnection();
         this.server.establishWebSocketConnection();
+        this.isConnected = true;
     }
 
     /**

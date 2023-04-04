@@ -18,7 +18,7 @@
             <Font name="Berlin Sans FB Demi Bold" size="24.0" />
          </font>
       </Label>
-      <ScrollPane hbarPolicy="NEVER" layoutX="23.0" layoutY="56.0" prefHeight="378.0" prefWidth="242.0" style="-fx-background-color: ntransparentone; -fx-vbar-policy: NEVER;" styleClass="s" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="56.0">
+      <ScrollPane hbarPolicy="NEVER" layoutX="23.0" layoutY="56.0" prefHeight="378.0" prefWidth="242.0" style="-fx-background-color: #FFFFFF00; -fx-vbar-policy: NEVER;" styleClass="s" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="56.0">
          <content>
             <VBox fx:id="taskContainer" minHeight="-Infinity" prefHeight="384.0" prefWidth="227.0" spacing="10.0" style="-fx-background-color: #FFF1DC;">
                <padding>
