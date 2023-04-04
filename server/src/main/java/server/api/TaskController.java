@@ -126,11 +126,17 @@ public class TaskController {
     @MessageMapping("/tasks/add") // app/tasks
     @SendTo("/topic/tasks/add")
     public Task addMessage(Task task) {
-        this.add(task);
-        return task;
+        return this.add(task).getBody();
     }
 
     // might need a delete and update tasks as well
+
+    @MessageMapping("/tasks/edit") //app/tasks
+    @SendTo("/topic/tasks/edit")
+    public Task editMessage(Task task) {
+        System.out.println("updated???");
+        return this.update(task.id, task).getBody();
+    }
 
 
 }

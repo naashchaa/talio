@@ -19,8 +19,10 @@ import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import java.util.HashMap;
@@ -101,7 +103,6 @@ public class MainCtrl {
     public void showConnectToServer() {
         this.primaryStage.setTitle("Connect to a server:");
         this.primaryStage.setScene(this.connectToServer);
-        this.primaryStage.setResizable(false);
     }
 
     public void showBoard() {
@@ -110,8 +111,12 @@ public class MainCtrl {
         this.setStageDimensions();
     }
 
+    /** This brings up the add task popup.
+     * @param taskListCtrl the parent task list controller
+     */
     public void showAddTask(TaskListCtrl taskListCtrl) {
         this.addTaskCtrl.setParentTaskListCtrl(taskListCtrl);
+        this.addTaskCtrl.connectToWebSockets();
         this.popup.setTitle("Add New Task");
         this.popup.setScene(this.addTask);
         this.showPopUp();
@@ -119,6 +124,7 @@ public class MainCtrl {
     }
 
     public void showEditTask(Task task) {
+        this.editTaskCtrl.connectToWebSockets();
         this.popup.setTitle("Edit Task");
         this.popup.setScene(this.editTask);
         this.editTaskCtrl.setTask(task);
@@ -197,6 +203,32 @@ public class MainCtrl {
                 ctrl.addTaskToList(t);
             }
         }
+    }
+
+    public void refreshTaskLater(Task task) {
+        Platform.runLater(() -> {
+            this.refreshTask(task);
+        });
+    }
+
+    /** This abomination exists to confuse everyone (and also to refresh the displayed task).
+     * @param task the updated task object
+     */
+    public void refreshTask(Task task) {
+        Node taskNode = this.taskListCtrls.values() // get all task list controllers
+            .stream() // turn them into a stream for functional programming
+            .filter(ctrl -> ctrl.getTaskList().equals(task.getParentTaskList())) // filter
+            .findFirst()
+            .get() // find the parent task list controller of the given task
+            .getTaskContainer() // get the VBox, which holds all the scene nodes
+            .getChildren() // get the VBox's children
+            .stream() // turn it back into a stream
+            .filter(node -> node.getUserData().equals(task.id)) // find the right task node
+            .findFirst()
+            .get(); // get the actual node
+
+        Label label = (Label) taskNode.lookup("#taskTitle");
+        label.setText(task.getName()); // update note data
     }
 
     /**

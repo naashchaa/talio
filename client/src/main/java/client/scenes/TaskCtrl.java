@@ -4,10 +4,14 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
-public class TaskCtrl extends Node {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class TaskCtrl extends Node implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private Task task;
@@ -19,6 +23,20 @@ public class TaskCtrl extends Node {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.taskTitle = new Label(title);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.connectToWebSockets();
+        // The task list ctrl gets subscribed to the following path.
+        // Now it can receive updates that are sent back from the server to this path.
+        this.server.registerForMessages("/topic/tasks/edit", Task.class, task -> {
+            // do something to update idk
+            if (task.id == this.task.id) {
+                this.mainCtrl.refreshTaskLater(task);
+            }
+
+        });
     }
 
     public void setTask(Task task) {
@@ -46,6 +64,11 @@ public class TaskCtrl extends Node {
 
     public void openTaskOverview() {
         System.out.println("Opening task overview for task " + this.taskTitle.getText());
+    }
+
+    public void connectToWebSockets() {
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
     }
 
 }
