@@ -19,6 +19,7 @@ import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -229,6 +230,32 @@ public class MainCtrl {
 
         Label label = (Label) taskNode.lookup("#taskTitle");
         label.setText(task.getName()); // update note data
+    }
+
+    public void deleteTaskLater(Task task) {
+        Platform.runLater(() -> {
+            this.deleteTask(task);
+        });
+    }
+
+    /** This lovely piece of functional programming removes the frontend task node.
+     * @param task The associated task that should be deleted
+     */
+    public void deleteTask(Task task) {
+        ObservableList<Node> taskContainer = this.taskListCtrls.values()
+            .stream()
+            .filter(ctrl -> ctrl.getTaskList().equals(task.getParentTaskList()))
+            .findFirst()
+            .get()
+            .getTaskContainer()
+            .getChildren();
+
+        Node nodeToRemove = taskContainer.stream()
+            .filter(node -> node.getUserData().equals(task.id))
+            .findFirst()
+            .get();
+
+        taskContainer.remove(nodeToRemove);
     }
 
     /**
