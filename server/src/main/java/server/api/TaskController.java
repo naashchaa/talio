@@ -25,7 +25,7 @@ public class TaskController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Task> getById(@PathVariable("id") long id) {
-        if (id < 0 || !this.repo.existsById(id)) {
+        if (id <= 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(this.repo.findById(id).get());
@@ -60,7 +60,7 @@ public class TaskController {
     @PostMapping(path = "{id}/update")
     public ResponseEntity<Task> update(@PathVariable("id") long id,
                                        @RequestBody Task modifiedTask) {
-        if (id < 0 || !this.repo.existsById(id)) {
+        if (id <= 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -96,13 +96,14 @@ public class TaskController {
      * @return message if delete was successful, error otherwise
      */
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") long id) {
-        if (id < 0 || !this.repo.existsById(id)) {
+    public ResponseEntity<Task> delete(@PathVariable("id") long id) {
+        if (id <= 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
-
+        Task removed = this.repo.getById(id);
+        removed.id = 0;
         this.repo.deleteById(id);
-        return ResponseEntity.ok("delete successful");
+        return ResponseEntity.ok(removed);
     }
 
     /**
@@ -131,12 +132,16 @@ public class TaskController {
 
     // might need a delete and update tasks as well
 
-    @MessageMapping("/tasks/edit") //app/tasks
+    @MessageMapping("/tasks/edit") // app/tasks
     @SendTo("/topic/tasks/edit")
     public Task editMessage(Task task) {
-        System.out.println("updated???");
         return this.update(task.id, task).getBody();
     }
 
-
+    @MessageMapping("/tasks/delete") // app/tasks
+    @SendTo("/topic/tasks/delete")
+    public Task deleteMessage(Task task) {
+        this.delete(task.id);
+        return task;
+    }
 }
