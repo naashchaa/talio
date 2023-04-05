@@ -102,8 +102,8 @@ class TaskControllerTest {
         TaskList taskList = new TaskList("taskList", board);
         Task task1 = new Task("task1", null, taskList, null);
         Task task2 = new Task("task2", null, taskList, null);
-        taskController.add(task1);
-        taskController.add(task2);
+        task1 = taskController.add(task1).getBody();
+        task2 = taskController.add(task2).getBody();
         assertEquals(task1, taskController.getById(task1.getId()).getBody());
         taskController.delete(task1.getId());
         assertEquals(BAD_REQUEST, taskController.getById(task1.getId()).getStatusCode());

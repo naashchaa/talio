@@ -28,14 +28,17 @@ public class TaskCtrl extends Node implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.connectToWebSockets();
-        // The task list ctrl gets subscribed to the following path.
-        // Now it can receive updates that are sent back from the server to this path.
+        // Subscribing the task controller to the edit path
         this.server.registerForMessages("/topic/tasks/edit", Task.class, task -> {
-            // do something to update idk
             if (task.id == this.task.id) {
                 this.mainCtrl.refreshTaskLater(task);
             }
-
+        });
+        // Subscribing the task controller to the delete path
+        this.server.registerForMessages("/topic/tasks/delete", Task.class, task -> {
+            if (task.id == this.task.id) {
+                this.mainCtrl.deleteTaskLater(task);
+            }
         });
     }
 
@@ -51,15 +54,7 @@ public class TaskCtrl extends Node implements Initializable {
      * Deletes a task from the server and removes it from the task list.
      */
     public void delete() {
-        try{
-            this.server.deleteTask(this.task);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        //might want to come up with a better way to do delete a task from the list
-        // instead of just reloading the whole board.
-        this.mainCtrl.loadTaskLists();
+        this.server.send("/app/tasks/delete", this.task);
     }
 
     public void openTaskOverview() {

@@ -51,8 +51,11 @@ public class Task {
 
     //empty constructor for the object mapper
     @SuppressWarnings("unused")
-    private Task() {
+    Task() {
     }
+
+    //empty constructor for hibernate???
+
 
     public long getId() {
         return this.id;
