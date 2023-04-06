@@ -6,6 +6,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,4 +138,19 @@ public class TaskListController {
         return res;
     }
 
+    /**
+     * Returns all the task lists of a given board.
+     * @param id - the id of the board
+     * @return the list of task lists
+     */
+    @GetMapping(path = "/get_by_parent/{id}")
+    public ResponseEntity<List<TaskList>> getAllByParentBoard(@PathVariable("id") long id) {
+        List<TaskList> taskLists = new ArrayList<>();
+        for(TaskList taskList: this.repo.findAll()) {
+            if(taskList.getParentBoard().getId() == id) {
+                taskLists.add(taskList);
+            }
+        }
+        return new ResponseEntity<List<TaskList>>(taskLists, HttpStatus.OK);
+    }
 }

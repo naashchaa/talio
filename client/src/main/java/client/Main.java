@@ -42,8 +42,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         var connectToServer =
             FXML.load(ConnectToServerCtrl.class, "client", "scenes", "ConnectToServer.fxml");
-        var board =
-            FXML.load(BoardCtrl.class, "client", "scenes", "Board.fxml");
+        var applicationOverview =
+                FXML.load(ApplicationOverviewCtrl.class, "client", "scenes", "Talio.fxml");
         var addTask =
             FXML.load(AddTaskCtrl.class, "client", "scenes", "AddTask.fxml");
         var addTaskList =
@@ -54,23 +54,26 @@ public class Main extends Application {
             FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
         var deleteTaskList =
             FXML.load(DeleteTaskListCtrl.class, "client", "scenes", "DeleteTaskList.fxml");
+        var createBoard =
+            FXML.load(CreateBoardCtrl.class, "client", "scenes", "CreateBoard.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 
         List<Pair<?, Parent>> scenes = List.of(
             connectToServer,
-            board,
+            applicationOverview,
             addTaskList,
             addTask,
             editTaskList,
             editTask,
-            deleteTaskList
+            deleteTaskList,
+            createBoard
         );
 
         mainCtrl.initialize(primaryStage, scenes);
 
         primaryStage.setOnCloseRequest(e -> {
-            board.getKey().stop();
+            applicationOverview.getKey().stop();
         });
     }
 }

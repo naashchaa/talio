@@ -51,7 +51,7 @@ public class ServerUtils {
                 .post(Entity.entity(task, APPLICATION_JSON), Task.class);
     }
 
-    public List<Board> getBoard() {
+    public List<Board> getBoards() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards") //
                 .request(APPLICATION_JSON) //
@@ -134,7 +134,7 @@ public class ServerUtils {
         String temp = SERVER;
         try {
             SERVER = string;
-            List<Board> boards = this.getBoard();
+            List<Board> boards = this.getBoards();
             return true;
         }
         catch (RuntimeException e){
@@ -172,6 +172,22 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
+    }
+
+    public List<TaskList> getTaskListOfBoard(Board board) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/taskList/get_by_parent/" + board.getId()) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<TaskList>>() {});
+    }
+
+    public List<Task> getTasksOfTasklist(TaskList taskList) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/tasks/get_by_parent/" + taskList.getId()) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Task>>() {});
     }
 
     // WEB SOCKETS

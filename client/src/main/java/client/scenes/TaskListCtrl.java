@@ -6,7 +6,6 @@ import com.google.inject.Inject;
 import commons.Task;
 import commons.TaskList;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -22,7 +21,6 @@ public class TaskListCtrl extends Node implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private TaskList taskList;
-    private ObservableList<Task> data;
     @FXML
     private VBox taskContainer;
     @FXML
@@ -44,29 +42,29 @@ public class TaskListCtrl extends Node implements Initializable {
             if (this.taskList.equals(task.getParentTaskList())) {
                 System.out.println("added a task list");
                 // this method is used to call runLater() to avoid JAVAFX thread errors.
-                this.loadTasksLater(task);
+                this.loadTasksLater();
             }
         });
     }
 
     /**
      * Helper method to be able to use runLater().
-     * @param task The task to add to a task list.
      */
-    public void loadTasksLater(Task task) {
+    public void loadTasksLater() {
         Platform.runLater(() -> {
-            this.loadTasksLaterHelper(task);
+            this.loadTasksLaterHelper();
         });
     }
 
     /**
      * Send a parent task list and a task to be added to that task list
      * in the main ctrl.
-     * @param task the task to be added.
      */
-    public void loadTasksLaterHelper(Task task) {
-        //this.mainCtrl.loadTasksOfTaskList(this.taskList);
-        this.mainCtrl.addTaskToList(task.getParentTaskList(), task);
+    public void loadTasksLaterHelper() {
+        this.removeTasks();
+        for(Task task : this.server.getTasksOfTasklist(this.taskList)) {
+            this.addTaskToList(task);
+        }
     }
 
     public void addTask() {
@@ -86,7 +84,11 @@ public class TaskListCtrl extends Node implements Initializable {
         this.taskContainer.getChildren().add(pair.getValue());
     }
 
-
+    public void removeTask() {
+        while (this.taskContainer.getChildren().size() > 1) {
+            this.taskContainer.getChildren().remove(0);
+        }
+    }
 
     public void setTaskList(TaskList taskList) {
         this.taskList = taskList;
