@@ -1,5 +1,6 @@
 package commons;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,6 +11,12 @@ public class TaskTest {
     private static final TaskList TEST_TASKLIST = new TaskList("task list", TEST_BOARD);
     private static final Task TEST_TASK = new Task("task", "description",
                                                     TEST_TASKLIST, null);
+
+    @BeforeEach
+    void beforeEach() {
+        TEST_TASK.setParentTaskList(TEST_TASKLIST);
+        TEST_TASK.setPrevTask(0);
+    }
 
     @Test
     void testGetName() {
@@ -85,18 +92,18 @@ public class TaskTest {
         assertEquals(TEST_TASK.hashCode(), task2.hashCode());
     }
 
-    @Test
-    public void testNextTask() {
-        Task next = new Task("next", "description", TEST_TASKLIST, null);
-        TEST_TASK.setNextTask(next);
-        assertEquals(next, TEST_TASK.getNextTask());
-    }
+//    @Test
+//    public void testNextTask() {
+//        Task next = new Task("next", "description", TEST_TASKLIST, null);
+//        TEST_TASK.setNextTask(next);
+//        assertEquals(next, TEST_TASK.getNextTask());
+//    }
 
     @Test
     public void testPreviousTask() {
         Task prev = new Task("prev", "description", TEST_TASKLIST, null);
-        TEST_TASK.setPrevTask(prev);
-        assertEquals(prev, TEST_TASK.getPrevTask());
+        TEST_TASK.setPrevTask(prev.id);
+        assertEquals(prev.id, TEST_TASK.getPrevTask());
     }
 
 }

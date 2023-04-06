@@ -6,15 +6,16 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" onMouseClicked="#openTaskOverview" prefHeight="66.0" prefWidth="243.0" style="-fx-border-radius: 5px; -fx-border-color: black; -fx-background-radius: 5px; -fx-background-color: #E8D5C4;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskCtrl">
+<BorderPane fx:id="taskContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" onMouseClicked="#openTaskOverview" prefHeight="77.0" prefWidth="243.0" style="-fx-border-radius: 5px; -fx-border-color: black; -fx-background-radius: 5px; -fx-background-color: #E8D5C4;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskCtrl">
    <padding>
       <Insets left="15.0" right="5.0" />
    </padding>
    <center>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #E8D5C4;" BorderPane.alignment="CENTER">
+      <HBox fx:id="contentContainer" alignment="CENTER" prefHeight="25.0" prefWidth="221.0" style="-fx-background-color: #E8D5C4;" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="taskTitle" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="275.0" text="Task name" textFill="WHITE">
                <font>
@@ -49,4 +50,10 @@
          </children>
       </HBox>
    </center>
+   <top>
+      <Pane fx:id="taskTop" prefHeight="16.0" prefWidth="246.0" BorderPane.alignment="CENTER" />
+   </top>
+   <bottom>
+      <Pane fx:id="taskBottom" prefHeight="17.0" prefWidth="221.0" BorderPane.alignment="CENTER" />
+   </bottom>
 </BorderPane>
