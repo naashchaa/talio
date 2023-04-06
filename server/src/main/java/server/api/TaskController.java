@@ -7,6 +7,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import server.database.TaskRepository;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -25,7 +26,7 @@ public class TaskController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Task> getById(@PathVariable("id") long id) {
-        if (id < 0 || !this.repo.existsById(id)) {
+        if (id <= 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(this.repo.findById(id).get());
@@ -60,32 +61,31 @@ public class TaskController {
     @PostMapping(path = "{id}/update")
     public ResponseEntity<Task> update(@PathVariable("id") long id,
                                        @RequestBody Task modifiedTask) {
-        if (id < 0 || !this.repo.existsById(id)) {
+        if (id <= 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
 
         Task task = this.repo.findById(id).get();
-        System.out.println(task.id);
 
         if (task.equals(modifiedTask))
             return ResponseEntity.badRequest().build();
 
-        if (!task.getName().equals(modifiedTask.getName()))
-            task.setName(modifiedTask.getName());
+//        if (!task.getName().equals(modifiedTask.getName()))
+        task.setName(modifiedTask.getName());
 
         task.setDescription(modifiedTask.getDescription());
 
-        if (task.getParentTaskList() != modifiedTask.getParentTaskList())
-            task.setParentTaskList(modifiedTask.getParentTaskList());
+//        if (!task.getParentTaskList().equals(modifiedTask.getParentTaskList()))
+        task.setParentTaskList(modifiedTask.getParentTaskList());
 
-        if (task.getNextTask() != modifiedTask.getNextTask())
-            task.setNextTask(modifiedTask.getNextTask());
+//        if (!task.getNextTask().equals(modifiedTask.getNextTask()))
+//            task.setNextTask(modifiedTask.getNextTask());
 
-        if (task.getPrevTask() != modifiedTask.getPrevTask())
-            task.setPrevTask(modifiedTask.getPrevTask());
+//        if (!task.getPrevTask().equals(modifiedTask.getPrevTask()))
+        task.setPrevTask(modifiedTask.getPrevTask());
 
-        if (task.getParentTask() != modifiedTask.getParentTask())
-            task.setParentTask(modifiedTask.getParentTask());
+//        if (!task.getParentTask().equals(modifiedTask.getParentTask()))
+        task.setParentTask(modifiedTask.getParentTask());
 
         this.repo.save(task);
         return ResponseEntity.ok(task);
@@ -96,13 +96,14 @@ public class TaskController {
      * @return message if delete was successful, error otherwise
      */
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") long id) {
-        if (id < 0 || !this.repo.existsById(id)) {
+    public ResponseEntity<Task> delete(@PathVariable("id") long id) {
+        if (id <= 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
-
+        Task removed = this.repo.getById(id);
+        removed.id = 0;
         this.repo.deleteById(id);
-        return ResponseEntity.ok("delete successful");
+        return ResponseEntity.ok(removed);
     }
 
     /**
@@ -129,14 +130,32 @@ public class TaskController {
         return this.add(task).getBody();
     }
 
-    // might need a delete and update tasks as well
-
-    @MessageMapping("/tasks/edit") //app/tasks
+    @MessageMapping("/tasks/edit") // app/tasks
     @SendTo("/topic/tasks/edit")
     public Task editMessage(Task task) {
-        System.out.println("updated???");
         return this.update(task.id, task).getBody();
     }
 
+    /** This is a websocket delete mapping.
+     * @param task task to delete
+     * @return deleted task
+     */
+    @MessageMapping("/tasks/delete") // app/tasks
+    @SendTo("/topic/tasks/delete")
+    public Task deleteMessage(Task task) {
+        // find next task and clear the potential prev reference
+        Optional<Task> nextTask = this.getAll()
+            .stream()
+            .filter(next -> task.id == next.getPrevTask())
+            .findFirst();
 
+        if (nextTask.isPresent()) {
+            Task next = nextTask.get();
+            next.setPrevTask(0);
+            this.update(next.id, next);
+        }
+
+        this.delete(task.id);
+        return task;
+    }
 }

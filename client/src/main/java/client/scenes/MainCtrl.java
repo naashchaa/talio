@@ -19,6 +19,7 @@ import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,6 +29,7 @@ import javafx.util.Pair;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class MainCtrl {
 
@@ -199,11 +201,13 @@ public class MainCtrl {
         this.safelyRemoveTaskListCtrls();
         for (TaskListCtrl tlc : this.taskListCtrls.values()) {
             tlc.connectToWebSockets();
+            tlc.sortTasks();
         }
         for (TaskList tl : this.taskListList) {
             this.taskListCtrls.put(tl.getId(), this.currentBoardCtrl.addTaskListToBoard(tl));
             this.loadTasks(tl);
         }
+
     }
 
     /**
@@ -232,7 +236,10 @@ public class MainCtrl {
                 ctrl.addTaskToList(t);
             }
         }
+        ctrl.sortTasks();
     }
+
+
 
     public void refreshTaskLater(Task task) {
         Platform.runLater(() -> {
@@ -244,26 +251,77 @@ public class MainCtrl {
      * @param task the updated task object
      */
     public void refreshTask(Task task) {
-        Node taskNode = this.taskListCtrls.values() // get all task list controllers
+        Optional<TaskListCtrl> parentTaskListCtrl = this.taskListCtrls
+            .values() // get all task list controllers
             .stream() // turn them into a stream for functional programming
             .filter(ctrl -> ctrl.getTaskList().equals(task.getParentTaskList())) // filter
-            .findFirst()
+            .findFirst();
+
+        if (parentTaskListCtrl.isEmpty())
+            throw new IllegalArgumentException(
+                "The provided task does not belong to any task list");
+
+        Optional<Node> taskNode = parentTaskListCtrl
             .get() // find the parent task list controller of the given task
             .getTaskContainer() // get the VBox, which holds all the scene nodes
             .getChildren() // get the VBox's children
             .stream() // turn it back into a stream
-            .filter(node -> node.getUserData().equals(task.id)) // find the right task node
-            .findFirst()
-            .get(); // get the actual node
+            .filter(node -> (task.id == (node.getUserData() == null ? 0 :
+                ((Task)node.getUserData()).id))) // find the right task node
+            .findFirst();
 
-        Label label = (Label) taskNode.lookup("#taskTitle");
+        if (taskNode.isEmpty())
+            throw new IllegalArgumentException("No node linked to the given task was found");
+
+        Label label = (Label) taskNode.get().lookup("#taskTitle");
         label.setText(task.getName()); // update note data
+        taskNode.get().setUserData(task);
+    }
+
+    public void deleteTaskLater(Task task) {
+        Platform.runLater(() -> {
+            this.deleteTask(task);
+        });
+    }
+
+
+
+    /** This lovely piece of functional programming removes the frontend task node.
+     * @param task The associated task that should be deleted
+     * @return returns the frontend node object of the deleted task
+     */
+    public Node deleteTask(Task task) {
+        Optional<TaskListCtrl> parentTaskListCtrl = this.taskListCtrls.values()
+            .stream()
+            .filter(ctrl -> ctrl.getTaskList().equals(task.getParentTaskList()))
+            .findFirst();
+
+        if (parentTaskListCtrl.isEmpty())
+            throw new IllegalArgumentException("The provided task is not part of any task list");
+
+        ObservableList<Node> taskContainer = parentTaskListCtrl
+            .get()
+            .getTaskContainer()
+            .getChildren();
+
+        Optional<Node> nodeToRemove = taskContainer.stream()
+            .filter(node -> ((Task)node.getUserData()).id == task.id)
+            .findFirst();
+
+        if (nodeToRemove.isEmpty())
+            throw new IllegalArgumentException("The provided task is not referenced in any node");
+
+        taskContainer.remove(nodeToRemove.get());
+
+        parentTaskListCtrl.get().addDummyPane();
+
+        return nodeToRemove.get();
     }
 
     /**
-     *
-     * @param taskList
-     * @param task
+     * This method adds a given task to a given list.
+     * @param taskList list to add to
+     * @param task task to add
      */
     public void addTaskToList(TaskList taskList, Task task) {
         TaskListCtrl listCtrl = this.taskListCtrls.get(taskList.getId());
@@ -273,22 +331,12 @@ public class MainCtrl {
         listCtrl.addTaskToList(task);
     }
 
-    /**
-     * Will only remove the tasks visually from the application.
-     * They will remain in the database.
-     * @param listCtrl the controller for the list that will have its tasks deleted.
-     */
-    public void removeTasksOfTaskList(TaskListCtrl listCtrl) {
-        listCtrl.deleteTasks();
-    }
-
     public void showPopUp() {
         this.popup.show();
     }
 
     public void hidePopUp() {
         this.popup.hide();
-        //this.loadTaskLists();
     }
 
     public void showEditTaskList(TaskList taskList) {

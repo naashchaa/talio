@@ -21,10 +21,7 @@ public class Task {
     @JoinColumn(name = "TaskList_id")
     private TaskList parentTaskList;
 
-    @OneToOne
-    private Task nextTask;
-    @OneToOne
-    private Task prevTask;
+    private long prevTask;
 
     @ManyToOne
     @JoinColumn(name = "Task_id")
@@ -45,14 +42,16 @@ public class Task {
         this.description = description;
         this.parentTaskList = parentTaskList;
         this.parentTask = parentTask;
-        this.nextTask = null;
-        this.prevTask = null;
+        this.prevTask = 0;
     }
 
     //empty constructor for the object mapper
     @SuppressWarnings("unused")
-    private Task() {
+    Task() {
     }
+
+    //empty constructor for hibernate???
+
 
     public long getId() {
         return this.id;
@@ -101,19 +100,19 @@ public class Task {
         this.parentTask = parent;
     }
 
-    public Task getNextTask() {
-        return this.nextTask;
-    }
+//    public Task getNextTask() {
+//        return this.nextTask;
+//    }
+//
+//    public void setNextTask(Task next) {
+//        this.nextTask = next;
+//    }
 
-    public void setNextTask(Task next) {
-        this.nextTask = next;
-    }
-
-    public Task getPrevTask() {
+    public long getPrevTask() {
         return this.prevTask;
     }
 
-    public void setPrevTask(Task prev) {
+    public void setPrevTask(long prev) {
         this.prevTask = prev;
     }
 
@@ -127,7 +126,10 @@ public class Task {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return this.name.equals(task.name) &&
-            Objects.equals(this.description, task.description);
+            Objects.equals(this.description, task.description) &&
+            Objects.equals(this.prevTask, task.prevTask) &&
+            Objects.equals(this.parentTaskList, task.parentTaskList) &&
+            Objects.equals(this.parentTask, task.parentTask);
     }
 
     @Override
