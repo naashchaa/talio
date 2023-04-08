@@ -17,17 +17,14 @@ import java.util.List;
 public class AddTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-
-    private final BoardCtrl boardCtrl;
     @FXML
     private TextField name;
 
 
     @Inject
-    public AddTaskListCtrl(ServerUtils server, MainCtrl mainCtrl, BoardCtrl boardCtrl) {
+    public AddTaskListCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.boardCtrl = boardCtrl;
     }
 
     /**
@@ -52,13 +49,15 @@ public class AddTaskListCtrl {
      * This helped is created to be able to run later so that there are not JAVAFX thread errors.
      */
     public void createHelper() {
+        BoardCtrl boardCtrl = this.mainCtrl.getCurrentBoardCtrl();
         TaskList tasklist = new TaskList(this.name.getText(),
-                this.mainCtrl.getCurrentBoard());
+                boardCtrl.getBoard());
+        System.out.println(boardCtrl.getBoard());
         //this.server.send("/app/taskList", tasklist);
         try { // might need a platform.runlater
             this.server.addTaskList(tasklist);
             //tasklist = this.server.getTaskList(tasklist); // delete if not work!
-            this.boardCtrl.addTaskListToBoard(tasklist);
+            boardCtrl.addTaskListToBoard(tasklist);
         }
         catch (Exception e) {
             e.printStackTrace();

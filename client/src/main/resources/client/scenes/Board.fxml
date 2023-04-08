@@ -32,13 +32,12 @@
    <top>
       <Pane prefHeight="71.0" prefWidth="702.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="71.0" prefWidth="702.0" text="APPLICATION">
+            <Label fx:id="boardName" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="71.0" prefWidth="702.0" text="Board Name">
                <font>
                   <Font size="23.0" />
                </font>
             </Label>
-            <Button layoutX="22.0" layoutY="23.0" mnemonicParsing="false" onAction="#reconnect" text="Reconnect" />
-            <Button layoutX="114.0" layoutY="23.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+            <Button layoutX="632.0" layoutY="23.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
          </children>
       </Pane>
    </top>

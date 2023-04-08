@@ -34,10 +34,14 @@ import java.util.Optional;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage popup;
+
     private ConnectToServerCtrl connectToServerCtrl;
     private Scene connectToServer;
-    private Stage popup;
-    private BoardCtrl boardCtrl;
+
+    private ApplicationOverviewCtrl appOverviewCtrl;
+    private Scene appOverview;
+    private BoardCtrl currentBoardCtrl;
     private Scene board;
 
     private Board currentBoard;
@@ -56,6 +60,9 @@ public class MainCtrl {
     private DeleteTaskListCtrl deleteTaskListCtrl;
     private Scene deleteTaskList;
 
+    private CreateBoardCtrl createBoardCtrl;
+    private Scene createBoard;
+
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
     private Map<Long, TaskListCtrl> taskListCtrls;
@@ -72,8 +79,8 @@ public class MainCtrl {
         this.connectToServerCtrl = (ConnectToServerCtrl) scenes.get(0).getKey();
         this.connectToServer = new Scene(scenes.get(0).getValue());
 
-        this.boardCtrl = (BoardCtrl) scenes.get(1).getKey();
-        this.board = new Scene(scenes.get(1).getValue());
+        this.appOverviewCtrl = (ApplicationOverviewCtrl) scenes.get(1).getKey();
+        this.appOverview = new Scene(scenes.get(1).getValue());
 
         this.addTaskListCtrl = (AddTaskListCtrl) scenes.get(2).getKey();
         this.addTaskList = new Scene(scenes.get(2).getValue());
@@ -89,6 +96,9 @@ public class MainCtrl {
 
         this.deleteTaskListCtrl = (DeleteTaskListCtrl) scenes.get(6).getKey();
         this.deleteTaskList = new Scene(scenes.get(6).getValue());
+
+        this.createBoardCtrl = (CreateBoardCtrl) scenes.get(7).getKey();
+        this.createBoard = new Scene(scenes.get(7).getValue());
 
         this.taskListCtrls = new HashMap<>();
 
@@ -107,11 +117,18 @@ public class MainCtrl {
         this.primaryStage.setScene(this.connectToServer);
     }
 
-    public void showBoard() {
-        this.primaryStage.setTitle("Board");
-        this.primaryStage.setScene(this.board);
-        this.setStageDimensions();
+    public void showAppOverview() {
+        this.primaryStage.setTitle("Talio");
+        this.primaryStage.setScene(this.appOverview);
+        this.loadBoards();
     }
+
+    public void showCreateBoard() {
+        this.popup.setTitle("Create Board");
+        this.popup.setScene(this.createBoard);
+        this.showPopUp();
+    }
+
 
     /** This brings up the add task popup.
      * @param taskListCtrl the parent task list controller
@@ -147,13 +164,25 @@ public class MainCtrl {
     }
 
     public void loadBoard() {
-        this.currentBoard = this.boardCtrl.getBoard();
+        this.currentBoard = this.currentBoardCtrl.getBoard();
     }
 
     public Board getCurrentBoard() {
         return this.currentBoard;
     }
 
+    public BoardCtrl getCurrentBoardCtrl() {
+        return this.currentBoardCtrl;
+    }
+
+    public void updateBoard(BoardCtrl boardController) {
+        this.currentBoardCtrl = boardController;
+        this.loadBoard();
+    }
+
+    public void loadBoards() {
+        this.appOverviewCtrl.loadExistingBoards();
+    }
     /**
      * The method that first removes tasks lists and then loads them again
      * from the server/database.
@@ -168,14 +197,14 @@ public class MainCtrl {
      */
     public void loadTaskListsHelper() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
-        this.boardCtrl.removeTaskLists();
+        this.currentBoardCtrl.removeTaskLists();
         this.safelyRemoveTaskListCtrls();
         for (TaskListCtrl tlc : this.taskListCtrls.values()) {
             tlc.connectToWebSockets();
             tlc.sortTasks();
         }
         for (TaskList tl : this.taskListList) {
-            this.taskListCtrls.put(tl.getId(), this.boardCtrl.addTaskListToBoard(tl));
+            this.taskListCtrls.put(tl.getId(), this.currentBoardCtrl.addTaskListToBoard(tl));
             this.loadTasks(tl);
         }
 
@@ -332,5 +361,6 @@ public class MainCtrl {
     public void addTaskList(TaskList taskList) {
         this.taskListList.add(taskList);
     }
+
 
 }
