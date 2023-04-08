@@ -77,9 +77,9 @@ public class TaskListController {
             return ResponseEntity.badRequest().build();
         }
 
-        this.listeners.forEach((k, l) -> {
-            l.accept(null);
-        });
+//        this.listeners.forEach((k, l) -> {
+//            l.accept(null);
+//        });
 
         this.repo.deleteById(id);
         return ResponseEntity.ok("delete successful");
@@ -99,9 +99,9 @@ public class TaskListController {
         TaskList saved = this.repo.findById(tasklist.getId()).get();
         saved.setName(tasklist.getName());
 
-        this.listeners.forEach((k, l) -> {
-            l.accept(saved);
-        });
+//        this.listeners.forEach((k, l) -> {
+//            l.accept(saved);
+//        });
 
         this.repo.save(saved);
         return ResponseEntity.ok(saved);
@@ -135,6 +135,19 @@ public class TaskListController {
         });
 
         return res;
+    }
+
+    @MessageMapping("/taskList/edit")
+    @SendTo("/topic/taskList/edit")
+    public TaskList editMessage(TaskList taskList) {
+        return this.update(taskList).getBody();
+    }
+
+    @MessageMapping("/taskList/delete")
+    @SendTo("/topic/taskList/delete")
+    public TaskList deleteMessage(TaskList taskList) {
+        this.delete(taskList.getId());
+        return taskList;
     }
 
 }

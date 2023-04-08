@@ -47,6 +47,36 @@ public class TaskListCtrl extends Node implements Initializable {
                 this.loadTasksLater(task);
             }
         });
+        System.out.println("registering for edit");
+        this.server.registerForMessages("/topic/taskList/edit", TaskList.class, taskList -> {
+            System.out.println("TL id: " + this.taskList.getId());
+            if (this.taskList.getId().equals(taskList.getId())) {
+                this.updateTaskListName(taskList);
+            }
+        });
+        this.server.registerForMessages("/topic/taskList/delete", TaskList.class, taskList -> {
+            if (this.taskList.getId().equals(taskList.getId())) {
+                this.removeThisCtrl(taskList);
+            }
+        });
+    }
+
+    /**
+     * When a task list is deleted, its associated controller should also be deleted.
+     * It also should disappear from the children of the board.
+     * @param taskList the task list removed.
+     */
+    public void removeThisCtrl(TaskList taskList) {
+        Platform.runLater(() -> {
+            this.mainCtrl.removeChildFromHBox(taskList);
+            //this.mainCtrl.deleteTaskList(this);
+        });
+    }
+
+    public void updateTaskListName(TaskList taskList) {
+        Platform.runLater(() -> {
+            this.taskListName.setText(taskList.getName());
+        });
     }
 
     /**
@@ -110,8 +140,8 @@ public class TaskListCtrl extends Node implements Initializable {
      */
     public void delete() {
         this.server.deleteTasksParentTaskList(this.taskList);
-        this.server.deleteTaskList(this.taskList);
-        this.mainCtrl.deleteTaskList(this);
+        this.server.send("/app/taskList/delete", this.taskList);
+//        this.server.deleteTaskList(this.taskList);
     }
 
     public void showDeleteTaskList() {

@@ -5,6 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -42,9 +43,31 @@ public class BoardCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.server.registerForTaskListsL(taskList -> {
-            this.mainCtrl.addTaskList(taskList);
-            this.mainCtrl.loadTaskLists();
+//            this.mainCtrl.addTaskList(taskList);
+//            this.mainCtrl.loadTaskLists();
+//            this.addTaskListToBoard(taskList);
+            this.showAddedTaskList(taskList);
         });
+    }
+
+    public void showAddedTaskList(TaskList taskList) {
+        Platform.runLater(() -> {
+            this.mainCtrl.addTaskList(taskList);
+            this.mainCtrl.addToTaskListCtrl(this.addTaskListToBoard(taskList));
+        });
+    }
+
+    /**
+     * Find the correct node that was previously removed and deletes it.
+     * @param taskList the task list which is equal to the node user data.
+     */
+    public void removeTaskList(TaskList taskList) {
+        for (int i = 0; i < this.container.getChildren().size() - 1; i++) {
+            if (this.container.getChildren().get(i).getUserData().equals(taskList.getId())) {
+                this.container.getChildren().remove(i);
+                break;
+            }
+        }
     }
 
     /** Adds a new task list to the board.
@@ -61,6 +84,7 @@ public class BoardCtrl implements Initializable {
             this.container.getChildren().
                     set(this.container.getChildren().size()-1, pair.getValue());
             this.container.getChildren().add(button);
+            pair.getValue().setUserData(taskList.getId());
             return pair.getKey();
         }catch (Exception e) {
             throw new RuntimeException(e);

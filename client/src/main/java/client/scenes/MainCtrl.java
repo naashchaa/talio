@@ -290,6 +290,7 @@ public class MainCtrl {
     }
 
     public void showEditTaskList(TaskList taskList) {
+        this.editTaskListCtrl.connectToWebSockets();
         this.popup.setTitle("Edit Task List");
         this.popup.setScene(this.editTaskList);
         this.editTaskListCtrl.setTaskList(taskList);
@@ -297,19 +298,24 @@ public class MainCtrl {
     }
 
     public void deleteTaskList(TaskListCtrl ctrl) {
-        this.taskListList.remove(ctrl.getTaskList());
-        this.taskListCtrls.remove(ctrl.getTaskList().getId());
-        // should be replaced with method that removes the last task list from the hbox
-        // of board ctrl -> loadTaskLists() is slow.
-        this.loadTaskLists();
+//        this.taskListList.remove(ctrl.getTaskList());
+//        this.taskListCtrls.remove(ctrl.getTaskList().getId());
     }
 
     public Map<Long, TaskListCtrl> getTaskListCtrls() {
         return this.taskListCtrls;
     }
 
+    public void addToTaskListCtrl(TaskListCtrl ctrl) {
+        this.taskListCtrls.put(ctrl.getTaskList().getId(), ctrl);
+    }
+
     public void addTaskList(TaskList taskList) {
         this.taskListList.add(taskList);
+    }
+
+    public void removeChildFromHBox(TaskList taskList) {
+        this.boardCtrl.removeTaskList(taskList);
     }
 
 }

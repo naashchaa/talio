@@ -58,7 +58,7 @@ public class AddTaskListCtrl {
         try { // might need a platform.runlater
             this.server.addTaskList(tasklist);
             //tasklist = this.server.getTaskList(tasklist); // delete if not work!
-            this.boardCtrl.addTaskListToBoard(tasklist);
+            //this.boardCtrl.addTaskListToBoard(tasklist);
         }
         catch (Exception e) {
             e.printStackTrace();
