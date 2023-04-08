@@ -82,6 +82,7 @@ public class ApplicationOverviewCtrl {
         }
         this.boardDisplay.getChildren().add(boardScene);
         this.mainCtrl.updateBoard(this.boards.get(board).getKey());
+        this.boards.get(board).getKey().setBoard(board);
         this.boards.get(board).getKey().loadTaskLists();
     }
 

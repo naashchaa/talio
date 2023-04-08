@@ -52,7 +52,7 @@ public class TaskListCtrl extends Node implements Initializable {
         // Now it can receive updates that are sent back from the server to this path.
         this.server.registerForMessages("/topic/tasks/add", Task.class, task -> {
             // makes sure that the parent task list is the only that shows task on client.
-            if (this.taskList.equals(task.getParentTaskList())) {
+            if (this.taskList.getId().equals(task.getParentTaskList().getId())) {
                 // this method is used to call runLater() to avoid JAVAFX thread errors.
                 // this.loadTasksLater(); // this is causing an error because of remove method
                 this.showLastAddedTask(task);
@@ -171,6 +171,7 @@ public class TaskListCtrl extends Node implements Initializable {
         taskName.setText(task.getName());
         pair.getKey().setTask(task);
         pair.getValue().setUserData(task);
+        pair.getKey().setTask(task);
         this.taskContainer.getChildren().add(pair.getValue());
     }
 

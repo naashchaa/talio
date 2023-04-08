@@ -45,7 +45,12 @@ public class BoardCtrl implements Initializable {
 //            this.mainCtrl.addTaskList(taskList);
 //            this.mainCtrl.loadTaskLists();
 //            this.addTaskListToBoard(taskList);
-            this.showAddedTaskList(taskList);
+            Long l1 = this.mainCtrl.getCurrentBoard().getId();
+            Long l2 = this.board.getId();
+            System.out.println("Board " + l2);
+            if (l1.equals(l2)) {
+                this.showAddedTaskList(taskList);
+            }
         });
     }
 
@@ -96,7 +101,7 @@ public class BoardCtrl implements Initializable {
         this.removeTaskLists();
         List<TaskList> lists = this.server.getTaskListOfBoard(this.board);
         for(TaskList taskList: lists) {
-            this.addTaskListToBoard(taskList);
+            this.mainCtrl.addToTaskListCtrl(this.addTaskListToBoard(taskList));
         }
     }
 

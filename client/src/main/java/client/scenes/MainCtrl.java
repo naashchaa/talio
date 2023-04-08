@@ -278,9 +278,25 @@ public class MainCtrl {
         taskNode.get().setUserData(task);
     }
 
+    /**
+     * Edits the name of a task on the screen.
+     * @param task the task used to find the node.
+     */
+    public void refreshTaskv2(Task task) {
+        TaskListCtrl parentCtrl = this.taskListCtrls.get(task.getParentTaskList().getId());
+        for (Node taskNode : parentCtrl.getContainer().getChildren()) {
+            if (taskNode.getUserData().equals(task)) {
+                Label label = (Label) taskNode.lookup("#taskTitle");
+                label.setText(task.getName());
+                taskNode.setUserData(task);
+                break;
+            }
+        }
+    }
+
     public void deleteTaskLater(Task task) {
         Platform.runLater(() -> {
-            this.deleteTask(task);
+            this.deleteTaskv2(task);
         });
     }
 
@@ -316,6 +332,20 @@ public class MainCtrl {
         parentTaskListCtrl.get().addDummyPane();
 
         return nodeToRemove.get();
+    }
+
+    /**
+     * Deletes a task from a task list in screen.
+     * @param task the tasks used to find the correct node
+     */
+    public void deleteTaskv2(Task task) {
+        TaskListCtrl parentCtrl = this.taskListCtrls.get(task.getParentTaskList().getId());
+        for (Node taskNode : parentCtrl.getContainer().getChildren()) {
+            if (taskNode.getUserData().equals(task)) {
+                parentCtrl.getContainer().getChildren().remove(taskNode);
+                break;
+            }
+        }
     }
 
     /**
