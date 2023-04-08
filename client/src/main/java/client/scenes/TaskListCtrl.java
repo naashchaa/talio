@@ -54,7 +54,8 @@ public class TaskListCtrl extends Node implements Initializable {
             // makes sure that the parent task list is the only that shows task on client.
             if (this.taskList.equals(task.getParentTaskList())) {
                 // this method is used to call runLater() to avoid JAVAFX thread errors.
-                this.loadTasksLater();
+                // this.loadTasksLater(); // this is causing an error because of remove method
+                this.showLastAddedTask(task);
             }
         });
         System.out.println("registering for edit");
@@ -70,6 +71,12 @@ public class TaskListCtrl extends Node implements Initializable {
             }
         });
         this.setDragMethods();
+    }
+
+    public void showLastAddedTask(Task task) {
+        Platform.runLater(() -> {
+            this.addTaskToList(task);
+        });
     }
 
     /**

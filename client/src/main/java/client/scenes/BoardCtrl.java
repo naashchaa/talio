@@ -51,7 +51,7 @@ public class BoardCtrl implements Initializable {
 
     public void showAddedTaskList(TaskList taskList) {
         Platform.runLater(() -> {
-            this.mainCtrl.addTaskList(taskList);
+            //this.mainCtrl.addTaskList(taskList);
             this.mainCtrl.addToTaskListCtrl(this.addTaskListToBoard(taskList));
         });
     }
@@ -85,7 +85,7 @@ public class BoardCtrl implements Initializable {
             this.container.getChildren().add(button);
             pair.getValue().setUserData(taskList.getId());
             // might ruin it
-            pair.getKey().loadTasksLaterHelper();
+            pair.getKey().loadTasksLater();
             return pair.getKey();
         }catch (Exception e) {
             throw new RuntimeException(e);
