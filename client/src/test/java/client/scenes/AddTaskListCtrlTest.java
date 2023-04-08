@@ -14,16 +14,14 @@ import static org.mockito.Mockito.*;
 public class AddTaskListCtrlTest {
 
     public AddTaskListCtrl sut;
-    public BoardCtrl boardCtrl;
     public MainCtrl mainCtrl;
     public ServerUtils sUtils;
 
     @BeforeEach
     public void setup() {
         mainCtrl = mock(MainCtrl.class);
-        boardCtrl = mock(BoardCtrl.class);
         sUtils = mock(ServerUtils.class);
-        sut = new AddTaskListCtrl(sUtils, mainCtrl, boardCtrl);
+        sut = new AddTaskListCtrl(sUtils, mainCtrl);
     }
 
     @Test

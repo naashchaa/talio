@@ -1,8 +1,10 @@
 package client.scenes;
 
+import client.services.TaskService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Task;
+import commons.TaskList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,6 +21,7 @@ import java.util.ResourceBundle;
 public class TaskCtrl extends Node implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final TaskService service;
     private Task task;
     @FXML
     private BorderPane taskContainer;
@@ -32,15 +35,17 @@ public class TaskCtrl extends Node implements Initializable {
     private Pane taskBottom;
 
     @Inject
-    public TaskCtrl(ServerUtils server, MainCtrl mainCtrl, String title) {
-        this.mainCtrl = mainCtrl;
+    public TaskCtrl(ServerUtils server, MainCtrl mainCtrl, TaskService service, String title) {
         this.server = server;
+        this.mainCtrl = mainCtrl;
+        this.service = service;
         this.taskTitle = new Label(title);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.connectToWebSockets();
+        this.service.connectToWebSockets();
         // Subscribing the task controller to the edit path
         this.server.registerForMessages("/topic/tasks/edit", Task.class, task -> {
             if (task.id == this.task.id) {
@@ -57,9 +62,22 @@ public class TaskCtrl extends Node implements Initializable {
         this.setDragStuff();
     }
 
+    public Task getTask() {
+        return this.task;
+    }
+
     public void setTask(Task task) {
         this.task = task;
     }
+
+    public Task getNextTask(Task task) {
+        return this.service.getNextTask(task);
+    }
+
+    public void moveTaskTo(Task taskToMove, TaskList listToMoveTo, Task nextTask) {
+        this.service.moveTaskTo(taskToMove, listToMoveTo, nextTask);
+    }
+
 
     public void edit() {
         this.mainCtrl.showEditTask(this.task);
@@ -81,11 +99,15 @@ public class TaskCtrl extends Node implements Initializable {
         this.server.establishWebSocketConnection();
     }
 
+    /**
+     * This method initializes all the drag and drop related properties.
+     */
     public void setDragStuff() {
         this.setDragDetected();
         this.setDragOver();
         this.setDragEntered();
         this.setDragExited();
+        this.setDragDropped();
         this.setDragDone();
     }
 
@@ -202,8 +224,63 @@ public class TaskCtrl extends Node implements Initializable {
         });
     }
 
+    /**
+     * This method specifies the logic to be executed
+     * when a drag and drop element is released over this task.
+     */
     public void setDragDropped() {
         // do the magic here
+        Pane topTarget = this.taskTop;
+
+        topTarget.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                boolean success = false;
+                System.out.println("dropped on the top");
+                if (event.getGestureSource() != topTarget.getParent()) {
+
+                    Task sourceTask = (Task)((Node)event.getGestureSource()).getUserData();
+                    Task nextTask = (Task)(topTarget.getParent()).getUserData();
+                    TaskList targetList = nextTask.getParentTaskList();
+
+                    TaskCtrl.this.moveTaskTo(sourceTask, targetList, nextTask);
+                    success = true;
+
+                }
+                event.setDropCompleted(success);
+                event.consume();
+            }
+        });
+
+        Pane bottomTarget = this.taskBottom;
+
+        bottomTarget.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                boolean success = false;
+                System.out.println("dropped on the bottom");
+                if (event.getGestureSource() != bottomTarget.getParent()) {
+
+                    Task sourceTask = (Task)((Node)event.getGestureSource()).getUserData();
+                    Task prevTask = (Task)(bottomTarget.getParent()).getUserData();
+
+                    Task nextTask = TaskCtrl.this.getNextTask(prevTask);
+                    if (sourceTask.equals(nextTask)) {
+                        event.setDropCompleted(false);
+                        event.consume();
+                        return;
+                    }
+
+                    TaskList targetList = prevTask.getParentTaskList();
+
+                    TaskCtrl.this.moveTaskTo(sourceTask, targetList, nextTask);
+                    success = true;
+
+                }
+                event.setDropCompleted(success);
+                event.consume();
+            }
+        });
     }
 
     /**

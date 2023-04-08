@@ -7,6 +7,7 @@ import commons.TaskList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -65,15 +66,19 @@ public class AddTaskCtrl implements Initializable {
     public void createTask(ActionEvent event) {
         Task task = new Task(this.textField.getText(), null,
                 this.parentTaskListCtrl.getTaskList(), null);
-//        try {
-//            this.server.addTask(task);
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        this.parentTaskListCtrl.addTaskToList(task.getName());
 
-        // Sending the quote through the web socket
+        // tasks get put at the end of the list, therefore it has a null next
+        // if it has a task behind it and should link to it with prev
+        // the task before (if present) should have its next updated
+
+        List<Node> nodes = this.parentTaskListCtrl.getTaskContainer().getChildren();
+        long prev = nodes.size() == 0 ? 0 :
+            (nodes.get(nodes.size() - 1).getUserData() == null ? 0 :
+                ((Task)nodes.get(nodes.size() - 1).getUserData()).id);
+
+        task.setPrevTask(prev);
+
+        // Sending the task through the web socket
         this.server.send("/app/tasks/add", task);
         this.textField.clear();
         this.mainCtrl.hidePopUp();

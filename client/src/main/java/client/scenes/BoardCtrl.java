@@ -6,8 +6,6 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.TaskList;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -24,8 +22,10 @@ import java.util.ResourceBundle;
 public class BoardCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private ObservableList<TaskList> data;
+    private Board board;
 
+    @FXML
+    private Label boardName;
     @FXML
     private HBox container;
 
@@ -37,7 +37,6 @@ public class BoardCtrl implements Initializable {
     public BoardCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-        this.data =  FXCollections.observableArrayList();
     }
 
     @Override
@@ -85,9 +84,19 @@ public class BoardCtrl implements Initializable {
                     set(this.container.getChildren().size()-1, pair.getValue());
             this.container.getChildren().add(button);
             pair.getValue().setUserData(taskList.getId());
+            // might ruin it
+            pair.getKey().loadTasksLaterHelper();
             return pair.getKey();
         }catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void loadTaskLists() {
+        this.removeTaskLists();
+        List<TaskList> lists = this.server.getTaskListOfBoard(this.board);
+        for(TaskList taskList: lists) {
+            this.addTaskListToBoard(taskList);
         }
     }
 
@@ -104,23 +113,11 @@ public class BoardCtrl implements Initializable {
      * @return returns the board from the database.
      */
     public Board getBoard() {
-        try {
-            List<Board> boards = this.server.getBoard();
-            if (boards.size() == 0) {
-                Board newBoard = new Board("Default Board");
-                this.server.addBoard(newBoard);
-                return this.server.getBoard().get(0);
-            }
-            return boards.get(0);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return this.board;
     }
 
-    public void reconnect() {
-        this.mainCtrl.showConnectToServer();
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     /**
@@ -133,10 +130,12 @@ public class BoardCtrl implements Initializable {
     }
 
     public void refresh() {
-        this.mainCtrl.loadTaskListsHelper();
+        this.loadTaskLists();
     }
 
-    public void stop() {
-        this.server.stop();
+
+
+    public void setName(String name){
+        this.boardName.setText(name);
     }
 }

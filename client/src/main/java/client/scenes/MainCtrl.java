@@ -29,14 +29,19 @@ import javafx.util.Pair;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage popup;
+
     private ConnectToServerCtrl connectToServerCtrl;
     private Scene connectToServer;
-    private Stage popup;
-    private BoardCtrl boardCtrl;
+
+    private ApplicationOverviewCtrl appOverviewCtrl;
+    private Scene appOverview;
+    private BoardCtrl currentBoardCtrl;
     private Scene board;
 
     private Board currentBoard;
@@ -55,6 +60,9 @@ public class MainCtrl {
     private DeleteTaskListCtrl deleteTaskListCtrl;
     private Scene deleteTaskList;
 
+    private CreateBoardCtrl createBoardCtrl;
+    private Scene createBoard;
+
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
     private Map<Long, TaskListCtrl> taskListCtrls;
@@ -71,8 +79,8 @@ public class MainCtrl {
         this.connectToServerCtrl = (ConnectToServerCtrl) scenes.get(0).getKey();
         this.connectToServer = new Scene(scenes.get(0).getValue());
 
-        this.boardCtrl = (BoardCtrl) scenes.get(1).getKey();
-        this.board = new Scene(scenes.get(1).getValue());
+        this.appOverviewCtrl = (ApplicationOverviewCtrl) scenes.get(1).getKey();
+        this.appOverview = new Scene(scenes.get(1).getValue());
 
         this.addTaskListCtrl = (AddTaskListCtrl) scenes.get(2).getKey();
         this.addTaskList = new Scene(scenes.get(2).getValue());
@@ -88,6 +96,9 @@ public class MainCtrl {
 
         this.deleteTaskListCtrl = (DeleteTaskListCtrl) scenes.get(6).getKey();
         this.deleteTaskList = new Scene(scenes.get(6).getValue());
+
+        this.createBoardCtrl = (CreateBoardCtrl) scenes.get(7).getKey();
+        this.createBoard = new Scene(scenes.get(7).getValue());
 
         this.taskListCtrls = new HashMap<>();
 
@@ -106,11 +117,18 @@ public class MainCtrl {
         this.primaryStage.setScene(this.connectToServer);
     }
 
-    public void showBoard() {
-        this.primaryStage.setTitle("Board");
-        this.primaryStage.setScene(this.board);
-        this.setStageDimensions();
+    public void showAppOverview() {
+        this.primaryStage.setTitle("Talio");
+        this.primaryStage.setScene(this.appOverview);
+        this.loadBoards();
     }
+
+    public void showCreateBoard() {
+        this.popup.setTitle("Create Board");
+        this.popup.setScene(this.createBoard);
+        this.showPopUp();
+    }
+
 
     /** This brings up the add task popup.
      * @param taskListCtrl the parent task list controller
@@ -146,13 +164,25 @@ public class MainCtrl {
     }
 
     public void loadBoard() {
-        this.currentBoard = this.boardCtrl.getBoard();
+        this.currentBoard = this.currentBoardCtrl.getBoard();
     }
 
     public Board getCurrentBoard() {
         return this.currentBoard;
     }
 
+    public BoardCtrl getCurrentBoardCtrl() {
+        return this.currentBoardCtrl;
+    }
+
+    public void updateBoard(BoardCtrl boardController) {
+        this.currentBoardCtrl = boardController;
+        this.loadBoard();
+    }
+
+    public void loadBoards() {
+        this.appOverviewCtrl.loadExistingBoards();
+    }
     /**
      * The method that first removes tasks lists and then loads them again
      * from the server/database.
@@ -167,15 +197,17 @@ public class MainCtrl {
      */
     public void loadTaskListsHelper() {
         this.taskListList = this.addTaskListCtrl.getTaskLists();
-        this.boardCtrl.removeTaskLists();
+        this.currentBoardCtrl.removeTaskLists();
         this.safelyRemoveTaskListCtrls();
         for (TaskListCtrl tlc : this.taskListCtrls.values()) {
             tlc.connectToWebSockets();
+            tlc.sortTasks();
         }
         for (TaskList tl : this.taskListList) {
-            this.taskListCtrls.put(tl.getId(), this.boardCtrl.addTaskListToBoard(tl));
+            this.taskListCtrls.put(tl.getId(), this.currentBoardCtrl.addTaskListToBoard(tl));
             this.loadTasks(tl);
         }
+
     }
 
     /**
@@ -204,7 +236,10 @@ public class MainCtrl {
                 ctrl.addTaskToList(t);
             }
         }
+        ctrl.sortTasks();
     }
+
+
 
     public void refreshTaskLater(Task task) {
         Platform.runLater(() -> {
@@ -216,20 +251,31 @@ public class MainCtrl {
      * @param task the updated task object
      */
     public void refreshTask(Task task) {
-        Node taskNode = this.taskListCtrls.values() // get all task list controllers
+        Optional<TaskListCtrl> parentTaskListCtrl = this.taskListCtrls
+            .values() // get all task list controllers
             .stream() // turn them into a stream for functional programming
             .filter(ctrl -> ctrl.getTaskList().equals(task.getParentTaskList())) // filter
-            .findFirst()
+            .findFirst();
+
+        if (parentTaskListCtrl.isEmpty())
+            throw new IllegalArgumentException(
+                "The provided task does not belong to any task list");
+
+        Optional<Node> taskNode = parentTaskListCtrl
             .get() // find the parent task list controller of the given task
             .getTaskContainer() // get the VBox, which holds all the scene nodes
             .getChildren() // get the VBox's children
             .stream() // turn it back into a stream
-            .filter(node -> node.getUserData().equals(task.id)) // find the right task node
-            .findFirst()
-            .get(); // get the actual node
+            .filter(node -> (task.id == (node.getUserData() == null ? 0 :
+                ((Task)node.getUserData()).id))) // find the right task node
+            .findFirst();
 
-        Label label = (Label) taskNode.lookup("#taskTitle");
+        if (taskNode.isEmpty())
+            throw new IllegalArgumentException("No node linked to the given task was found");
+
+        Label label = (Label) taskNode.get().lookup("#taskTitle");
         label.setText(task.getName()); // update note data
+        taskNode.get().setUserData(task);
     }
 
     public void deleteTaskLater(Task task) {
@@ -238,30 +284,44 @@ public class MainCtrl {
         });
     }
 
+
+
     /** This lovely piece of functional programming removes the frontend task node.
      * @param task The associated task that should be deleted
+     * @return returns the frontend node object of the deleted task
      */
-    public void deleteTask(Task task) {
-        ObservableList<Node> taskContainer = this.taskListCtrls.values()
+    public Node deleteTask(Task task) {
+        Optional<TaskListCtrl> parentTaskListCtrl = this.taskListCtrls.values()
             .stream()
             .filter(ctrl -> ctrl.getTaskList().equals(task.getParentTaskList()))
-            .findFirst()
+            .findFirst();
+
+        if (parentTaskListCtrl.isEmpty())
+            throw new IllegalArgumentException("The provided task is not part of any task list");
+
+        ObservableList<Node> taskContainer = parentTaskListCtrl
             .get()
             .getTaskContainer()
             .getChildren();
 
-        Node nodeToRemove = taskContainer.stream()
-            .filter(node -> node.getUserData().equals(task.id))
-            .findFirst()
-            .get();
+        Optional<Node> nodeToRemove = taskContainer.stream()
+            .filter(node -> ((Task)node.getUserData()).id == task.id)
+            .findFirst();
 
-        taskContainer.remove(nodeToRemove);
+        if (nodeToRemove.isEmpty())
+            throw new IllegalArgumentException("The provided task is not referenced in any node");
+
+        taskContainer.remove(nodeToRemove.get());
+
+        parentTaskListCtrl.get().addDummyPane();
+
+        return nodeToRemove.get();
     }
 
     /**
-     *
-     * @param taskList
-     * @param task
+     * This method adds a given task to a given list.
+     * @param taskList list to add to
+     * @param task task to add
      */
     public void addTaskToList(TaskList taskList, Task task) {
         TaskListCtrl listCtrl = this.taskListCtrls.get(taskList.getId());
@@ -271,22 +331,12 @@ public class MainCtrl {
         listCtrl.addTaskToList(task);
     }
 
-    /**
-     * Will only remove the tasks visually from the application.
-     * They will remain in the database.
-     * @param listCtrl the controller for the list that will have its tasks deleted.
-     */
-    public void removeTasksOfTaskList(TaskListCtrl listCtrl) {
-        listCtrl.deleteTasks();
-    }
-
     public void showPopUp() {
         this.popup.show();
     }
 
     public void hidePopUp() {
         this.popup.hide();
-        //this.loadTaskLists();
     }
 
     public void showEditTaskList(TaskList taskList) {
@@ -315,7 +365,7 @@ public class MainCtrl {
     }
 
     public void removeChildFromHBox(TaskList taskList) {
-        this.boardCtrl.removeTaskList(taskList);
+        this.currentBoardCtrl.removeTaskList(taskList);
     }
 
 }
