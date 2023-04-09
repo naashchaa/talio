@@ -32,8 +32,8 @@ public class CreateBoardCtrl {
     public void create() {
         Board newBoard = new Board(this.boardTitle.getText());
         newBoard = this.server.addBoard(newBoard);
-        this.appOverview.addBoard(newBoard);
-        this.appOverview.addBoardPreview(this.boardTitle.getText(), newBoard);
+        BoardCtrl ctrl = this.appOverview.addBoard(newBoard);
+        this.appOverview.addBoardPreview(this.boardTitle.getText(), ctrl);
         this.boardTitle.clear();
     }
 }

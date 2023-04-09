@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.services.TaskListService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
@@ -17,17 +18,19 @@ public class ApplicationOverviewCtrl {
     private final MainCtrl mainCtrl;
     private Map<Board, Pair<BoardCtrl, Parent>> boards;
     private Map<Board, Pair<BoardPreviewCtrl, Parent>> boardPreviews;
+    private final TaskListService service;
     @FXML
     private VBox boardList;
     @FXML
     private AnchorPane boardDisplay;
 
     @Inject
-    public ApplicationOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public ApplicationOverviewCtrl(ServerUtils server, MainCtrl mainCtrl, TaskListService service) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.boards = new HashMap<>();
         this.boardPreviews = new HashMap<>();
+        this.service = service;
     }
 
     public void reconnect() {
@@ -49,9 +52,9 @@ public class ApplicationOverviewCtrl {
     /**
      * Adds the preview of a board in the list containing the user's boards.
      * @param name - the name of the board
-     * @param board - the board associated with that preview
+     * @param ctrl - the board controller associated with that preview
      */
-    public void addBoardPreview(String name, Board board) {
+    public void addBoardPreview(String name, BoardCtrl ctrl) {
         Pair<BoardPreviewCtrl, Parent> pair;
         if (this.mainCtrl.isAdmin()){
             pair = (Main.FXML.load(BoardPreviewCtrl.class,
@@ -62,9 +65,10 @@ public class ApplicationOverviewCtrl {
                             "client", "scenes", "BoardPreview.fxml"));
         }
         pair.getKey().setName(name);
+        pair.getKey().setParentCtrl(this);
+        pair.getKey().setBoardCtrl(ctrl);
         this.boardList.getChildren().add(pair.getValue());
-        this.boardPreviews.put(board, pair);
-        pair.getKey().setBoard(board);
+        this.boardPreviews.put(ctrl.getBoard(), pair);
         this.mainCtrl.hidePopUp();
     }
 
@@ -72,13 +76,16 @@ public class ApplicationOverviewCtrl {
      * Adds a new board and sets its corresponding
      * controllers, so they can later be accessed.
      * @param board - the board
+     * @return the created board's controller
      */
-    public void addBoard(Board board) {
+    public BoardCtrl addBoard(Board board) {
         var pairBoard =
                 (Main.FXML.load(BoardCtrl.class, "client", "scenes", "Board.fxml"));
         this.boards.put(board, pairBoard);
         pairBoard.getKey().setBoard(board);
+        pairBoard.getKey().setOverviewCtrl(this);
         pairBoard.getKey().setName(board.getName());
+        return pairBoard.getKey();
     }
 
     /**
@@ -87,6 +94,17 @@ public class ApplicationOverviewCtrl {
      * @param board - the board
      */
     public void loadBoardIntoOverview(Board board) {
+        if (this.mainCtrl.getCurrentBoardCtrl() != null) {
+            List<Node> taskListNodes =
+                    this.mainCtrl.getCurrentBoardCtrl().getListContainer().getChildren();
+            for (int i = 0; i < taskListNodes.size() - 1; i++) {
+                TaskListCtrl listCtrl = (TaskListCtrl) taskListNodes.get(i).getUserData();
+                listCtrl.removeTasks();
+                this.service.deleteTaskList(this.mainCtrl.getCurrentBoardCtrl(), listCtrl);
+                listCtrl.disconnect();
+            }
+        }
+
         Node boardScene = this.boards.get(board).getValue();
         if(this.boardDisplay.getChildren().size() == 1) {
             this.boardDisplay.getChildren().remove(0);
@@ -94,7 +112,7 @@ public class ApplicationOverviewCtrl {
         this.boardDisplay.getChildren().add(boardScene);
         this.mainCtrl.updateBoard(this.boards.get(board).getKey());
         this.boards.get(board).getKey().setBoard(board);
-        this.boards.get(board).getKey().loadTaskLists();
+        this.boards.get(board).getKey().loadContents();
     }
 
     /**
@@ -105,8 +123,7 @@ public class ApplicationOverviewCtrl {
         this.boardPreviews.clear();
         this.boards.clear();
         for(Board board : this.server.getBoards()) {
-            this.addBoardPreview(board.getName(), board);
-            this.addBoard(board);
+            this.addBoardPreview(board.getName(), this.addBoard(board));
         }
     }
 

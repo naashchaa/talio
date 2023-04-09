@@ -1,0 +1,106 @@
+package client.services;
+
+import client.scenes.BoardCtrl;
+import client.scenes.TaskCtrl;
+import client.scenes.TaskListCtrl;
+import client.utils.ServerUtils;
+import commons.TaskList;
+import javafx.application.Platform;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Optional;
+
+public class BoardService {
+
+    private final ServerUtils server;
+
+    @Inject
+    public BoardService (ServerUtils server) {
+        this.server = server;
+    }
+
+
+    public void loadContents(BoardCtrl ctrl) {
+//        this.loadBoard(ctrl);
+        this.loadTaskLists(ctrl);
+    }
+
+    /** This method loads the board object from the database.
+     * @param ctrl Controller to load the board for
+     */
+//    public void loadBoard(BoardCtrl ctrl) {
+//        try {
+//            List<Board> boards = this.server.getBoard();
+//            if (boards.size() == 0) {
+//                Board newBoard = new Board("Default Board");
+//                this.server.addBoard(newBoard);
+//                ctrl.setBoard(this.server.getBoard().get(0));
+//            }
+//            ctrl.setBoard(boards.get(0));
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    public void refreshBoardLater(BoardCtrl ctrl) {
+        for (var list : ctrl.getListContainer().getChildren()) {
+            TaskListCtrl listCtrl = (TaskListCtrl) list.getUserData();
+            if (listCtrl != null)
+                this.refreshTaskListLater(ctrl, listCtrl);
+        }
+    }
+
+    public void refreshTaskListLater(BoardCtrl ctrl, TaskListCtrl list) {
+        Platform.runLater(() -> this.refreshTaskList(ctrl, list));
+    }
+
+    /** This method refreshes the clientside task list object to display changes.
+     * @param ctrl Parent controller to update in
+     * @param list the list to update
+     */
+    public void refreshTaskList(BoardCtrl ctrl, TaskListCtrl list) {
+        System.out.println("started");
+        Optional<Node> listNode = ctrl
+            .getListContainer() // get the VBox, which holds all the scene nodes
+            .getChildren() // get the VBox's children
+            .stream() // turn it back into a stream
+            .filter(node -> (list.getTaskList().getId() == (node.getUserData() == null ? 0 :
+                (((TaskCtrl)node.getUserData()).getTask()).id))) // find the right task node
+            .findFirst();
+
+        System.out.println("supposedly found a node");
+        if (listNode.isEmpty())
+            throw new IllegalArgumentException("No node linked to the given task list was found");
+
+        System.out.println("actually found a node");
+        Label label = (Label) listNode.get().lookup("#taskListName");
+        label.setText(list.getTaskList().getName()); // update node data
+        listNode.get().setUserData(list);
+        System.out.println("refreshed");
+    }
+
+    public void loadTaskLists(BoardCtrl ctrl) {
+        this.removeTaskLists(ctrl);
+        List<TaskList> taskLists = this.server.getTaskListsByParentBoard(ctrl.getBoard());
+        for (TaskList list : taskLists) {
+            ctrl.addTaskListToBoard(list);
+        }
+    }
+
+    /** This method removes all task lists in a board.
+     * @param ctrl The board controller to remove for
+     */
+    public void removeTaskLists(BoardCtrl ctrl) {
+        for (Node node : ctrl.getListContainer().getChildren()) {
+            if (!"button_addtasklist".equals(node.getId()))
+                ((TaskListCtrl) node.getUserData()).disconnect();
+        }
+        while (ctrl.getListContainer().getChildren().size() > 1) {
+            ctrl.getListContainer().getChildren().remove(0);
+        }
+    }
+}

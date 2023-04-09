@@ -68,23 +68,16 @@ public class TaskController {
         Task task = this.repo.findById(id).get();
 
         if (task.equals(modifiedTask))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(task);
 
-//        if (!task.getName().equals(modifiedTask.getName()))
         task.setName(modifiedTask.getName());
 
         task.setDescription(modifiedTask.getDescription());
 
-//        if (!task.getParentTaskList().equals(modifiedTask.getParentTaskList()))
         task.setParentTaskList(modifiedTask.getParentTaskList());
 
-//        if (!task.getNextTask().equals(modifiedTask.getNextTask()))
-//            task.setNextTask(modifiedTask.getNextTask());
-
-//        if (!task.getPrevTask().equals(modifiedTask.getPrevTask()))
         task.setPrevTask(modifiedTask.getPrevTask());
 
-//        if (!task.getParentTask().equals(modifiedTask.getParentTask()))
         task.setParentTask(modifiedTask.getParentTask());
 
         this.repo.save(task);
@@ -151,7 +144,8 @@ public class TaskController {
 
         if (nextTask.isPresent()) {
             Task next = nextTask.get();
-            next.setPrevTask(0);
+            //next.setPrevTask(0);
+            next.setPrevTask(task.getPrevTask());
             this.update(next.id, next);
         }
 

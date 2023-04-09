@@ -5,8 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +15,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import server.database.TaskListRepository;
 
 @RestController
-@RequestMapping("/api/taskList")
+@RequestMapping("/api/tasklists")
 public class TaskListController {
 
     private final TaskListRepository repo;
@@ -44,6 +42,11 @@ public class TaskListController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(this.repo.findById(id).get());
+    }
+
+    @GetMapping(path = "/get_by_parent/{id}")
+    public ResponseEntity<List<TaskList>> getAllByParentBoard(@PathVariable("id") long id) {
+        return ResponseEntity.ok(this.repo.findAllByParentBoard_Id(id));
     }
 
     /**
@@ -108,8 +111,8 @@ public class TaskListController {
         return ResponseEntity.ok(saved);
     }
 
-    @MessageMapping("/taskList") // /app/quotes
-    @SendTo("/topic/taskList")
+    @MessageMapping("/tasklists") // /app/quotes
+    @SendTo("/topic/tasklists")
     public TaskList addTaskList(TaskList taskList) {
         this.add(taskList);
         return taskList;
@@ -137,38 +140,23 @@ public class TaskListController {
         return res;
     }
 
-    @MessageMapping("/taskList/add")
-    @SendTo("/topic/taskList/add")
+    @MessageMapping("/tasklists/add")
+    @SendTo("/topic/tasklists/add")
     public TaskList addMessage(TaskList taskList) {
         return this.add(taskList).getBody();
     }
 
-    @MessageMapping("/taskList/edit")
-    @SendTo("/topic/taskList/edit")
+    @MessageMapping("/tasklists/edit")
+    @SendTo("/topic/tasklists/edit")
     public TaskList editMessage(TaskList taskList) {
         return this.update(taskList).getBody();
     }
 
-    @MessageMapping("/taskList/delete")
-    @SendTo("/topic/taskList/delete")
+    @MessageMapping("/tasklists/delete")
+    @SendTo("/topic/tasklists/delete")
     public TaskList deleteMessage(TaskList taskList) {
         this.delete(taskList.getId());
         return taskList;
     }
 
-    /**
-     * Returns all the task lists of a given board.
-     * @param id - the id of the board
-     * @return the list of task lists
-     */
-    @GetMapping(path = "/get_by_parent/{id}")
-    public ResponseEntity<List<TaskList>> getAllByParentBoard(@PathVariable("id") long id) {
-        List<TaskList> taskLists = new ArrayList<>();
-        for(TaskList taskList: this.repo.findAll()) {
-            if(taskList.getParentBoard().getId() == id) {
-                taskLists.add(taskList);
-            }
-        }
-        return new ResponseEntity<List<TaskList>>(taskLists, HttpStatus.OK);
-    }
 }
