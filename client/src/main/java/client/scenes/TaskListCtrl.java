@@ -20,9 +20,7 @@ import javafx.scene.input.DragEvent;
 import javafx.util.Pair;
 
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TaskListCtrl extends Node implements Initializable {
@@ -66,6 +64,14 @@ public class TaskListCtrl extends Node implements Initializable {
         this.server.registerForMessages("/topic/taskList/delete", TaskList.class, taskList -> {
             if (this.taskList.getId().equals(taskList.getId())) {
                 this.removeThisCtrl(taskList);
+            }
+        });
+        this.server.registerForMessages("/topic/tasks/drag", List.class, ids -> {
+            System.out.println("should it?");
+            if (((Long)((Integer)ids.get(0)).longValue()).equals(this.taskList.getId()) ||
+                ((Long)((Integer)ids.get(1)).longValue()).equals(this.taskList.getId())) {
+                System.out.println("as it should");
+                this.loadTasksLater();
             }
         });
         this.setDragMethods();
@@ -152,6 +158,7 @@ public class TaskListCtrl extends Node implements Initializable {
         for(Task task : this.server.getTasksOfTasklist(this.taskList)) {
             this.addTaskToList(task);
         }
+        this.sortTasks();
     }
 
     public void addTask() {
@@ -220,11 +227,18 @@ public class TaskListCtrl extends Node implements Initializable {
         this.server.terminateWebSocketConnection();
         this.server.establishWebSocketConnection();
     }
+
+    /**
+     * Removes all the nodes in a task list.
+     */
     public void removeTasks() {
-        for(Node node : this.taskContainer.getChildren()) {
-            if (!node.equals(this.highlightDrop))
-                this.taskContainer.getChildren().remove(node);
+        List<Node> toRemove = new ArrayList<>();
+        for (int i = 0; i < this.taskContainer.getChildren().size(); i++) {
+            if (!this.taskContainer.getChildren().get(i).equals(this.highlightDrop)) {
+                toRemove.add(this.taskContainer.getChildren().get(i));
+            }
         }
+        this.taskContainer.getChildren().removeAll(toRemove);
     }
 
     /** This method removes the dummy pane used for styling in drag and drop.
@@ -311,8 +325,12 @@ public class TaskListCtrl extends Node implements Initializable {
             public void handle(DragEvent event) {
                 Task sourceTask = (Task)((Node)event.getGestureSource()).getUserData();
                 TaskList targetList = TaskListCtrl.this.getTaskList();
-
+                Long prevId = sourceTask.getParentTaskList().getId();
                 TaskListCtrl.this.service.moveTaskTo(sourceTask, targetList, null);
+                List<Long> ids = new ArrayList<>();
+                ids.add(prevId);
+                ids.add(targetList.getId());
+                TaskListCtrl.this.server.send("/app/tasks/drag", ids);
                 event.setDropCompleted(true);
                 event.consume();
             }

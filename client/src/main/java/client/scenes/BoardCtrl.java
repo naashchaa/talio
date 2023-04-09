@@ -93,6 +93,9 @@ public class BoardCtrl implements Initializable {
         }
     }
 
+    /**
+     * Loads the task list as the board is opened.
+     */
     public void loadTaskLists() {
         this.removeTaskLists();
         List<TaskList> lists = this.server.getTaskListOfBoard(this.board);

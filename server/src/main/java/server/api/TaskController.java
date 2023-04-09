@@ -158,4 +158,11 @@ public class TaskController {
         this.delete(task.id);
         return task;
     }
+
+    @MessageMapping("/tasks/drag")
+    @SendTo("/topic/tasks/drag")
+    public List<Long> dragMessage(List<Long> ids) {
+        return ids;
+    }
+
 }

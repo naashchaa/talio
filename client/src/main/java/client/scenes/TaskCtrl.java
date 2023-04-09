@@ -16,6 +16,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TaskCtrl extends Node implements Initializable {
@@ -120,7 +122,6 @@ public class TaskCtrl extends Node implements Initializable {
         source.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println("Being dragged");
                 Dragboard db = source.startDragAndDrop(TransferMode.ANY);
                 ClipboardContent cc = new ClipboardContent();
                 cc.putString("Something");
@@ -144,7 +145,6 @@ public class TaskCtrl extends Node implements Initializable {
         topTarget.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                System.out.println("dragged over top");
                 if (event.getGestureSource() != topTarget.getParent()) {
                     event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 }
@@ -155,7 +155,6 @@ public class TaskCtrl extends Node implements Initializable {
         bottomTarget.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                System.out.println("dragged over top");
                 if (event.getGestureSource() != bottomTarget.getParent()) {
                     event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 }
@@ -172,7 +171,6 @@ public class TaskCtrl extends Node implements Initializable {
         topTarget.setOnDragEntered(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                System.out.println("drag entered");
                 if (event.getGestureSource() != topTarget.getParent()) {
                     topTarget.setBackground(new Background(
                             new BackgroundFill(
@@ -184,7 +182,6 @@ public class TaskCtrl extends Node implements Initializable {
         bottomTarget.setOnDragEntered(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                System.out.println("drag entered");
                 if (event.getGestureSource() != bottomTarget.getParent()) {
                     bottomTarget.setBackground(new Background(
                             new BackgroundFill(
@@ -202,7 +199,6 @@ public class TaskCtrl extends Node implements Initializable {
         topTarget.setOnDragExited(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                System.out.println("exited top");
                 if (event.getGestureSource() != topTarget.getParent()) {
                     topTarget.setBackground(new Background(
                             new BackgroundFill(
@@ -214,7 +210,6 @@ public class TaskCtrl extends Node implements Initializable {
         bottomTarget.setOnDragExited(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                System.out.println("exited bottom");
                 if (event.getGestureSource() != bottomTarget.getParent()) {
                     bottomTarget.setBackground(new Background(
                             new BackgroundFill(
@@ -236,15 +231,19 @@ public class TaskCtrl extends Node implements Initializable {
             @Override
             public void handle(DragEvent event) {
                 boolean success = false;
-                System.out.println("dropped on the top");
                 if (event.getGestureSource() != topTarget.getParent()) {
 
                     Task sourceTask = (Task)((Node)event.getGestureSource()).getUserData();
                     Task nextTask = (Task)(topTarget.getParent()).getUserData();
                     TaskList targetList = nextTask.getParentTaskList();
 
+                    Long prevId = sourceTask.getParentTaskList().getId();
                     TaskCtrl.this.moveTaskTo(sourceTask, targetList, nextTask);
                     success = true;
+                    List<Long> ids = new ArrayList<>();
+                    ids.add(prevId);
+                    ids.add(targetList.getId());
+                    TaskCtrl.this.server.send("/app/tasks/drag", ids);
 
                 }
                 event.setDropCompleted(success);
@@ -258,7 +257,6 @@ public class TaskCtrl extends Node implements Initializable {
             @Override
             public void handle(DragEvent event) {
                 boolean success = false;
-                System.out.println("dropped on the bottom");
                 if (event.getGestureSource() != bottomTarget.getParent()) {
 
                     Task sourceTask = (Task)((Node)event.getGestureSource()).getUserData();
@@ -273,9 +271,13 @@ public class TaskCtrl extends Node implements Initializable {
 
                     TaskList targetList = prevTask.getParentTaskList();
 
+                    Long prevId = sourceTask.getParentTaskList().getId();
                     TaskCtrl.this.moveTaskTo(sourceTask, targetList, nextTask);
                     success = true;
-
+                    List<Long> ids = new ArrayList<>();
+                    ids.add(prevId);
+                    ids.add(targetList.getId());
+                    TaskCtrl.this.server.send("/app/tasks/drag", ids);
                 }
                 event.setDropCompleted(success);
                 event.consume();
@@ -292,7 +294,6 @@ public class TaskCtrl extends Node implements Initializable {
         source.setOnDragDone(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                System.out.println("drag done");
                 source.setBackground(new Background(
                         new BackgroundFill(
                                 Color.rgb(232, 213, 196), CornerRadii.EMPTY, Insets.EMPTY)));
