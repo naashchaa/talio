@@ -100,7 +100,7 @@ public class TaskCtrl extends Node implements Initializable {
     }
 
     /**
-     * This method initializes all of the drag and drop related properties.
+     * This method initializes all the drag and drop related properties.
      */
     public void setDragStuff() {
         this.setDragDetected();
@@ -116,11 +116,11 @@ public class TaskCtrl extends Node implements Initializable {
      */
     public void setDragDetected() {
         BorderPane source = this.taskContainer;
-
         HBox content = this.contentContainer;
         source.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                System.out.println("Being dragged");
                 Dragboard db = source.startDragAndDrop(TransferMode.ANY);
                 ClipboardContent cc = new ClipboardContent();
                 cc.putString("Something");
@@ -144,7 +144,7 @@ public class TaskCtrl extends Node implements Initializable {
         topTarget.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-
+                System.out.println("dragged over top");
                 if (event.getGestureSource() != topTarget.getParent()) {
                     event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 }
@@ -155,6 +155,7 @@ public class TaskCtrl extends Node implements Initializable {
         bottomTarget.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
+                System.out.println("dragged over top");
                 if (event.getGestureSource() != bottomTarget.getParent()) {
                     event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 }
@@ -171,6 +172,7 @@ public class TaskCtrl extends Node implements Initializable {
         topTarget.setOnDragEntered(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
+                System.out.println("drag entered");
                 if (event.getGestureSource() != topTarget.getParent()) {
                     topTarget.setBackground(new Background(
                             new BackgroundFill(
@@ -182,6 +184,7 @@ public class TaskCtrl extends Node implements Initializable {
         bottomTarget.setOnDragEntered(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
+                System.out.println("drag entered");
                 if (event.getGestureSource() != bottomTarget.getParent()) {
                     bottomTarget.setBackground(new Background(
                             new BackgroundFill(
@@ -199,6 +202,7 @@ public class TaskCtrl extends Node implements Initializable {
         topTarget.setOnDragExited(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
+                System.out.println("exited top");
                 if (event.getGestureSource() != topTarget.getParent()) {
                     topTarget.setBackground(new Background(
                             new BackgroundFill(
@@ -210,6 +214,7 @@ public class TaskCtrl extends Node implements Initializable {
         bottomTarget.setOnDragExited(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
+                System.out.println("exited bottom");
                 if (event.getGestureSource() != bottomTarget.getParent()) {
                     bottomTarget.setBackground(new Background(
                             new BackgroundFill(

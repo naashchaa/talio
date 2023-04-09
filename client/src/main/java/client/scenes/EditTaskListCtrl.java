@@ -10,6 +10,7 @@ public class EditTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private TaskList taskList;
+    private boolean isConnected;
     @FXML
     private TextField name;
 
@@ -17,6 +18,7 @@ public class EditTaskListCtrl {
     public EditTaskListCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.isConnected = false;
     }
 
     /**
@@ -34,7 +36,7 @@ public class EditTaskListCtrl {
     public void confirm() {
         String newName = this.name.getText();
         this.taskList.setName(newName);
-        this.server.updateTaskList(this.taskList);
+//        this.server.updateTaskList(this.taskList);
 
 //        List<TaskListCtrl> taskLists = this.mainCtrl.getTaskListCtrls();
 //        for (TaskListCtrl listCtrl : taskLists) {
@@ -42,6 +44,7 @@ public class EditTaskListCtrl {
 //                listCtrl.setTaskListName(newName);
 //            }
 //
+        this.server.send("/app/taskList/edit", this.taskList);
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }
@@ -49,6 +52,13 @@ public class EditTaskListCtrl {
     public void setTaskList(TaskList taskList) {
         this.taskList = taskList;
         this.name.setText(taskList.getName());
+    }
 
+    public void connectToWebSockets() {
+        if (this.isConnected)
+            return;
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
+        this.isConnected = true;
     }
 }

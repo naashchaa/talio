@@ -52,12 +52,47 @@ public class TaskListCtrl extends Node implements Initializable {
         // Now it can receive updates that are sent back from the server to this path.
         this.server.registerForMessages("/topic/tasks/add", Task.class, task -> {
             // makes sure that the parent task list is the only that shows task on client.
-            if (this.taskList.equals(task.getParentTaskList())) {
+            if (this.taskList.getId().equals(task.getParentTaskList().getId())) {
                 // this method is used to call runLater() to avoid JAVAFX thread errors.
-                this.loadTasksLater();
+                // this.loadTasksLater(); // this is causing an error because of remove method
+                this.showLastAddedTask(task);
+            }
+        });
+        this.server.registerForMessages("/topic/taskList/edit", TaskList.class, taskList -> {
+            if (this.taskList.getId().equals(taskList.getId())) {
+                this.updateTaskListName(taskList);
+            }
+        });
+        this.server.registerForMessages("/topic/taskList/delete", TaskList.class, taskList -> {
+            if (this.taskList.getId().equals(taskList.getId())) {
+                this.removeThisCtrl(taskList);
             }
         });
         this.setDragMethods();
+    }
+
+    public void showLastAddedTask(Task task) {
+        Platform.runLater(() -> {
+            this.addTaskToList(task);
+        });
+    }
+
+    /**
+     * When a task list is deleted, its associated controller should also be deleted.
+     * It also should disappear from the children of the board.
+     * @param taskList the task list removed.
+     */
+    public void removeThisCtrl(TaskList taskList) {
+        Platform.runLater(() -> {
+            this.mainCtrl.removeChildFromHBox(taskList);
+            //this.mainCtrl.deleteTaskList(this);
+        });
+    }
+
+    public void updateTaskListName(TaskList taskList) {
+        Platform.runLater(() -> {
+            this.taskListName.setText(taskList.getName());
+        });
     }
 
     /**
@@ -134,6 +169,7 @@ public class TaskListCtrl extends Node implements Initializable {
         taskName.setText(task.getName());
         pair.getKey().setTask(task);
         pair.getValue().setUserData(task);
+        pair.getKey().setTask(task);
         this.taskContainer.getChildren().add(pair.getValue());
     }
 
@@ -165,8 +201,8 @@ public class TaskListCtrl extends Node implements Initializable {
      */
     public void delete() {
         this.server.deleteTasksParentTaskList(this.taskList);
-        this.server.deleteTaskList(this.taskList);
-        this.mainCtrl.deleteTaskList(this);
+        this.server.send("/app/taskList/delete", this.taskList);
+//        this.server.deleteTaskList(this.taskList);
     }
 
     public void showDeleteTaskList() {

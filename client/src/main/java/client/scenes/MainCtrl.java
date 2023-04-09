@@ -219,6 +219,7 @@ public class MainCtrl {
     }
 
     public void showAddTaskList() {
+        this.addTaskListCtrl.connectToWebSockets();
         this.popup.setTitle("Add New Task List");
         this.popup.setScene(this.addTaskList);
         this.showPopUp();
@@ -360,9 +361,25 @@ public class MainCtrl {
         taskNode.get().setUserData(task);
     }
 
+    /**
+     * Edits the name of a task on the screen.
+     * @param task the task used to find the node.
+     */
+    public void refreshTaskv2(Task task) {
+        TaskListCtrl parentCtrl = this.taskListCtrls.get(task.getParentTaskList().getId());
+        for (Node taskNode : parentCtrl.getContainer().getChildren()) {
+            if (taskNode.getUserData().equals(task)) {
+                Label label = (Label) taskNode.lookup("#taskTitle");
+                label.setText(task.getName());
+                taskNode.setUserData(task);
+                break;
+            }
+        }
+    }
+
     public void deleteTaskLater(Task task) {
         Platform.runLater(() -> {
-            this.deleteTask(task);
+            this.deleteTaskv2(task);
         });
     }
 
@@ -401,6 +418,20 @@ public class MainCtrl {
     }
 
     /**
+     * Deletes a task from a task list in screen.
+     * @param task the tasks used to find the correct node
+     */
+    public void deleteTaskv2(Task task) {
+        TaskListCtrl parentCtrl = this.taskListCtrls.get(task.getParentTaskList().getId());
+        for (Node taskNode : parentCtrl.getContainer().getChildren()) {
+            if (taskNode.getUserData().equals(task)) {
+                parentCtrl.getContainer().getChildren().remove(taskNode);
+                break;
+            }
+        }
+    }
+
+    /**
      * This method adds a given task to a given list.
      * @param taskList list to add to
      * @param task task to add
@@ -414,6 +445,7 @@ public class MainCtrl {
     }
 
     public void showEditTaskList(TaskList taskList) {
+        this.editTaskListCtrl.connectToWebSockets();
         this.popup.setTitle("Edit Task List");
         this.popup.setScene(this.editTaskList);
         this.editTaskListCtrl.setTaskList(taskList);
@@ -421,23 +453,29 @@ public class MainCtrl {
     }
 
     public void deleteTaskList(TaskListCtrl ctrl) {
-        this.taskListList.remove(ctrl.getTaskList());
-        this.taskListCtrls.remove(ctrl.getTaskList().getId());
-        // should be replaced with method that removes the last task list from the hbox
-        // of board ctrl -> loadTaskLists() is slow.
-        this.loadTaskLists();
+//        this.taskListList.remove(ctrl.getTaskList());
+//        this.taskListCtrls.remove(ctrl.getTaskList().getId());
     }
 
     public Map<Long, TaskListCtrl> getTaskListCtrls() {
         return this.taskListCtrls;
     }
 
+    public void addToTaskListCtrl(TaskListCtrl ctrl) {
+        this.taskListCtrls.put(ctrl.getTaskList().getId(), ctrl);
+    }
+
     public void addTaskList(TaskList taskList) {
         this.taskListList.add(taskList);
     }
 
+    public void removeChildFromHBox(TaskList taskList) {
+        this.currentBoardCtrl.removeTaskList(taskList);
+    }
+
     public void setAdmin(boolean b) {
         this.isAdmin = b;
+
     }
 
     public boolean isAdmin() {

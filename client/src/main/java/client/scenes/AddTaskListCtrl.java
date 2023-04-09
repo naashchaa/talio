@@ -17,6 +17,7 @@ import java.util.List;
 public class AddTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private boolean isConnected;
     @FXML
     private TextField name;
 
@@ -25,6 +26,7 @@ public class AddTaskListCtrl {
     public AddTaskListCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.isConnected = false;
     }
 
     /**
@@ -52,18 +54,25 @@ public class AddTaskListCtrl {
         BoardCtrl boardCtrl = this.mainCtrl.getCurrentBoardCtrl();
         TaskList tasklist = new TaskList(this.name.getText(),
                 boardCtrl.getBoard());
-        System.out.println(boardCtrl.getBoard());
         //this.server.send("/app/taskList", tasklist);
         try { // might need a platform.runlater
-            this.server.addTaskList(tasklist);
+            //this.server.addTaskList(tasklist);
             //tasklist = this.server.getTaskList(tasklist); // delete if not work!
-            boardCtrl.addTaskListToBoard(tasklist);
+            this.server.send("/app/taskList/add", tasklist);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
         this.name.clear();
         this.mainCtrl.hidePopUp();
+    }
+
+    public void connectToWebSockets() {
+        if (this.isConnected)
+            return;
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
+        this.isConnected = true;
     }
 
     /**

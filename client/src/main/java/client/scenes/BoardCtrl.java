@@ -5,6 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -40,10 +41,33 @@ public class BoardCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.server.registerForTaskListsL(taskList -> {
-            this.mainCtrl.addTaskList(taskList);
-            this.mainCtrl.loadTaskLists();
+        this.connectToWebSockets();
+        this.server.registerForMessages("/topic/taskList/add", TaskList.class, taskList -> {
+            Long l1 = taskList.getParentBoard().getId();
+            Long l2 = this.board.getId();
+            if (l1.equals(l2)) {
+                this.showAddedTaskList(taskList);
+            }
         });
+    }
+
+    public void showAddedTaskList(TaskList taskList) {
+        Platform.runLater(() -> {
+            this.mainCtrl.addToTaskListCtrl(this.addTaskListToBoard(taskList));
+        });
+    }
+
+    /**
+     * Find the correct node that was previously removed and deletes it.
+     * @param taskList the task list which is equal to the node user data.
+     */
+    public void removeTaskList(TaskList taskList) {
+        for (int i = 0; i < this.container.getChildren().size() - 1; i++) {
+            if (this.container.getChildren().get(i).getUserData().equals(taskList.getId())) {
+                this.container.getChildren().remove(i);
+                break;
+            }
+        }
     }
 
     /** Adds a new task list to the board.
@@ -60,7 +84,9 @@ public class BoardCtrl implements Initializable {
             this.container.getChildren().
                     set(this.container.getChildren().size()-1, pair.getValue());
             this.container.getChildren().add(button);
-            pair.getKey().loadTasksLaterHelper();
+            pair.getValue().setUserData(taskList.getId());
+            // might ruin it
+            pair.getKey().loadTasksLater();
             return pair.getKey();
         }catch (Exception e) {
             throw new RuntimeException(e);
@@ -71,7 +97,7 @@ public class BoardCtrl implements Initializable {
         this.removeTaskLists();
         List<TaskList> lists = this.server.getTaskListOfBoard(this.board);
         for(TaskList taskList: lists) {
-            this.addTaskListToBoard(taskList);
+            this.mainCtrl.addToTaskListCtrl(this.addTaskListToBoard(taskList));
         }
     }
 
@@ -116,6 +142,11 @@ public class BoardCtrl implements Initializable {
 
     public void setName(String name){
         this.boardName.setText(name);
+    }
+
+    public void connectToWebSockets() {
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
     }
 
     public void getJoinKey() {
