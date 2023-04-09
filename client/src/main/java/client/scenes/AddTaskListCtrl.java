@@ -57,8 +57,7 @@ public class AddTaskListCtrl {
         TaskList tasklist = new TaskList(this.name.getText(),
                 this.parentBoardCtrl.getBoard());
         try {
-            tasklist = this.server.addTaskList(tasklist);
-            this.parentBoardCtrl.addTaskListToBoard(tasklist);
+            //tasklist = this.server.addTaskList(tasklist);
             this.server.send("/app/tasklists/add", tasklist);
         }
         catch (Exception e) {

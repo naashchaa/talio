@@ -103,7 +103,10 @@ public class TaskListCtrl extends Node implements Initializable {
     }
 
     public void updateTaskListName(TaskList taskList) {
-        Platform.runLater(() -> this.taskListName.setText(taskList.getName()));
+        Platform.runLater(() -> {
+            this.taskListName.setText(taskList.getName());
+            this.setTaskList(taskList);
+        });
     }
 
     /**
@@ -176,8 +179,11 @@ public class TaskListCtrl extends Node implements Initializable {
     }
 
     public void delete() {
-        this.server.deleteTaskListWrapper(this.taskList); // delete serverside
-        this.listService.deleteTaskList(this.getParentCtrl(), this); // delete clientside
+        //this.server.deleteTaskListWrapper(this.taskList); // delete serverside
+        //this.listService.deleteTaskList(this.getParentCtrl(), this); // delete clientside
+        this.server.deleteTasksByParentList(this.taskList);
+        this.server.send("/app/tasklists/delete", this.taskList);
+
     }
 
     public void showDeleteTaskList() {
