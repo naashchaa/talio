@@ -31,6 +31,8 @@ import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -42,6 +44,23 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 public class ServerUtils {
 
     private static String SERVER = "http://localhost:8080/";
+
+    /** This method modifies the SERVER connection string.
+     * @param string the string to set SERVER to
+     * @return true if the connection was successful, false otherwise
+     */
+    public boolean setConnectionString(String string) {
+        String temp = SERVER;
+        try {
+            SERVER = string;
+            this.getBoards();
+            return true;
+        }
+        catch (RuntimeException e){
+            SERVER = temp;
+            return false;
+        }
+    }
 
     public Task addTask(Task task) {
         return ClientBuilder.newClient(new ClientConfig())
@@ -56,7 +75,8 @@ public class ServerUtils {
                 .target(SERVER).path("api/boards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Board>>() {});
+                .get(new GenericType<>() {
+                });
     }
 
     public Board addBoard(Board board) {
@@ -69,48 +89,57 @@ public class ServerUtils {
 
     public TaskList addTaskList(TaskList tasklist) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/taskList")
+                .target(SERVER).path("api/tasklists")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(tasklist, APPLICATION_JSON), TaskList.class);
     }
 
+    public void deleteTaskListWrapper(TaskList taskList) {
+        // delete all children
+        this.deleteTasksByParentList(taskList);
+
+        // delete the task list itself
+        this.deleteTaskList(taskList);
+    }
+
     public void deleteTaskList(TaskList taskList) {
         ClientBuilder.newClient(new ClientConfig())
-        .target(SERVER).path("api/taskList/" + taskList.getId())
-        .request(APPLICATION_JSON)
-        .accept(APPLICATION_JSON)
+            .target(SERVER).path("api/tasklists/" + taskList.getId())
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
             .delete();
     }
 
     public List<TaskList> getTaskLists() {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/taskList") //
+                .target(SERVER).path("api/tasklists/") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<TaskList>>() {});
+                .get(new GenericType<>() {});
     }
 
     /**
-     * I'm not yet sure this works.
-     * @param tasklist
+     * This method returns all tasks for a certain task list.
+     * @param tasklist the task list of which to fetch the tasks
      * @return returns a list of tasks.
      */
-    public List<Task> getTasks(TaskList tasklist) {
+    public List<Task> getTasksByParentList(TaskList tasklist) {
         String id = Long.toString(tasklist.getId());
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/tasks/get_by_parent/" + id) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Task>>() {});
+                .get(new GenericType<>() {
+                });
     }
 
     /**
      * Gets the id of a task list and by that removes all of its internal tasks.
      * @param taskList the task list whose tasks need to be removed.
      */
-    public void deleteTasksParentTaskList(TaskList taskList) {
-        var a = ClientBuilder.newClient(new ClientConfig())
+    public void deleteTasksByParentList(TaskList taskList) {
+        ClientBuilder.newClient(new ClientConfig())
                             .target(SERVER).path("api/tasks/delete_by_parent/" + taskList.getId())
                             .request(APPLICATION_JSON)
                             .accept(APPLICATION_JSON)
@@ -125,23 +154,6 @@ public class ServerUtils {
             .delete();
     }
 
-    /** This method modifies the SERVER connection string.
-     * @param string the string to set SERVER to
-     * @return true if the connection was successful, false otherwise
-     */
-    public boolean setConnectionString(String string) {
-        String temp = SERVER;
-        try {
-            SERVER = string;
-            List<Board> boards = this.getBoards();
-            return true;
-        }
-        catch (RuntimeException e){
-            SERVER = temp;
-            return false;
-        }
-    }
-
     /** Retrieves the provided TaskList from the repository
      * (used for TaskList objects without assigned IDs).
      * @param taskList TaskList to be returned
@@ -151,10 +163,11 @@ public class ServerUtils {
         String id = Long.toString(taskList.getId());
 
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("/api/taskList/" + id) //
+                .target(SERVER).path("/api/tasklists/" + id) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<TaskList>() {});
+                .get(new GenericType<>() {
+                });
     }
 
     public Task updateTask(Task task) {
@@ -167,27 +180,28 @@ public class ServerUtils {
 
     public TaskList updateTaskList(TaskList taskList) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("/api/taskList/update") //
+                .target(SERVER).path("/api/tasklists/update") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
     }
 
-    public List<TaskList> getTaskListOfBoard(Board board) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("/api/taskList/get_by_parent/" + board.getId()) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<TaskList>>() {});
+    public List<TaskList> getTaskListsByParentBoard(Board board) {
+        return ClientBuilder.newClient(new ClientConfig())
+            .target(SERVER).path("api/tasklists/get_by_parent/" + board.getId())
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(new GenericType<>() {});
     }
 
-    public List<Task> getTasksOfTasklist(TaskList taskList) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("/api/tasks/get_by_parent/" + taskList.getId()) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Task>>() {});
-    }
+//    public List<Task> getTasksOfTasklist(TaskList taskList) {
+//        return ClientBuilder.newClient(new ClientConfig()) //
+//                .target(SERVER).path("/api/tasks/get_by_parent/" + taskList.getId()) //
+//                .request(APPLICATION_JSON) //
+//                .accept(APPLICATION_JSON) //
+//                .get(new GenericType<>() {
+//                });
+//    }
 
     public void deleteBoard(Board board) {
         ClientBuilder.newClient(new ClientConfig())
@@ -201,15 +215,14 @@ public class ServerUtils {
      * @param board the board from which everything should be deleted
      */
     public void deleteEverythingOfBoard(Board board) {
-        List<TaskList> taskLists = this.getTaskListOfBoard(board);
+        List<TaskList> taskLists = this.getTaskListsByParentBoard(board);
         for (TaskList taskList : taskLists) {
-            this.deleteTasksParentTaskList(taskList);
-            this.deleteTaskList(taskList);
+            this.deleteTaskListWrapper(taskList);
         }
     }
 
-    public Board editBoard(Board board) {
-        return ClientBuilder.newClient(new ClientConfig()) //
+    public void editBoard(Board board) {
+        ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("/api/boards/update") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
@@ -222,11 +235,12 @@ public class ServerUtils {
      */
     public boolean checkBoardExists(Long id) {
         try{
-            Board board = ClientBuilder.newClient(new ClientConfig())
+            ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path("/api/boards/" + id)
                     .request(APPLICATION_JSON)
                     .accept(APPLICATION_JSON)
-                    .get(new GenericType<Board>() {});
+                    .get(new GenericType<>() {
+                    });
             return true;
         }
         catch (RuntimeException e){
@@ -282,21 +296,24 @@ public class ServerUtils {
      * @param consumer the consumer.
      * @param <T> type.
      */
+    @SuppressWarnings("unchecked")
     public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
 
-        /**
-         * A ctrl that has registered to receive messages will get subscribed
-         * to the destination that has been passed as an argument. This is a
-         * function of STOMP.
+        /*
+          A ctrl that has registered to receive messages will get subscribed
+          to the destination that has been passed as an argument. This is a
+          function of STOMP.
          */
         this.session.subscribe(dest, new StompFrameHandler() {
+
             @Override
-            public Type getPayloadType(StompHeaders headers) {
+            public @NotNull Type getPayloadType(@NonNull StompHeaders headers) {
                 return type;
             }
 
             @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
+            public void handleFrame(@NonNull StompHeaders headers, Object payload) {
+
                 consumer.accept((T) payload);
             }
         });
@@ -312,13 +329,9 @@ public class ServerUtils {
         this.session.send(dest, o);
     }
 
-    public void disconnectStompSession() {
-        this.session.disconnect();
-    }
-
     // LONG POLLING
 
-    private static ExecutorService EXEC = Executors.newSingleThreadExecutor();
+    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
 
     /**
      * Detects if there has been any changes in the board to a task list.
@@ -328,7 +341,7 @@ public class ServerUtils {
         EXEC.submit(() -> {
             while (!Thread.interrupted()) {
                 var res = ClientBuilder.newClient(new ClientConfig()) //
-                        .target(SERVER).path("api/taskList/updates") //
+                        .target(SERVER).path("api/tasklists/updates") //
                         .request(APPLICATION_JSON) //
                         .accept(APPLICATION_JSON) //
                         .get(Response.class);

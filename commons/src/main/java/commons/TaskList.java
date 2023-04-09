@@ -38,7 +38,7 @@ public class TaskList {
         this.name = name;
     }
 
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 

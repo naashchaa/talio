@@ -1,6 +1,5 @@
 package client.scenes;
 
-import commons.Board;
 import javafx.fxml.FXML;
 import com.google.inject.Inject;
 import javafx.scene.control.TextField;
@@ -8,8 +7,7 @@ import javafx.scene.control.TextField;
 public class EditBoardCtrl {
 
     private final MainCtrl mainCtrl;
-    private ApplicationOverviewCtrl appOverview;
-    private Board board;
+    private BoardCtrl ctrl;
     @FXML
     private TextField name;
 
@@ -25,13 +23,12 @@ public class EditBoardCtrl {
     public void confirm(){
         //TODO: check if works correctly
         String newName = this.name.getText();
-        this.appOverview.editBoard(this.board, newName);
+        this.ctrl.editBoard(newName);
         this.mainCtrl.hidePopUp();
     }
 
-    public void setStuff(Board board, ApplicationOverviewCtrl appOverview) {
-        this.board = board;
-        this.name.setText(board.getName());
-        this.appOverview = appOverview;
+    public void setParentCtrl(BoardCtrl ctrl) {
+        this.ctrl = ctrl;
+        this.name.setText(ctrl.getBoard().getName());
     }
 }

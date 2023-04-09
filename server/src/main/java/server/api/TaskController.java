@@ -68,23 +68,16 @@ public class TaskController {
         Task task = this.repo.findById(id).get();
 
         if (task.equals(modifiedTask))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(task);
 
-//        if (!task.getName().equals(modifiedTask.getName()))
         task.setName(modifiedTask.getName());
 
         task.setDescription(modifiedTask.getDescription());
 
-//        if (!task.getParentTaskList().equals(modifiedTask.getParentTaskList()))
         task.setParentTaskList(modifiedTask.getParentTaskList());
 
-//        if (!task.getNextTask().equals(modifiedTask.getNextTask()))
-//            task.setNextTask(modifiedTask.getNextTask());
-
-//        if (!task.getPrevTask().equals(modifiedTask.getPrevTask()))
         task.setPrevTask(modifiedTask.getPrevTask());
 
-//        if (!task.getParentTask().equals(modifiedTask.getParentTask()))
         task.setParentTask(modifiedTask.getParentTask());
 
         this.repo.save(task);
@@ -158,4 +151,11 @@ public class TaskController {
         this.delete(task.id);
         return task;
     }
+
+    @MessageMapping("/tasks/drag")
+    @SendTo("/topic/tasks/drag")
+    public List<Long> dragMessage(List<Long> ids) {
+        return ids;
+    }
+
 }
