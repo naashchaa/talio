@@ -53,7 +53,6 @@ public class TaskCtrl extends Node implements Initializable {
             }
         });
         // Subscribing the task controller to the delete path
-        System.out.println(this.toString() + " is registered");
         this.server.registerForMessages("/topic/tasks/delete", Task.class, task -> {
             if (task.id == this.task.id) {
                 this.mainCtrl.deleteTaskLater(task);

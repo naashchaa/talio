@@ -41,13 +41,10 @@ public class BoardCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.server.registerForTaskListsL(taskList -> {
-//            this.mainCtrl.addTaskList(taskList);
-//            this.mainCtrl.loadTaskLists();
-//            this.addTaskListToBoard(taskList);
-            Long l1 = this.mainCtrl.getCurrentBoard().getId();
+        this.connectToWebSockets();
+        this.server.registerForMessages("/topic/taskList/add", TaskList.class, taskList -> {
+            Long l1 = taskList.getParentBoard().getId();
             Long l2 = this.board.getId();
-            System.out.println("Board " + l2);
             if (l1.equals(l2)) {
                 this.showAddedTaskList(taskList);
             }
@@ -56,7 +53,6 @@ public class BoardCtrl implements Initializable {
 
     public void showAddedTaskList(TaskList taskList) {
         Platform.runLater(() -> {
-            //this.mainCtrl.addTaskList(taskList);
             this.mainCtrl.addToTaskListCtrl(this.addTaskListToBoard(taskList));
         });
     }
@@ -138,9 +134,12 @@ public class BoardCtrl implements Initializable {
         this.loadTaskLists();
     }
 
-
-
     public void setName(String name){
         this.boardName.setText(name);
+    }
+
+    public void connectToWebSockets() {
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
     }
 }

@@ -134,8 +134,13 @@ public class TaskListController {
         res.onCompletion(() -> {
             this.listeners.remove(key);
         });
-
         return res;
+    }
+
+    @MessageMapping("/taskList/add")
+    @SendTo("/topic/taskList/add")
+    public TaskList addMessage(TaskList taskList) {
+        return this.add(taskList).getBody();
     }
 
     @MessageMapping("/taskList/edit")

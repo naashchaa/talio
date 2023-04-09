@@ -151,6 +151,7 @@ public class MainCtrl {
     }
 
     public void showAddTaskList() {
+        this.addTaskListCtrl.connectToWebSockets();
         this.popup.setTitle("Add New Task List");
         this.popup.setScene(this.addTaskList);
         this.showPopUp();

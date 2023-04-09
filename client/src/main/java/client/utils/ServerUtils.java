@@ -115,7 +115,6 @@ public class ServerUtils {
                             .request(APPLICATION_JSON)
                             .accept(APPLICATION_JSON)
                                 .delete();
-        System.out.println();
     }
 
     public void deleteTask(Task task) {

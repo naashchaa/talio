@@ -58,9 +58,7 @@ public class TaskListCtrl extends Node implements Initializable {
                 this.showLastAddedTask(task);
             }
         });
-        System.out.println("registering for edit");
         this.server.registerForMessages("/topic/taskList/edit", TaskList.class, taskList -> {
-            System.out.println("TL id: " + this.taskList.getId());
             if (this.taskList.getId().equals(taskList.getId())) {
                 this.updateTaskListName(taskList);
             }
