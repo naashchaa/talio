@@ -26,10 +26,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 
 public class MainCtrl {
 
@@ -59,13 +57,31 @@ public class MainCtrl {
 
     private DeleteTaskListCtrl deleteTaskListCtrl;
     private Scene deleteTaskList;
-
     private CreateBoardCtrl createBoardCtrl;
     private Scene createBoard;
+
+    private AdminLoginCtrl adminLoginCtrl;
+    private Scene adminLogin;
+
+    private DeleteBoardCtrl deleteBoardCtrl;
+    private Scene deleteBoard;
+
+    private EditBoardCtrl editBoardCtrl;
+    private Scene editBoard;
+
+    private LeaveBoardCtrl leaveBoardCtrl;
+    private Scene leaveBoard;
+
+    private JoinBoardCtrl joinBoardCtrl;
+    private Scene joinBoard;
+
+    private JoinKeyCtrl joinKeyCtrl;
+    private Scene joinKey;
 
     private TaskListCtrl taskListCtrl;
     private Scene taskList;
     private Map<Long, TaskListCtrl> taskListCtrls;
+    private boolean isAdmin = false;
 
     /**
      * Initializes the main controller, its stage, scenes, and associated controllers.
@@ -100,6 +116,25 @@ public class MainCtrl {
         this.createBoardCtrl = (CreateBoardCtrl) scenes.get(7).getKey();
         this.createBoard = new Scene(scenes.get(7).getValue());
 
+        this.adminLoginCtrl = (AdminLoginCtrl) scenes.get(8).getKey();
+        this.adminLogin = new Scene(scenes.get(8).getValue());
+
+        this.deleteBoardCtrl = (DeleteBoardCtrl) scenes.get(9).getKey();
+        this.deleteBoard = new Scene(scenes.get(9).getValue());
+
+        this.editBoardCtrl = (EditBoardCtrl) scenes.get(10).getKey();
+        this.editBoard = new Scene(scenes.get(10).getValue());
+
+        this.leaveBoardCtrl = (LeaveBoardCtrl) scenes.get(11).getKey();
+        this.leaveBoard = new Scene(scenes.get(11).getValue());
+
+        this.joinBoardCtrl = (JoinBoardCtrl) scenes.get(12).getKey();
+        this.joinBoard = new Scene(scenes.get(12).getValue());
+
+        this.joinKeyCtrl = (JoinKeyCtrl) scenes.get(13).getKey();
+        this.joinKey = new Scene(scenes.get(13).getValue());
+
+        this.taskListList = new ArrayList<>();
         this.taskListCtrls = new HashMap<>();
 
         this.showConnectToServer();
@@ -129,6 +164,39 @@ public class MainCtrl {
         this.showPopUp();
     }
 
+    public void showDeleteBoard(BoardCtrl boardctrl) {
+        this.popup.setTitle("Delete Board");
+        this.popup.setScene(this.deleteBoard);
+        this.deleteBoardCtrl.setStuff(boardctrl, this.appOverviewCtrl);
+        this.showPopUp();
+    }
+
+    public void showEditBoard(Board board) {
+        this.popup.setTitle("Edit Board");
+        this.popup.setScene(this.editBoard);
+        this.editBoardCtrl.setStuff(board, this.appOverviewCtrl);
+        this.showPopUp();
+    }
+
+    public void showRemoveBoard(BoardCtrl boardctrl){
+        this.popup.setTitle("Remove Board");
+        this.popup.setScene(this.leaveBoard);
+        this.leaveBoardCtrl.setBoardCtrl(boardctrl);
+        this.showPopUp();
+    }
+
+    public void showJoinBoard(){
+        this.popup.setTitle("Join Board");
+        this.popup.setScene(this.joinBoard);
+        this.showPopUp();
+    }
+
+    public void showJoinKey(Board board){
+        this.popup.setTitle("Join Key");
+        this.popup.setScene(this.joinKey);
+        this.joinKeyCtrl.setFields(board);
+        this.showPopUp();
+    }
 
     /** This brings up the add task popup.
      * @param taskListCtrl the parent task list controller
@@ -162,6 +230,20 @@ public class MainCtrl {
         this.popup.setScene(this.deleteTaskList);
         this.deleteTaskListCtrl.setTaskListCtrl(taskListCtrl);
         this.showPopUp();
+    }
+
+    public void showAdminLogin() {
+        this.popup.setTitle("Admin Login");
+        this.popup.setScene(this.adminLogin);
+        this.showPopUp();
+    }
+
+    public void showPopUp() {
+        this.popup.show();
+    }
+
+    public void hidePopUp() {
+        this.popup.hide();
     }
 
     public void loadBoard() {
@@ -362,14 +444,6 @@ public class MainCtrl {
         listCtrl.addTaskToList(task);
     }
 
-    public void showPopUp() {
-        this.popup.show();
-    }
-
-    public void hidePopUp() {
-        this.popup.hide();
-    }
-
     public void showEditTaskList(TaskList taskList) {
         this.editTaskListCtrl.connectToWebSockets();
         this.popup.setTitle("Edit Task List");
@@ -399,4 +473,12 @@ public class MainCtrl {
         this.currentBoardCtrl.removeTaskList(taskList);
     }
 
+    public void setAdmin(boolean b) {
+        this.isAdmin = b;
+
+    }
+
+    public boolean isAdmin() {
+        return this.isAdmin;
+    }
 }

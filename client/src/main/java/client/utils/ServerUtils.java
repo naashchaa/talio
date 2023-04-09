@@ -189,6 +189,51 @@ public class ServerUtils {
                 .get(new GenericType<List<Task>>() {});
     }
 
+    public void deleteBoard(Board board) {
+        ClientBuilder.newClient(new ClientConfig())
+        .target(SERVER).path("api/boards/" + board.getId())
+        .request(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+            .delete();
+    }
+
+    /**
+     * @param board the board from which everything should be deleted
+     */
+    public void deleteEverythingOfBoard(Board board) {
+        List<TaskList> taskLists = this.getTaskListOfBoard(board);
+        for (TaskList taskList : taskLists) {
+            this.deleteTasksParentTaskList(taskList);
+            this.deleteTaskList(taskList);
+        }
+    }
+
+    public Board editBoard(Board board) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/boards/update") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(board, APPLICATION_JSON), Board.class);
+    }
+
+    /**
+     * @param id the id of the board to check
+     * @return true if the board exists, false otherwise
+     */
+    public boolean checkBoardExists(Long id) {
+        try{
+            Board board = ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("/api/boards/" + id)
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(new GenericType<Board>() {});
+            return true;
+        }
+        catch (RuntimeException e){
+            return false;
+        }
+    }
+
     // WEB SOCKETS
     private StompSession session;
 

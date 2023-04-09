@@ -24,6 +24,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 public class Main {
 
     public static void main(String[] args) {
+        System.out.println("The admin password is 'worcestershireSauce'");
         SpringApplication.run(Main.class, args);
     }
 }

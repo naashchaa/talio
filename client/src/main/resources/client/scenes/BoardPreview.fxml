@@ -12,7 +12,7 @@
             <Font name="Berlin Sans FB Demi Bold" size="16.0" />
          </font>
       </Label>
-      <Button layoutX="26.0" layoutY="41.0" mnemonicParsing="false" text="Edit" />
-      <Button layoutX="92.0" layoutY="41.0" mnemonicParsing="false" text="Remove" />
+      <Button layoutX="26.0" layoutY="41.0" mnemonicParsing="false" onAction="#edit" text="Edit" />
+      <Button layoutX="92.0" layoutY="41.0" mnemonicParsing="false" onAction="#remove" text="Leave" />
    </children>
 </AnchorPane>

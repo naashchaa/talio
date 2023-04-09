@@ -6,7 +6,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane prefHeight="294.0" prefWidth="518.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ConnectToServerCtrl">
    <children>
       <Text layoutX="119.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Connect to server">
@@ -15,7 +14,8 @@
          </font>
       </Text>
       <TextField fx:id="textField" layoutX="57.0" layoutY="135.0" prefHeight="25.0" prefWidth="403.0" />
-      <Button layoutX="229.0" layoutY="205.0" mnemonicParsing="false" onAction="#connect" text="Connect" />
+      <Button layoutX="339.0" layoutY="205.0" mnemonicParsing="false" onAction="#connect" text="Connect" />
       <Text fx:id="error" fill="RED" layoutX="98.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="There was an error connecting to the server. Please try again." visible="false" />
+      <Button layoutX="119.0" layoutY="205.0" mnemonicParsing="false" onAction="#showAdminLogin" text="Admin Login" />
    </children>
 </AnchorPane>

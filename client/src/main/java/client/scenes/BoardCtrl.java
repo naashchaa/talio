@@ -130,6 +130,12 @@ public class BoardCtrl implements Initializable {
         }
     }
 
+    public void deleteBoard() {
+        //TODO: check if works correctly
+        this.server.deleteEverythingOfBoard(this.board);
+        this.server.deleteBoard(this.board);
+    }
+
     public void refresh() {
         this.loadTaskLists();
     }
@@ -141,5 +147,9 @@ public class BoardCtrl implements Initializable {
     public void connectToWebSockets() {
         this.server.terminateWebSocketConnection();
         this.server.establishWebSocketConnection();
+    }
+
+    public void getJoinKey() {
+        this.mainCtrl.showJoinKey(this.board);
     }
 }

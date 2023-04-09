@@ -38,4 +38,8 @@ public class ConnectToServerCtrl {
         this.server.establishWebSocketConnection();
         this.mainCtrl.showAppOverview();
     }
+
+    public void showAdminLogin() {
+        this.mainCtrl.showAdminLogin();
+    }
 }
