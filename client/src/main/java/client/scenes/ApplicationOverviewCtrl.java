@@ -10,15 +10,13 @@ import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
-
-import java.util.HashMap;
 import java.util.*;
 
 public class ApplicationOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private HashMap<Board, Pair<BoardCtrl, Parent>> boards;
-    private HashMap<Board, Pair<BoardPreviewCtrl, Parent>> boardPreviews;
+    private Map<Board, Pair<BoardCtrl, Parent>> boards;
+    private Map<Board, Pair<BoardPreviewCtrl, Parent>> boardPreviews;
     @FXML
     private VBox boardList;
     @FXML
@@ -39,8 +37,13 @@ public class ApplicationOverviewCtrl {
     public void create() {
         this.mainCtrl.showCreateBoard();
     }
-    public void join() {
 
+    public void join() {
+        this.mainCtrl.showJoinBoard();
+    }
+
+    public void adminLogin() {
+        this.mainCtrl.showAdminLogin();
     }
 
     /**
@@ -49,10 +52,18 @@ public class ApplicationOverviewCtrl {
      * @param board - the board associated with that preview
      */
     public void addBoardPreview(String name, Board board) {
-        var pair =
-                (Main.FXML.load(BoardPreviewCtrl.class, "client", "scenes", "BoardPreview.fxml"));
+        Pair<BoardPreviewCtrl, Parent> pair;
+        if (this.mainCtrl.isAdmin()){
+            pair = (Main.FXML.load(BoardPreviewCtrl.class,
+                            "client", "scenes", "AdminBoardPreview.fxml"));
+        }
+        else {
+            pair = (Main.FXML.load(BoardPreviewCtrl.class,
+                            "client", "scenes", "BoardPreview.fxml"));
+        }
         pair.getKey().setName(name);
         this.boardList.getChildren().add(pair.getValue());
+        this.boardPreviews.put(board, pair);
         pair.getKey().setBoard(board);
         this.mainCtrl.hidePopUp();
     }
@@ -89,12 +100,43 @@ public class ApplicationOverviewCtrl {
      * Loads the previews of the existing boards.
      */
     public void loadExistingBoards(){
+        this.boardList.getChildren().clear();
+        this.boardPreviews.clear();
+        this.boards.clear();
         for(Board board : this.server.getBoards()) {
             this.addBoardPreview(board.getName(), board);
             this.addBoard(board);
         }
     }
 
+    public BoardCtrl getBoardCtrl(Board board) {
+        return this.boards.get(board).getKey();
+    }
+
+    /** Removes the Ctrls from the list of boards and previews
+     *  and puts them back in after editing the name.
+     * @param board - the board to be edited
+     * @param newName - the new name of the board
+     */
+    public void editBoard(Board board, String newName) {
+        var pair1 = this.boardPreviews.get(board);
+        var pair2 = this.boards.get(board);
+        pair1.getKey().editLabel(newName);
+        pair2.getKey().setName(newName);
+        this.boardPreviews.remove(board);
+        this.boards.remove(board);
+        board.setName(newName);
+        this.boardPreviews.put(board, pair1);
+        this.boards.put(board, pair2);
+        this.server.editBoard(board);
+    }
+
+    public void deleteBoard(Board board) {
+        this.boardList.getChildren().remove(this.boardPreviews
+                .get(board).getValue());
+        this.boardPreviews.remove(board);
+        this.boards.remove(board);
+    }
 
     public void stop() {
         this.server.stop();

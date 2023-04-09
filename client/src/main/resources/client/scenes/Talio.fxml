@@ -23,14 +23,15 @@
                </padding></VBox>
          </content>
       </ScrollPane>
-      <Label alignment="CENTER" layoutX="14.0" layoutY="107.0" prefHeight="34.0" prefWidth="200.0" text="Your Boards">
+      <Label alignment="CENTER" layoutX="19.0" layoutY="107.0" prefHeight="34.0" prefWidth="200.0" text="Your Boards">
          <font>
             <Font name="Berlin Sans FB Demi Bold" size="19.0" />
          </font>
       </Label>
-      <Button layoutX="107.0" layoutY="66.0" mnemonicParsing="false" onAction="#create" text="Create" />
+      <Button layoutX="14.0" layoutY="111.0" mnemonicParsing="false" onAction="#create" text="Create" />
       <AnchorPane fx:id="boardDisplay" accessibleText="Bo" layoutX="228.0" layoutY="65.0" prefHeight="456.0" prefWidth="702.0" />
       <Button layoutX="14.0" layoutY="65.0" mnemonicParsing="false" onAction="#reconnect" text="Reconnect" />
-      <Button layoutX="176.0" layoutY="66.0" mnemonicParsing="false" onAction="#join" text="Join" />
+      <Button layoutX="175.0" layoutY="111.0" mnemonicParsing="false" onAction="#join" text="Join" />
+      <Button layoutX="129.0" layoutY="65.0" mnemonicParsing="false" onAction="#adminLogin" text="Admin Login" />
    </children>
 </AnchorPane>

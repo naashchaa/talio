@@ -37,4 +37,20 @@ public class BoardPreviewCtrl {
     public void loadBoard() {
         this.appOverview.loadBoardIntoOverview(this.board);
     }
+
+    public void delete() {
+        this.mainCtrl.showDeleteBoard(this.appOverview.getBoardCtrl(this.board));
+    }
+
+    public void edit() {
+        this.mainCtrl.showEditBoard(this.board);
+    }
+
+    public void remove() {
+        this.mainCtrl.showRemoveBoard(this.appOverview.getBoardCtrl(this.board));
+    }
+
+    public void editLabel(String name) {
+        this.boardTitle.setText(name);
+    }
 }

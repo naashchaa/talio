@@ -56,6 +56,18 @@ public class Main extends Application {
             FXML.load(DeleteTaskListCtrl.class, "client", "scenes", "DeleteTaskList.fxml");
         var createBoard =
             FXML.load(CreateBoardCtrl.class, "client", "scenes", "CreateBoard.fxml");
+        var adminLogin =
+                FXML.load(AdminLoginCtrl.class, "client", "scenes", "AdminLogin.fxml");
+        var deleteBoard =
+                FXML.load(DeleteBoardCtrl.class, "client", "scenes", "DeleteBoard.fxml");
+        var editBoard =
+                FXML.load(EditBoardCtrl.class, "client", "scenes", "EditBoard.fxml");
+        var removeBoard =
+                FXML.load(LeaveBoardCtrl.class, "client", "scenes", "LeaveBoard.fxml");
+        var joinBoard =
+                FXML.load(JoinBoardCtrl.class, "client", "scenes", "JoinBoard.fxml");
+        var joinKey =
+                FXML.load(JoinKeyCtrl.class, "client", "scenes", "JoinKey.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 
@@ -67,7 +79,13 @@ public class Main extends Application {
             editTaskList,
             editTask,
             deleteTaskList,
-            createBoard
+            createBoard,
+            adminLogin,
+            deleteBoard,
+            editBoard,
+            removeBoard,
+            joinBoard,
+            joinKey
         );
 
         mainCtrl.initialize(primaryStage, scenes);
