@@ -37,6 +37,7 @@ public class ConnectToServerCtrl {
         this.server.terminateWebSocketConnection();
         this.server.establishWebSocketConnection();
         this.mainCtrl.showAppOverview();
+        event.consume();
     }
 
     public void showAdminLogin() {

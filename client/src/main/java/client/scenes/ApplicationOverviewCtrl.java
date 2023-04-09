@@ -49,9 +49,9 @@ public class ApplicationOverviewCtrl {
     /**
      * Adds the preview of a board in the list containing the user's boards.
      * @param name - the name of the board
-     * @param board - the board associated with that preview
+     * @param ctrl - the board controller associated with that preview
      */
-    public void addBoardPreview(String name, Board board) {
+    public void addBoardPreview(String name, BoardCtrl ctrl) {
         Pair<BoardPreviewCtrl, Parent> pair;
         if (this.mainCtrl.isAdmin()){
             pair = (Main.FXML.load(BoardPreviewCtrl.class,
@@ -62,9 +62,10 @@ public class ApplicationOverviewCtrl {
                             "client", "scenes", "BoardPreview.fxml"));
         }
         pair.getKey().setName(name);
+        pair.getKey().setParentCtrl(this);
+        pair.getKey().setBoardCtrl(ctrl);
         this.boardList.getChildren().add(pair.getValue());
-        this.boardPreviews.put(board, pair);
-        pair.getKey().setBoard(board);
+        this.boardPreviews.put(ctrl.getBoard(), pair);
         this.mainCtrl.hidePopUp();
     }
 
@@ -72,13 +73,16 @@ public class ApplicationOverviewCtrl {
      * Adds a new board and sets its corresponding
      * controllers, so they can later be accessed.
      * @param board - the board
+     * @return the created board's controller
      */
-    public void addBoard(Board board) {
+    public BoardCtrl addBoard(Board board) {
         var pairBoard =
                 (Main.FXML.load(BoardCtrl.class, "client", "scenes", "Board.fxml"));
         this.boards.put(board, pairBoard);
         pairBoard.getKey().setBoard(board);
+        pairBoard.getKey().setOverviewCtrl(this);
         pairBoard.getKey().setName(board.getName());
+        return pairBoard.getKey();
     }
 
     /**
@@ -94,7 +98,7 @@ public class ApplicationOverviewCtrl {
         this.boardDisplay.getChildren().add(boardScene);
         this.mainCtrl.updateBoard(this.boards.get(board).getKey());
         this.boards.get(board).getKey().setBoard(board);
-        this.boards.get(board).getKey().loadTaskLists();
+        this.boards.get(board).getKey().loadContents();
     }
 
     /**
@@ -105,8 +109,7 @@ public class ApplicationOverviewCtrl {
         this.boardPreviews.clear();
         this.boards.clear();
         for(Board board : this.server.getBoards()) {
-            this.addBoardPreview(board.getName(), board);
-            this.addBoard(board);
+            this.addBoardPreview(board.getName(), this.addBoard(board));
         }
     }
 

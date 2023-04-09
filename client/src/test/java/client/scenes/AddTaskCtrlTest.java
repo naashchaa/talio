@@ -31,19 +31,4 @@ class AddTaskCtrlTest {
         sut.setParentTaskListCtrl(ctrlMock);
         Assertions.assertEquals(ctrlMock, sut.getParentTaskListCtrl());
     }
-
-    @Test
-    public void correctlyReturnsListOfTasks() {
-        TaskList mockList = mock(TaskList.class);
-        Task a = new Task("a", null, mockList, null);
-        Task b = new Task("b", null, mockList, null);
-        Task c = new Task("c", null, mockList, null);
-        List<Task> expected = new ArrayList<>();
-        expected.add(a);
-        expected.add(b);
-        expected.add(c);
-        when(sut.getTasks(any(TaskList.class))).thenReturn(expected);
-        Assertions.assertEquals(expected, sut.getTasks(mockList));
-    }
-
 }

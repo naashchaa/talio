@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.services.BoardService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
@@ -13,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -22,8 +22,9 @@ import java.util.ResourceBundle;
 public class BoardCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private ApplicationOverviewCtrl ctrl;
+    private final BoardService boardService;
     private Board board;
-
     @FXML
     private Label boardName;
     @FXML
@@ -32,30 +33,47 @@ public class BoardCtrl implements Initializable {
     /** Initializes the board controller and starts polling for updates.
      * @param server server utils instance
      * @param mainCtrl main controller instance
+     * @param boardService the service class for board logic
      */
     @Inject
-    public BoardCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public BoardCtrl(ServerUtils server, MainCtrl mainCtrl, BoardService boardService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.boardService = boardService;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.connectToWebSockets();
-        this.server.registerForMessages("/topic/taskList/add", TaskList.class, taskList -> {
-            Long l1 = taskList.getParentBoard().getId();
-            Long l2 = this.board.getId();
-            if (l1.equals(l2)) {
-                this.showAddedTaskList(taskList);
-            }
-        });
+        this.server.registerForTaskListsL(this::addTaskListToBoard);
     }
 
-    public void showAddedTaskList(TaskList taskList) {
-        Platform.runLater(() -> {
-            this.mainCtrl.addToTaskListCtrl(this.addTaskListToBoard(taskList));
-        });
+    public void setOverviewCtrl(ApplicationOverviewCtrl ctrl) {
+        this.ctrl = ctrl;
     }
+
+    public void loadContentsLater() {
+        Platform.runLater(this::loadContents);
+    }
+
+    public void loadContents() {
+        this.boardService.loadContents(this);
+    }
+
+    public void refreshLater() {
+        this.boardService.refreshBoardLater(this);
+    }
+
+//    public void refreshTaskListLater(BoardCtrl ctrl, TaskListCtrl list) {
+//        this.boardService.refreshTaskListLater(ctrl, list);
+//        this.connectToWebSockets();
+//        this.server.registerForMessages("/topic/tasklists/add", TaskList.class, taskList -> {
+//            Long l1 = taskList.getParentBoard().getId();
+//            Long l2 = this.board.getId();
+//            if (l1.equals(l2)) {
+//                this.addTaskListToBoard(taskList);
+//            }
+//        });
+//    }
 
     /**
      * Find the correct node that was previously removed and deletes it.
@@ -80,24 +98,18 @@ public class BoardCtrl implements Initializable {
             Label label = (Label) pair.getValue().lookup("#taskListName");
             label.setText(taskList.getName());
             pair.getKey().setTaskList(taskList);
+            pair.getKey().setParentCtrl(this);
+            pair.getValue().setUserData(pair.getKey());
             Node button = this.container.getChildren().get(this.container.getChildren().size()-1);
             this.container.getChildren().
                     set(this.container.getChildren().size()-1, pair.getValue());
             this.container.getChildren().add(button);
-            pair.getValue().setUserData(taskList.getId());
+            pair.getValue().setUserData(pair.getKey());
             // might ruin it
             pair.getKey().loadTasksLater();
             return pair.getKey();
         }catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    public void loadTaskLists() {
-        this.removeTaskLists();
-        List<TaskList> lists = this.server.getTaskListOfBoard(this.board);
-        for(TaskList taskList: lists) {
-            this.mainCtrl.addToTaskListCtrl(this.addTaskListToBoard(taskList));
         }
     }
 
@@ -108,11 +120,6 @@ public class BoardCtrl implements Initializable {
         this.mainCtrl.showAddTaskList();
     }
 
-    /**
-     * Returns the first of the list of boards from the database.
-     * If the database has no boards, it creates one with the name "Default Board".
-     * @return returns the board from the database.
-     */
     public Board getBoard() {
         return this.board;
     }
@@ -121,13 +128,23 @@ public class BoardCtrl implements Initializable {
         this.board = board;
     }
 
+    public ApplicationOverviewCtrl getParentCtrl() {
+        return this.ctrl;
+    }
+
+    public HBox getListContainer() {
+        return this.container;
+    }
+
     /**
      * Removes all children in horizontal box but the button.
      */
     public void removeTaskLists() {
-        while (this.container.getChildren().size() > 1) {
-            this.container.getChildren().remove(0);
-        }
+        this.boardService.removeTaskLists(this);
+    }
+
+    public void editBoard(String newName) {
+        this.ctrl.editBoard(this.board, newName);
     }
 
     public void deleteBoard() {
@@ -137,7 +154,7 @@ public class BoardCtrl implements Initializable {
     }
 
     public void refresh() {
-        this.loadTaskLists();
+        this.boardService.loadTaskLists(this);
     }
 
     public void setName(String name){
@@ -150,6 +167,6 @@ public class BoardCtrl implements Initializable {
     }
 
     public void getJoinKey() {
-        this.mainCtrl.showJoinKey(this.board);
+        this.mainCtrl.showJoinKey(this);
     }
 }

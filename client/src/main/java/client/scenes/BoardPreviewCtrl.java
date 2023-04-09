@@ -2,52 +2,48 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 
 public class BoardPreviewCtrl {
     private final MainCtrl mainCtrl;
-    private final ServerUtils server;
-    private Board board;
-    private ApplicationOverviewCtrl appOverview;
+    private ApplicationOverviewCtrl parentCtrl;
+    private BoardCtrl boardCtrl;
     @FXML
     private Label boardTitle;
 
     @Inject
-    public BoardPreviewCtrl(ServerUtils server, MainCtrl mainCtrl,
-                            ApplicationOverviewCtrl appOverview) {
-        this.server = server;
+    public BoardPreviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
-        this.appOverview = appOverview;
     }
 
     public void setName(String name) {
         this.boardTitle.setText(name);
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
+    public void setParentCtrl(ApplicationOverviewCtrl ctrl) {
+        this.parentCtrl = ctrl;
     }
-    public Board getBoard() {
-        return this.board;
+
+    public void setBoardCtrl(BoardCtrl ctrl) {
+        this.boardCtrl = ctrl;
     }
 
     public void loadBoard() {
-        this.appOverview.loadBoardIntoOverview(this.board);
+        this.parentCtrl.loadBoardIntoOverview(this.boardCtrl.getBoard());
     }
 
     public void delete() {
-        this.mainCtrl.showDeleteBoard(this.appOverview.getBoardCtrl(this.board));
+        this.mainCtrl.showDeleteBoard(this.boardCtrl);
     }
 
     public void edit() {
-        this.mainCtrl.showEditBoard(this.board);
+        this.mainCtrl.showEditBoard(this.boardCtrl);
     }
 
     public void remove() {
-        this.mainCtrl.showRemoveBoard(this.appOverview.getBoardCtrl(this.board));
+        this.mainCtrl.showRemoveBoard(this.boardCtrl);
     }
 
     public void editLabel(String name) {
