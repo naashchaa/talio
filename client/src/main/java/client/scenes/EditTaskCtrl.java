@@ -2,32 +2,20 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class EditTaskCtrl implements Initializable {
+public class EditTaskCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private Task task;
+    private TaskCtrl ctrl;
     @FXML
     private TextField name;
-    private boolean isConnected;
 
     @Inject
     public EditTaskCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.isConnected = false;
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-//        this.connectToWebSockets();
     }
 
     /**
@@ -44,23 +32,24 @@ public class EditTaskCtrl implements Initializable {
      */
     public void confirm() {
         String newName = this.name.getText();
-        this.task.setName(newName);
-        this.server.send("/app/tasks/edit", this.task);
+        this.ctrl.getTask().setName(newName);
+        this.server.send("/app/tasks/edit", this.ctrl.getTask());
 
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }
 
-    public void setTask(Task task) {
-        this.task = task;
-        this.name.setText(task.getName());
+    public TaskCtrl getTaskCtrl() {
+        return this.ctrl;
+    }
+
+    public void setTaskCtrl(TaskCtrl ctrl) {
+        this.ctrl = ctrl;
+        this.name.setText(ctrl.getTask().getName());
     }
 
     public void connectToWebSockets() {
-        if (this.isConnected)
-            return;
         this.server.terminateWebSocketConnection();
         this.server.establishWebSocketConnection();
-        this.isConnected = true;
     }
 }

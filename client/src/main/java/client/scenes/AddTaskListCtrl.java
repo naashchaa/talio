@@ -7,9 +7,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * AddTaskList is currently connected to MainCtrl, but
  * the board is done will be connected to board and task.
@@ -17,18 +14,23 @@ import java.util.List;
 public class AddTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-
-    private final BoardCtrl boardCtrl;
+    private BoardCtrl parentBoardCtrl;
+    private boolean isConnected;
     @FXML
     private TextField name;
 
 
     @Inject
-    public AddTaskListCtrl(ServerUtils server, MainCtrl mainCtrl, BoardCtrl boardCtrl) {
+    public AddTaskListCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.boardCtrl = boardCtrl;
+        this.isConnected = false;
     }
+
+    public void setParentBoardCtrl(BoardCtrl ctrl) {
+        this.parentBoardCtrl = ctrl;
+    }
+
 
     /**
      * Undoes the action of creating a task list by deleting
@@ -53,12 +55,10 @@ public class AddTaskListCtrl {
      */
     public void createHelper() {
         TaskList tasklist = new TaskList(this.name.getText(),
-                this.mainCtrl.getCurrentBoard());
-        //this.server.send("/app/taskList", tasklist);
-        try { // might need a platform.runlater
-            this.server.addTaskList(tasklist);
-            //tasklist = this.server.getTaskList(tasklist); // delete if not work!
-            this.boardCtrl.addTaskListToBoard(tasklist);
+                this.parentBoardCtrl.getBoard());
+        try {
+            //tasklist = this.server.addTaskList(tasklist);
+            this.server.send("/app/tasklists/add", tasklist);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -67,18 +67,11 @@ public class AddTaskListCtrl {
         this.mainCtrl.hidePopUp();
     }
 
-    /**
-     * Returns the tasks lists from the database if there are any.
-     * @return the list of task lists.
-     */
-    public List<TaskList> getTaskLists() {
-        try {
-            var lists = this.server.getTaskLists();
-            return lists;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+    public void connectToWebSockets() {
+        if (this.isConnected)
+            return;
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
+        this.isConnected = true;
     }
 }

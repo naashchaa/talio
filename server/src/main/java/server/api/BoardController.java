@@ -45,12 +45,46 @@ public class BoardController {
      */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Board> add(@RequestBody Board board) {
+        //TODO: long polling / websockets syncing clients
 
         if (board.getName() == null){
             return ResponseEntity.badRequest().build();
         }
 
         Board saved = this.repo.save(board);
+        return ResponseEntity.ok(saved);
+    }
+
+    /**
+     * @param id of the board to be deleted
+     * @return ResponseEntity
+     */
+    //delete mapping
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") long id) {
+        //TODO: long polling / websockets syncing clients
+        if (id < 0 || !this.repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        this.repo.deleteById(id);
+        return ResponseEntity.ok("delete successful");
+    }
+
+    /**
+     * @param board to be updated
+     * @return ResponseEntity
+     */
+    @PostMapping(path = {"/update"})
+    //TODO: long polling / websockets syncing clients
+    public ResponseEntity<Board> update(@RequestBody Board board) {
+        if (board.getId() < 0 || !this.repo.existsById(board.getId())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Board saved = this.repo.findById(board.getId()).get();
+        saved.setName(board.getName());
+
+        this.repo.save(saved);
         return ResponseEntity.ok(saved);
     }
 }

@@ -1,11 +1,10 @@
 package client.scenes;
 
+import client.services.BoardService;
 import client.services.TaskService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Task;
-import commons.TaskList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -16,12 +15,18 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TaskCtrl extends Node implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final TaskService service;
+    private final BoardService boardService;
+    private TaskListCtrl parentCtrl;
+    private boolean isConnected;
+
     private Task task;
     @FXML
     private BorderPane taskContainer;
@@ -34,32 +39,72 @@ public class TaskCtrl extends Node implements Initializable {
     @FXML
     private Pane taskBottom;
 
+    /**
+     * Constructor for a task ctrl.
+     * @param server
+     * @param mainCtrl
+     * @param service
+     * @param title
+     * @param boardService
+     */
     @Inject
-    public TaskCtrl(ServerUtils server, MainCtrl mainCtrl, TaskService service, String title) {
+    public TaskCtrl(ServerUtils server, MainCtrl mainCtrl, TaskService service, String title,
+                    BoardService boardService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.service = service;
         this.taskTitle = new Label(title);
+        this.boardService = boardService;
+        this.isConnected = false;
+        System.out.println("created task ctrl " + this.taskTitle.getText());
     }
 
+    /** This method initializes task controller.
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("task ctrl connected to ws");
         this.connectToWebSockets();
         this.service.connectToWebSockets();
+        this.setDragStuff();
+    }
+
+    /**
+     * Registers for methods by subscribing to websockets.
+     */
+    public void registerForMessages() {
         // Subscribing the task controller to the edit path
         this.server.registerForMessages("/topic/tasks/edit", Task.class, task -> {
             if (task.id == this.task.id) {
-                this.mainCtrl.refreshTaskLater(task);
+                this.setTask(task);
+                System.out.println("received an edit notification");
+                this.service.refreshTaskLater(this);
             }
         });
         // Subscribing the task controller to the delete path
         this.server.registerForMessages("/topic/tasks/delete", Task.class, task -> {
-            if (task.id == this.task.id) {
-                this.mainCtrl.deleteTaskLater(task);
+//            if (task.id == this.task.id) {
+//                this.service.deleteTaskLater(this.parentCtrl, task);
+//            }
+            Long l1 = task.getId();
+            long l2 = this.task.getId();
+            if (l1.equals(l2)) {
+                System.out.println("in becasuse " + l1 + " " + l2);
+                this.service.deleteTaskLater(this.parentCtrl, task);
             }
         });
-        // set on drag stuff
-        this.setDragStuff();
+    }
+
+    public TaskListCtrl getParentCtrl() {
+        return this.parentCtrl;
+    }
+
+    public void setParentCtrl(TaskListCtrl ctrl) {
+        this.parentCtrl = ctrl;
     }
 
     public Task getTask() {
@@ -70,17 +115,21 @@ public class TaskCtrl extends Node implements Initializable {
         this.task = task;
     }
 
-    public Task getNextTask(Task task) {
-        return this.service.getNextTask(task);
+    public TaskCtrl getNextTask(Task task) {
+        return this.service.getNextTask(this.parentCtrl, task);
     }
 
-    public void moveTaskTo(Task taskToMove, TaskList listToMoveTo, Task nextTask) {
-        this.service.moveTaskTo(taskToMove, listToMoveTo, nextTask);
+    public boolean getIsConnected() {
+        return this.isConnected;
     }
 
+    public void moveTaskTo(TaskCtrl sourceTaskCtrl,
+                           TaskListCtrl targetListCtrl, Task nextTask) {
+        this.service.moveTaskTo(sourceTaskCtrl, targetListCtrl, nextTask);
+    }
 
     public void edit() {
-        this.mainCtrl.showEditTask(this.task);
+        this.mainCtrl.showEditTask(this);
     }
 
     /**
@@ -95,12 +144,22 @@ public class TaskCtrl extends Node implements Initializable {
     }
 
     public void connectToWebSockets() {
-        this.server.terminateWebSocketConnection();
-        this.server.establishWebSocketConnection();
+        if (!this.isConnected) {
+            this.server.establishWebSocketConnection();
+            this.isConnected = true;
+            this.registerForMessages();
+        }
+    }
+
+    public void disconnect() {
+        if (this.isConnected) {
+            this.server.terminateWebSocketConnection();
+            this.isConnected = false;
+        }
     }
 
     /**
-     * This method initializes all of the drag and drop related properties.
+     * This method initializes all the drag and drop related properties.
      */
     public void setDragStuff() {
         this.setDragDetected();
@@ -112,27 +171,23 @@ public class TaskCtrl extends Node implements Initializable {
     }
 
     /**
-     * Makes the task be able to be dragged.
+     * Makes the task able to be dragged.
      */
     public void setDragDetected() {
         BorderPane source = this.taskContainer;
-
         HBox content = this.contentContainer;
-        source.setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Dragboard db = source.startDragAndDrop(TransferMode.ANY);
-                ClipboardContent cc = new ClipboardContent();
-                cc.putString("Something");
-                db.setContent(cc);
-                source.setBackground(new Background(
-                        new BackgroundFill(
-                                Color.rgb(220,168,124), CornerRadii.EMPTY, Insets.EMPTY)));
-                content.setBackground(new Background(
-                        new BackgroundFill(
-                                Color.rgb(220,168,124), CornerRadii.EMPTY, Insets.EMPTY)));
-                event.consume();
-            }
+        source.setOnDragDetected(event -> {
+            Dragboard db = source.startDragAndDrop(TransferMode.ANY);
+            ClipboardContent cc = new ClipboardContent();
+            cc.putString("Something");
+            db.setContent(cc);
+            source.setBackground(new Background(
+                    new BackgroundFill(
+                            Color.rgb(220,168,124), CornerRadii.EMPTY, Insets.EMPTY)));
+            content.setBackground(new Background(
+                    new BackgroundFill(
+                            Color.rgb(220,168,124), CornerRadii.EMPTY, Insets.EMPTY)));
+            event.consume();
         });
     }
 
@@ -141,25 +196,19 @@ public class TaskCtrl extends Node implements Initializable {
      */
     public void setDragOver() {
         Pane topTarget = this.taskTop;
-        topTarget.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
 
-                if (event.getGestureSource() != topTarget.getParent()) {
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                }
-                event.consume();
+        topTarget.setOnDragOver(event -> {
+            if (event.getGestureSource() != topTarget.getParent()) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             }
+            event.consume();
         });
         Pane bottomTarget = this.taskBottom;
-        bottomTarget.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getGestureSource() != bottomTarget.getParent()) {
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                }
-                event.consume();
+        bottomTarget.setOnDragOver(event -> {
+            if (event.getGestureSource() != bottomTarget.getParent()) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             }
+            event.consume();
         });
     }
 
@@ -168,25 +217,19 @@ public class TaskCtrl extends Node implements Initializable {
      */
     public void setDragEntered() {
         Pane topTarget = this.taskTop;
-        topTarget.setOnDragEntered(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getGestureSource() != topTarget.getParent()) {
-                    topTarget.setBackground(new Background(
-                            new BackgroundFill(
-                                    Color.rgb(10, 125, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-                }
+        topTarget.setOnDragEntered(event -> {
+            if (event.getGestureSource() != topTarget.getParent()) {
+                topTarget.setBackground(new Background(
+                        new BackgroundFill(
+                                Color.rgb(10, 125, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             }
         });
         Pane bottomTarget = this.taskBottom;
-        bottomTarget.setOnDragEntered(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getGestureSource() != bottomTarget.getParent()) {
-                    bottomTarget.setBackground(new Background(
-                            new BackgroundFill(
-                                    Color.rgb(10, 125, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-                }
+        bottomTarget.setOnDragEntered(event -> {
+            if (event.getGestureSource() != bottomTarget.getParent()) {
+                bottomTarget.setBackground(new Background(
+                        new BackgroundFill(
+                                Color.rgb(10, 125, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             }
         });
     }
@@ -196,25 +239,19 @@ public class TaskCtrl extends Node implements Initializable {
      */
     public void setDragExited() {
         Pane topTarget = this.taskTop;
-        topTarget.setOnDragExited(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getGestureSource() != topTarget.getParent()) {
-                    topTarget.setBackground(new Background(
-                            new BackgroundFill(
-                                    Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-                }
+        topTarget.setOnDragExited(event -> {
+            if (event.getGestureSource() != topTarget.getParent()) {
+                topTarget.setBackground(new Background(
+                        new BackgroundFill(
+                                Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
             }
         });
         Pane bottomTarget = this.taskBottom;
-        bottomTarget.setOnDragExited(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getGestureSource() != bottomTarget.getParent()) {
-                    bottomTarget.setBackground(new Background(
-                            new BackgroundFill(
-                                    Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-                }
+        bottomTarget.setOnDragExited(event -> {
+            if (event.getGestureSource() != bottomTarget.getParent()) {
+                bottomTarget.setBackground(new Background(
+                        new BackgroundFill(
+                                Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
             }
         });
     }
@@ -226,55 +263,53 @@ public class TaskCtrl extends Node implements Initializable {
     public void setDragDropped() {
         // do the magic here
         Pane topTarget = this.taskTop;
+        topTarget.setOnDragDropped(event -> {
+            boolean success = false;
+            if (event.getGestureSource() != topTarget.getParent()) {
+                TaskCtrl sourceTaskCtrl = (TaskCtrl)((Node)event.getGestureSource()).getUserData();
+                TaskCtrl nextTask = (TaskCtrl)(topTarget.getParent()).getUserData();
+                TaskListCtrl targetList = nextTask.getParentCtrl();
+                this.setParentCtrl(targetList);
 
-        topTarget.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                boolean success = false;
-                System.out.println("dropped on the top");
-                if (event.getGestureSource() != topTarget.getParent()) {
-
-                    Task sourceTask = (Task)((Node)event.getGestureSource()).getUserData();
-                    Task nextTask = (Task)(topTarget.getParent()).getUserData();
-                    TaskList targetList = nextTask.getParentTaskList();
-
-                    TaskCtrl.this.moveTaskTo(sourceTask, targetList, nextTask);
-                    success = true;
-
-                }
-                event.setDropCompleted(success);
-                event.consume();
+                Long prevId = sourceTaskCtrl.getTask().getParentTaskList().getId();
+                TaskCtrl.this.moveTaskTo(sourceTaskCtrl, targetList, nextTask.getTask());
+                success = true;
+                List<Long> ids = new ArrayList<>();
+                ids.add(prevId);
+                ids.add(targetList.getTaskList().getId());
+                TaskCtrl.this.server.send("/app/tasks/drag", ids);
             }
+            event.setDropCompleted(success);
+            event.consume();
         });
 
         Pane bottomTarget = this.taskBottom;
+        bottomTarget.setOnDragDropped(event -> {
+            boolean success = false;
+            if (event.getGestureSource() != bottomTarget.getParent()) {
+                TaskCtrl sourceTaskCtrl = (TaskCtrl)((Node)event.getGestureSource()).getUserData();
+                TaskCtrl prevTaskCtrl = (TaskCtrl)(bottomTarget.getParent()).getUserData();
 
-        bottomTarget.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                boolean success = false;
-                System.out.println("dropped on the bottom");
-                if (event.getGestureSource() != bottomTarget.getParent()) {
-
-                    Task sourceTask = (Task)((Node)event.getGestureSource()).getUserData();
-                    Task prevTask = (Task)(bottomTarget.getParent()).getUserData();
-
-                    Task nextTask = TaskCtrl.this.getNextTask(prevTask);
-                    if (sourceTask.equals(nextTask)) {
-                        event.setDropCompleted(false);
-                        event.consume();
-                        return;
-                    }
-
-                    TaskList targetList = prevTask.getParentTaskList();
-
-                    TaskCtrl.this.moveTaskTo(sourceTask, targetList, nextTask);
-                    success = true;
-
+                TaskCtrl nextTaskCtrl = TaskCtrl.this.getNextTask(prevTaskCtrl.getTask());
+                Task nextTask = nextTaskCtrl == null ? null : nextTaskCtrl.getTask();
+                if (sourceTaskCtrl.getTask().equals(nextTask)) {
+                    event.setDropCompleted(false);
+                    event.consume();
+                    return;
                 }
-                event.setDropCompleted(success);
-                event.consume();
+
+                TaskListCtrl targetList = prevTaskCtrl.getParentCtrl();
+
+                Long prevId = sourceTaskCtrl.getTask().getParentTaskList().getId();
+                TaskCtrl.this.moveTaskTo(sourceTaskCtrl, targetList, nextTask);
+                success = true;
+                List<Long> ids = new ArrayList<>();
+                ids.add(prevId);
+                ids.add(targetList.getTaskList().getId());
+                TaskCtrl.this.server.send("/app/tasks/drag", ids);
             }
+            event.setDropCompleted(success);
+            event.consume();
         });
     }
 
@@ -284,19 +319,15 @@ public class TaskCtrl extends Node implements Initializable {
     public void setDragDone() {
         BorderPane source = this.taskContainer;
         HBox content = this.contentContainer;
-        source.setOnDragDone(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                System.out.println("drag done");
-                source.setBackground(new Background(
-                        new BackgroundFill(
-                                Color.rgb(232, 213, 196), CornerRadii.EMPTY, Insets.EMPTY)));
-                content.setBackground(new Background(
-                        new BackgroundFill(
-                                Color.rgb(232, 213, 196), CornerRadii.EMPTY, Insets.EMPTY)));
-                event.consume();
-            }
+
+        source.setOnDragDone(event -> {
+            source.setBackground(new Background(
+                    new BackgroundFill(
+                            Color.rgb(232, 213, 196), CornerRadii.EMPTY, Insets.EMPTY)));
+            content.setBackground(new Background(
+                    new BackgroundFill(
+                            Color.rgb(232, 213, 196), CornerRadii.EMPTY, Insets.EMPTY)));
+            event.consume();
         });
     }
-
 }

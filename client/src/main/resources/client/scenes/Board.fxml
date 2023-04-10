@@ -32,13 +32,13 @@
    <top>
       <Pane prefHeight="71.0" prefWidth="702.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="71.0" prefWidth="702.0" styleClass="title" text="TALIO" textFill="#fff7f7">
+            <Label fx:id="boardName" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="71.0" prefWidth="702.0" text="Board Name">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <Button layoutX="14.0" layoutY="23.0" mnemonicParsing="false" onAction="#reconnect" styleClass="primary-button" text="Reconnect" textFill="WHITE" />
-            <Button layoutX="107.0" layoutY="23.0" mnemonicParsing="false" onAction="#refresh" styleClass="primary-button" text="Refresh" textFill="WHITE" />
+            <Button layoutX="33.0" layoutY="22.0" mnemonicParsing="false" onAction="#getJoinKey" styleClass="primary-button" text="Get Join Key" textFill="WHITE" />
+            <Button layoutX="607.0" layoutY="22.0" mnemonicParsing="false" onAction="#refresh" styleClass="primary-button" text="Refresh" textFill="WHITE" />
          </children>
       </Pane>
    </top>

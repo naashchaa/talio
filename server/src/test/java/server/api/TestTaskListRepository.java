@@ -39,6 +39,11 @@ public class TestTaskListRepository implements TaskListRepository {
     }
 
     @Override
+    public List<TaskList> findAllByParentBoard_Id(long id) {
+        return null;
+    }
+
+    @Override
     public long count() {
         return this.list.size();
     }

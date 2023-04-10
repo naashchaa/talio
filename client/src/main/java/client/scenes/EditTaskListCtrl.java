@@ -2,14 +2,13 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
 public class EditTaskListCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private TaskList taskList;
+    private TaskListCtrl ctrl;
     @FXML
     private TextField name;
 
@@ -33,22 +32,21 @@ public class EditTaskListCtrl {
      */
     public void confirm() {
         String newName = this.name.getText();
-        this.taskList.setName(newName);
-        this.server.updateTaskList(this.taskList);
-
-//        List<TaskListCtrl> taskLists = this.mainCtrl.getTaskListCtrls();
-//        for (TaskListCtrl listCtrl : taskLists) {
-//            if (this.taskList.equals(listCtrl.getTaskList())) {
-//                listCtrl.setTaskListName(newName);
-//            }
-//
+//        this.ctrl.getTaskList().setName(newName);
+//        this.ctrl.setTaskList(this.server.updateTaskList(this.ctrl.getTaskList()));
+        this.ctrl.getTaskList().setName(newName);
+        this.server.send("/app/tasklists/edit", this.ctrl.getTaskList());
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }
 
-    public void setTaskList(TaskList taskList) {
-        this.taskList = taskList;
-        this.name.setText(taskList.getName());
+    public void setTaskListCtrl(TaskListCtrl ctrl) {
+        this.ctrl = ctrl;
+        this.name.setText(ctrl.getTaskList().getName());
+    }
 
+    public void connectToWebSockets() {
+        this.server.terminateWebSocketConnection();
+        this.server.establishWebSocketConnection();
     }
 }
