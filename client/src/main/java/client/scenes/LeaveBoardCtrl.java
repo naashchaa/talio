@@ -15,7 +15,8 @@ public class LeaveBoardCtrl {
     private Label boardName;
 
     @Inject
-    public LeaveBoardCtrl(MainCtrl mainCtrl, ServerUtils server, ApplicationOverviewCtrl appOverview) {
+    public LeaveBoardCtrl(MainCtrl mainCtrl, ServerUtils server,
+                          ApplicationOverviewCtrl appOverview) {
         this.mainCtrl = mainCtrl;
         this.appOverview = appOverview;
     }
@@ -26,7 +27,7 @@ public class LeaveBoardCtrl {
 
     public void confirm() {
         //TODO: method to remove the board from the user's view
-        this.appOverview.removeBoardPreview(boardCtrl.getBoard());
+        this.appOverview.removeBoardPreview(this.boardCtrl.getBoard());
         this.mainCtrl.hidePopUp();
     }
 

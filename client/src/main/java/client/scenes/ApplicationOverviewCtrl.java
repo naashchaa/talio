@@ -129,15 +129,19 @@ public class ApplicationOverviewCtrl {
         }
     }
 
+    /**
+     * Removes a board from the list of boards.
+     * @param board - the board to be removed
+     */
     public void removeBoardPreview(Board board) {
         this.boardPreviews.remove(board);
         this.boardList.getChildren().clear();
         for(Board b : this.server.getBoards()) {
-            if(boardPreviews.containsKey(b)) {
+            if(this.boardPreviews.containsKey(b)) {
                 this.addBoardPreview(b.getName(), this.addBoard(b));
             }
         }
-        boardDisplay.getChildren().remove(boards.get(board).getValue());
+        this.boardDisplay.getChildren().remove(this.boards.get(board).getValue());
         board.setShow(false);
         this.server.editBoard(board);
     }
