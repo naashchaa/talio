@@ -37,8 +37,8 @@
                   <Font size="23.0" />
                </font>
             </Label>
-            <Button layoutX="632.0" layoutY="23.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
-            <Button layoutX="14.0" layoutY="23.0" mnemonicParsing="false" onAction="#getJoinKey" text="Get join key" />
+            <Button layoutX="632.0" layoutY="5.0" mnemonicParsing="false" onAction="#refresh" prefHeight="26.0" text="Refresh" />
+            <Button layoutX="14.0" layoutY="5.0" mnemonicParsing="false" onAction="#getJoinKey" prefHeight="26.0" text="Get join key" />
          </children>
       </Pane>
    </top>
