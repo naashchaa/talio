@@ -168,6 +168,7 @@ public class MainCtrl {
     public void showJoinBoard(){
         this.popup.setTitle("Join Board");
         this.popup.setScene(this.joinBoard);
+        this.joinBoardCtrl.setCtrls(this.appOverviewCtrl);
         this.showPopUp();
     }
 

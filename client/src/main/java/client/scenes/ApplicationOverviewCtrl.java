@@ -146,6 +146,19 @@ public class ApplicationOverviewCtrl {
         this.server.editBoard(board);
     }
 
+    /** Joins a board and adds it to the list of boards.
+     * @param id - the id of the board to be joined
+     */
+    public void joinBoardPreview(long id){
+        this.server.getBoards().forEach(board -> {
+            if(board.getId() == id){
+                this.addBoardPreview(board.getName(), this.addBoard(board));
+                board.setShow(true);
+                this.server.editBoard(board);
+            }
+        });
+    }
+
     public BoardCtrl getBoardCtrl(Board board) {
         return this.boards.get(board).getKey();
     }
