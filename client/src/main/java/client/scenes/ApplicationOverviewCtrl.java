@@ -123,8 +123,23 @@ public class ApplicationOverviewCtrl {
         this.boardPreviews.clear();
         this.boards.clear();
         for(Board board : this.server.getBoards()) {
-            this.addBoardPreview(board.getName(), this.addBoard(board));
+            if(board.isShow()) {
+                this.addBoardPreview(board.getName(), this.addBoard(board));
+            }
         }
+    }
+
+    public void removeBoardPreview(Board board) {
+        this.boardPreviews.remove(board);
+        this.boardList.getChildren().clear();
+        for(Board b : this.server.getBoards()) {
+            if(boardPreviews.containsKey(b)) {
+                this.addBoardPreview(b.getName(), this.addBoard(b));
+            }
+        }
+        boardDisplay.getChildren().remove(boards.get(board).getValue());
+        board.setShow(false);
+        this.server.editBoard(board);
     }
 
     public BoardCtrl getBoardCtrl(Board board) {

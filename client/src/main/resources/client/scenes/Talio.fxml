@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="543.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ApplicationOverviewCtrl">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="543.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ApplicationOverviewCtrl">
    <children>
       <Label alignment="CENTER" prefHeight="52.0" prefWidth="950.0" style="-fx-background-color: #3A98B9;" text="Talio" textFill="WHITE">
          <font>
@@ -29,7 +29,7 @@
          </font>
       </Label>
       <Button layoutX="14.0" layoutY="111.0" mnemonicParsing="false" onAction="#create" text="Create" />
-      <AnchorPane fx:id="boardDisplay" accessibleText="Bo" layoutX="228.0" layoutY="65.0" prefHeight="456.0" prefWidth="702.0" />
+      <AnchorPane fx:id="boardDisplay" accessibleText="Bo" layoutX="226.0" layoutY="78.0" prefHeight="456.0" prefWidth="702.0" />
       <Button layoutX="14.0" layoutY="65.0" mnemonicParsing="false" onAction="#reconnect" text="Reconnect" />
       <Button layoutX="175.0" layoutY="111.0" mnemonicParsing="false" onAction="#join" text="Join" />
       <Button layoutX="129.0" layoutY="65.0" mnemonicParsing="false" onAction="#adminLogin" text="Admin Login" />

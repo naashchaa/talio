@@ -83,6 +83,7 @@ public class BoardController {
 
         Board saved = this.repo.findById(board.getId()).get();
         saved.setName(board.getName());
+        saved.setShow(board.isShow());
 
         this.repo.save(saved);
         return ResponseEntity.ok(saved);
