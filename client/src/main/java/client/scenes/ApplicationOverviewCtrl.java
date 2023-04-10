@@ -122,6 +122,12 @@ public class ApplicationOverviewCtrl {
         this.boardList.getChildren().clear();
         this.boardPreviews.clear();
         this.boards.clear();
+        if(this.mainCtrl.isAdmin()){
+            for (Board board: this.server.getBoards()){
+                this.addBoardPreview(board.getName(), this.addBoard(board));
+            }
+            return;
+        }
         for(Board board : this.server.getBoards()) {
             if(board.isShow()) {
                 this.addBoardPreview(board.getName(), this.addBoard(board));
