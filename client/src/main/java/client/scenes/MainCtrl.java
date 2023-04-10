@@ -230,6 +230,7 @@ public class MainCtrl {
     public void showAdminLogin() {
         this.popup.setTitle("Admin Login");
         this.popup.setScene(this.adminLogin);
+        this.adminLoginCtrl.setAppCtrl(this.appOverviewCtrl);
         this.showPopUp();
     }
     public void showPopUp() {
@@ -254,7 +255,6 @@ public class MainCtrl {
 
     public void setAdmin(boolean b) {
         this.isAdmin = b;
-
     }
 
     public boolean isAdmin() {

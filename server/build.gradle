@@ -2,6 +2,9 @@ plugins {
 	id 'org.springframework.boot' version '2.6.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
+bootRun {
+	workingDir = rootProject.projectDir
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
