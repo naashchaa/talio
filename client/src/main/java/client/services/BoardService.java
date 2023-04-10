@@ -1,7 +1,6 @@
 package client.services;
 
 import client.scenes.BoardCtrl;
-import client.scenes.TaskCtrl;
 import client.scenes.TaskListCtrl;
 import client.utils.ServerUtils;
 import commons.Task;
@@ -72,7 +71,7 @@ public class BoardService {
 //            .filter(node -> (list.getTaskList().getId() == (node.getUserData() == null ? 0 :
 //                (((TaskCtrl)node.getUserData()).getTask()).id))) // find the right task node
             .filter(node -> (list.getTaskList().getId() == (node.getUserData() == null ? 0 :
-            (((TaskListCtrl)node.getUserData()).getTaskList().getId())))) // find the right task node
+            (((TaskListCtrl)node.getUserData()).getTaskList().getId()))))
             .findFirst();
         if (listNode.isEmpty())
             throw new IllegalArgumentException("No node linked to the given task list was found");
@@ -82,13 +81,18 @@ public class BoardService {
         listNode.get().setUserData(list);
     }
 
+    /**
+     * Method that refreshes all tasks in a task list.
+     * @param ctrl
+     * @param listCtrl
+     */
     public void refreshTasksInTaskList(BoardCtrl ctrl, TaskListCtrl listCtrl) {
         Optional<Node> listNode = ctrl
                 .getListContainer() // get the HBox, which holds all the scene nodes
                 .getChildren() // get the HBox's children -> task list nodes
                 .stream() // turn it back into a stream
                 .filter(node -> (listCtrl.getTaskList().getId() == (node.getUserData() == null ? 0 :
-                        (((TaskListCtrl)node.getUserData()).getTaskList().getId())))) // find the right task node
+                        (((TaskListCtrl)node.getUserData()).getTaskList().getId()))))
                 .findFirst(); // has the task list node
 
         if (listNode.isEmpty())

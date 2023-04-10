@@ -39,6 +39,14 @@ public class TaskListCtrl extends Node implements Initializable {
     @FXML
     private Pane highlightDrop;
 
+    /**
+     * Constructor for task list ctrl.
+     * @param server
+     * @param mainCtrl
+     * @param taskService
+     * @param listService
+     * @param boardService
+     */
     @Inject
     public TaskListCtrl(ServerUtils server, MainCtrl mainCtrl,
                         TaskService taskService, TaskListService listService,

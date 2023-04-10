@@ -39,6 +39,14 @@ public class TaskCtrl extends Node implements Initializable {
     @FXML
     private Pane taskBottom;
 
+    /**
+     * Constructor for a task ctrl.
+     * @param server
+     * @param mainCtrl
+     * @param service
+     * @param title
+     * @param boardService
+     */
     @Inject
     public TaskCtrl(ServerUtils server, MainCtrl mainCtrl, TaskService service, String title,
                     BoardService boardService) {
