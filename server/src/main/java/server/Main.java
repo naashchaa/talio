@@ -19,12 +19,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
 public class Main {
 
-    public static void main(String[] args) {
-        System.out.println("The admin password is 'worcestershireSauce'");
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File("config/adminPassword"));
+        String password = scanner.nextLine();
+        System.out.println("The admin password is '" + password + "'.");
         SpringApplication.run(Main.class, args);
     }
 }

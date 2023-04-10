@@ -272,6 +272,11 @@ public class TaskCtrl extends Node implements Initializable {
                 this.setParentCtrl(targetList);
 
                 Long prevId = sourceTaskCtrl.getTask().getParentTaskList().getId();
+                if(TaskCtrl.this.getTask().getPrevTask() == sourceTaskCtrl.getTask().id) {
+                    event.setDropCompleted(false);
+                    event.consume();
+                    return;
+                }
                 TaskCtrl.this.moveTaskTo(sourceTaskCtrl, targetList, nextTask.getTask());
                 success = true;
                 List<Long> ids = new ArrayList<>();
@@ -292,15 +297,16 @@ public class TaskCtrl extends Node implements Initializable {
 
                 TaskCtrl nextTaskCtrl = TaskCtrl.this.getNextTask(prevTaskCtrl.getTask());
                 Task nextTask = nextTaskCtrl == null ? null : nextTaskCtrl.getTask();
+
+
+                TaskListCtrl targetList = prevTaskCtrl.getParentCtrl();
+
+                Long prevId = sourceTaskCtrl.getTask().getParentTaskList().getId();
                 if (sourceTaskCtrl.getTask().equals(nextTask)) {
                     event.setDropCompleted(false);
                     event.consume();
                     return;
                 }
-
-                TaskListCtrl targetList = prevTaskCtrl.getParentCtrl();
-
-                Long prevId = sourceTaskCtrl.getTask().getParentTaskList().getId();
                 TaskCtrl.this.moveTaskTo(sourceTaskCtrl, targetList, nextTask);
                 success = true;
                 List<Long> ids = new ArrayList<>();
