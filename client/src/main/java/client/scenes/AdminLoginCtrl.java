@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 public class AdminLoginCtrl {
     private MainCtrl mainCtrl;
+    private ApplicationOverviewCtrl appCtrl;
     @FXML
     private PasswordField password;
     @FXML
@@ -25,6 +26,7 @@ public class AdminLoginCtrl {
         if (this.password.getText().equals("worcestershireSauce")) {
             this.wrongPW.setVisible(false);
             this.mainCtrl.setAdmin(true);
+            this.appCtrl.loadExistingBoards();
             this.mainCtrl.hidePopUp();
         }
         else {
@@ -35,5 +37,9 @@ public class AdminLoginCtrl {
     public void cancel() {
         this.wrongPW.setVisible(false);
         this.mainCtrl.hidePopUp();
+    }
+
+    public void setAppCtrl(ApplicationOverviewCtrl appOverviewCtrl) {
+        this.appCtrl = appOverviewCtrl;
     }
 }
