@@ -32,8 +32,10 @@ public class EditTaskListCtrl {
      */
     public void confirm() {
         String newName = this.name.getText();
+//        this.ctrl.getTaskList().setName(newName);
+//        this.ctrl.setTaskList(this.server.updateTaskList(this.ctrl.getTaskList()));
         this.ctrl.getTaskList().setName(newName);
-        this.ctrl.setTaskList(this.server.updateTaskList(this.ctrl.getTaskList()));
+        this.server.send("/app/tasklists/edit", this.ctrl.getTaskList());
         this.name.clear();
         this.mainCtrl.hidePopUp();
     }

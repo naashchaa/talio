@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.services.BoardService;
 import client.services.TaskService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -22,7 +23,9 @@ public class TaskCtrl extends Node implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final TaskService service;
+    private final BoardService boardService;
     private TaskListCtrl parentCtrl;
+    private boolean isConnected;
 
     private Task task;
     @FXML
@@ -36,12 +39,24 @@ public class TaskCtrl extends Node implements Initializable {
     @FXML
     private Pane taskBottom;
 
+    /**
+     * Constructor for a task ctrl.
+     * @param server
+     * @param mainCtrl
+     * @param service
+     * @param title
+     * @param boardService
+     */
     @Inject
-    public TaskCtrl(ServerUtils server, MainCtrl mainCtrl, TaskService service, String title) {
+    public TaskCtrl(ServerUtils server, MainCtrl mainCtrl, TaskService service, String title,
+                    BoardService boardService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.service = service;
         this.taskTitle = new Label(title);
+        this.boardService = boardService;
+        this.isConnected = false;
+        System.out.println("created task ctrl " + this.taskTitle.getText());
     }
 
     /** This method initializes task controller.
@@ -52,8 +67,16 @@ public class TaskCtrl extends Node implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("task ctrl connected to ws");
         this.connectToWebSockets();
         this.service.connectToWebSockets();
+        this.setDragStuff();
+    }
+
+    /**
+     * Registers for methods by subscribing to websockets.
+     */
+    public void registerForMessages() {
         // Subscribing the task controller to the edit path
         this.server.registerForMessages("/topic/tasks/edit", Task.class, task -> {
             if (task.id == this.task.id) {
@@ -64,28 +87,16 @@ public class TaskCtrl extends Node implements Initializable {
         });
         // Subscribing the task controller to the delete path
         this.server.registerForMessages("/topic/tasks/delete", Task.class, task -> {
-            if (task.id == this.task.id) {
+//            if (task.id == this.task.id) {
+//                this.service.deleteTaskLater(this.parentCtrl, task);
+//            }
+            Long l1 = task.getId();
+            long l2 = this.task.getId();
+            if (l1.equals(l2)) {
+                System.out.println("in becasuse " + l1 + " " + l2);
                 this.service.deleteTaskLater(this.parentCtrl, task);
             }
         });
-        this.server.registerForMessages("/topic/tasks/drag", List.class, ids -> {
-            System.out.println("received an update");
-            if (((Long) ((Integer) ids.get(0)).longValue()).equals(this.task.id)) {
-                System.out.println("received a drag update for this controller");
-                // check if drag already happened
-                if (!this.service.isAlreadyDragged(this, ids)) {
-                    System.out.println("detected to not be dragged yet");
-                    List<Object> list = this.service.getDragParameters(this, ids);
-                    this.service.moveTaskTo((TaskCtrl)list.get(0),
-                        (TaskListCtrl)list.get(1),
-                        (Task)list.get(2));
-                    System.out.println("executed drag");
-                }
-            }
-
-        });
-        // set on drag stuff
-        this.setDragStuff();
     }
 
     public TaskListCtrl getParentCtrl() {
@@ -106,6 +117,10 @@ public class TaskCtrl extends Node implements Initializable {
 
     public TaskCtrl getNextTask(Task task) {
         return this.service.getNextTask(this.parentCtrl, task);
+    }
+
+    public boolean getIsConnected() {
+        return this.isConnected;
     }
 
     public void moveTaskTo(TaskCtrl sourceTaskCtrl,
@@ -129,12 +144,18 @@ public class TaskCtrl extends Node implements Initializable {
     }
 
     public void connectToWebSockets() {
-        this.server.terminateWebSocketConnection();
-        this.server.establishWebSocketConnection();
+        if (!this.isConnected) {
+            this.server.establishWebSocketConnection();
+            this.isConnected = true;
+            this.registerForMessages();
+        }
     }
 
     public void disconnect() {
-        this.server.terminateWebSocketConnection();
+        if (this.isConnected) {
+            this.server.terminateWebSocketConnection();
+            this.isConnected = false;
+        }
     }
 
     /**
@@ -175,6 +196,7 @@ public class TaskCtrl extends Node implements Initializable {
      */
     public void setDragOver() {
         Pane topTarget = this.taskTop;
+
         topTarget.setOnDragOver(event -> {
             if (event.getGestureSource() != topTarget.getParent()) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
@@ -182,7 +204,6 @@ public class TaskCtrl extends Node implements Initializable {
             event.consume();
         });
         Pane bottomTarget = this.taskBottom;
-
         bottomTarget.setOnDragOver(event -> {
             if (event.getGestureSource() != bottomTarget.getParent()) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
@@ -242,10 +263,8 @@ public class TaskCtrl extends Node implements Initializable {
     public void setDragDropped() {
         // do the magic here
         Pane topTarget = this.taskTop;
-
         topTarget.setOnDragDropped(event -> {
             boolean success = false;
-            System.out.println("dropped on the top");
             if (event.getGestureSource() != topTarget.getParent()) {
                 TaskCtrl sourceTaskCtrl = (TaskCtrl)((Node)event.getGestureSource()).getUserData();
                 TaskCtrl nextTask = (TaskCtrl)(topTarget.getParent()).getUserData();
@@ -265,7 +284,6 @@ public class TaskCtrl extends Node implements Initializable {
         });
 
         Pane bottomTarget = this.taskBottom;
-
         bottomTarget.setOnDragDropped(event -> {
             boolean success = false;
             if (event.getGestureSource() != bottomTarget.getParent()) {
@@ -301,6 +319,7 @@ public class TaskCtrl extends Node implements Initializable {
     public void setDragDone() {
         BorderPane source = this.taskContainer;
         HBox content = this.contentContainer;
+
         source.setOnDragDone(event -> {
             source.setBackground(new Background(
                     new BackgroundFill(

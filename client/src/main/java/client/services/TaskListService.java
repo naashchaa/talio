@@ -29,6 +29,8 @@ public class TaskListService {
      */
     public void loadTasks(TaskListCtrl ctrl) {
         this.removeTasks(ctrl);
+        ctrl.disconnect();
+        ctrl.connectToWebSockets();
         List<Task> tasks = this.server.getTasksByParentList(ctrl.getTaskList());
         for (Task t : tasks) {
             ctrl.addTaskToList(t);
@@ -44,6 +46,10 @@ public class TaskListService {
         for (int i = 0; i < ctrl.getTaskContainer().getChildren().size(); i++) {
             if (!ctrl.getTaskContainer().getChildren().get(i).equals(ctrl.getHighlightDrop())) {
                 toRemove.add(ctrl.getTaskContainer().getChildren().get(i));
+                TaskCtrl ref = ((TaskCtrl)(ctrl.getTaskContainer().getChildren()
+                        .get(i).getUserData()));
+                ref.disconnect();
+                ref = null;
             }
         }
         ctrl.getTaskContainer().getChildren().removeAll(toRemove);
@@ -59,6 +65,7 @@ public class TaskListService {
 
         int index = 0;
         ObservableList<Node> nodes = ctrl.getTaskContainer().getChildren();
+
         List<Task> tasks = nodes.stream()
             .map(node -> ((TaskCtrl)node.getUserData()).getTask())
             .collect(Collectors.toList());

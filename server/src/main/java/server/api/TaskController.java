@@ -144,7 +144,8 @@ public class TaskController {
 
         if (nextTask.isPresent()) {
             Task next = nextTask.get();
-            next.setPrevTask(0);
+            //next.setPrevTask(0);
+            next.setPrevTask(task.getPrevTask());
             this.update(next.id, next);
         }
 

@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.services.TaskListService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
@@ -17,17 +18,19 @@ public class ApplicationOverviewCtrl {
     private final MainCtrl mainCtrl;
     private Map<Board, Pair<BoardCtrl, Parent>> boards;
     private Map<Board, Pair<BoardPreviewCtrl, Parent>> boardPreviews;
+    private final TaskListService service;
     @FXML
     private VBox boardList;
     @FXML
     private AnchorPane boardDisplay;
 
     @Inject
-    public ApplicationOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public ApplicationOverviewCtrl(ServerUtils server, MainCtrl mainCtrl, TaskListService service) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.boards = new HashMap<>();
         this.boardPreviews = new HashMap<>();
+        this.service = service;
     }
 
     public void reconnect() {
@@ -91,6 +94,17 @@ public class ApplicationOverviewCtrl {
      * @param board - the board
      */
     public void loadBoardIntoOverview(Board board) {
+        if (this.mainCtrl.getCurrentBoardCtrl() != null) {
+            List<Node> taskListNodes =
+                    this.mainCtrl.getCurrentBoardCtrl().getListContainer().getChildren();
+            for (int i = 0; i < taskListNodes.size() - 1; i++) {
+                TaskListCtrl listCtrl = (TaskListCtrl) taskListNodes.get(i).getUserData();
+                listCtrl.removeTasks();
+                this.service.deleteTaskList(this.mainCtrl.getCurrentBoardCtrl(), listCtrl);
+                listCtrl.disconnect();
+            }
+        }
+
         Node boardScene = this.boards.get(board).getValue();
         if(this.boardDisplay.getChildren().size() == 1) {
             this.boardDisplay.getChildren().remove(0);

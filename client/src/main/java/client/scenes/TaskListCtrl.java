@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.services.BoardService;
 import client.services.TaskListService;
 import client.services.TaskService;
 import client.utils.ServerUtils;
@@ -27,6 +28,8 @@ public class TaskListCtrl extends Node implements Initializable {
     private final MainCtrl mainCtrl;
     private final TaskListService listService;
     private final TaskService taskService;
+    private final BoardService boardService;
+    private boolean isConnected;
     private BoardCtrl parentCtrl;
     private TaskList taskList;
     @FXML
@@ -36,13 +39,24 @@ public class TaskListCtrl extends Node implements Initializable {
     @FXML
     private Pane highlightDrop;
 
+    /**
+     * Constructor for task list ctrl.
+     * @param server
+     * @param mainCtrl
+     * @param taskService
+     * @param listService
+     * @param boardService
+     */
     @Inject
     public TaskListCtrl(ServerUtils server, MainCtrl mainCtrl,
-                        TaskService taskService, TaskListService listService) {
+                        TaskService taskService, TaskListService listService,
+                        BoardService boardService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.taskService = taskService;
         this.listService = listService;
+        this.boardService = boardService;
+        this.isConnected = false;
     }
 
     @Override
@@ -51,7 +65,15 @@ public class TaskListCtrl extends Node implements Initializable {
         this.taskService.connectToWebSockets();
         // The task list ctrl gets subscribed to the following path.
         // Now it can receive updates that are sent back from the server to this path.
+        this.setDragMethods();
+    }
+
+    /**
+     * Registers for methods by subscribing to websockets.
+     */
+    public void registerForMessages() {
         this.server.registerForMessages("/topic/tasks/add", Task.class, task -> {
+            System.out.println("notified");
             // makes sure that the parent task list is the only that shows task on client.
             if (this.taskList.getId() == task.getParentTaskList().getId()) {
                 // this method is used to call runLater() to avoid JAVAFX thread errors.
@@ -72,12 +94,11 @@ public class TaskListCtrl extends Node implements Initializable {
         this.server.registerForMessages("/topic/tasks/drag", List.class, ids -> {
             System.out.println("should it?");
             if (((Long)((Integer)ids.get(0)).longValue()).equals(this.taskList.getId()) ||
-                ((Long)((Integer)ids.get(1)).longValue()).equals(this.taskList.getId())) {
+                    ((Long)((Integer)ids.get(1)).longValue()).equals(this.taskList.getId())) {
                 System.out.println("as it should");
                 this.loadTasksLater();
             }
         });
-        this.setDragMethods();
     }
 
     public void loadTasks() {
@@ -93,15 +114,33 @@ public class TaskListCtrl extends Node implements Initializable {
     }
 
     public void updateTaskListName(TaskList taskList) {
-        Platform.runLater(() -> this.taskListName.setText(taskList.getName()));
+        Platform.runLater(() -> {
+            this.taskListName.setText(taskList.getName());
+            this.setTaskList(taskList);
+        });
     }
 
     /**
      * Helper method to be able to use runLater().
      */
     public void loadTasksLater() {
+//        Platform.runLater(() -> {
+//            this.loadTasksLaterHelper();
+//        });
         Platform.runLater(() -> this.listService.loadTasks(this));
     }
+
+//    /**
+//     * Send a parent task list and a task to be added to that task list
+//     * in the main ctrl.
+//     */
+//    public void loadTasksLaterHelper() {
+//        this.removeTasks();
+//        for(Task task : this.server.getTasksOfTasklist(this.taskList)) {
+//            this.addTaskToList(task);
+//        }
+//        this.sortTasks();
+//    }
 
     public void addTask() {
         this.mainCtrl.showAddTask(this);
@@ -151,21 +190,51 @@ public class TaskListCtrl extends Node implements Initializable {
     }
 
     public void delete() {
-        this.server.deleteTaskListWrapper(this.taskList); // delete serverside
-        this.listService.deleteTaskList(this.getParentCtrl(), this); // delete clientside
+        //this.server.deleteTaskListWrapper(this.taskList); // delete serverside
+        //this.listService.deleteTaskList(this.getParentCtrl(), this); // delete clientside
+        this.server.deleteTasksByParentList(this.taskList);
+        this.server.send("/app/tasklists/delete", this.taskList);
+
     }
 
     public void showDeleteTaskList() {
         this.mainCtrl.showDeleteTaskList(this);
     }
 
+    /**
+     * Establishes a connection with the websockets if not already connected.
+     */
     public void connectToWebSockets() {
-        this.server.terminateWebSocketConnection();
-        this.server.establishWebSocketConnection();
+        if (!this.isConnected) {
+            this.server.establishWebSocketConnection();
+            this.isConnected = true;
+            this.registerForMessages();
+            System.out.println("list ctrl connected to ws");
+        }
     }
 
+    /**
+     * Removes all the nodes in a task list.
+     */
+    public void removeTasks() {
+        List<Node> toRemove = new ArrayList<>();
+        for (int i = 0; i < this.taskContainer.getChildren().size(); i++) {
+            if (!this.taskContainer.getChildren().get(i).equals(this.highlightDrop)) {
+                toRemove.add(this.taskContainer.getChildren().get(i));
+                if (!((TaskCtrl)this.taskContainer.getChildren().
+                        get(i).getUserData()).getIsConnected()) {
+                    ((TaskCtrl)this.taskContainer.getChildren().get(i).getUserData()).disconnect();
+                }
+            }
+        }
+        this.taskContainer.getChildren().removeAll(toRemove);
+    }
     public void disconnect() {
-        this.server.terminateWebSocketConnection();
+        if (this.isConnected) {
+            this.server.terminateWebSocketConnection();
+            this.isConnected = false;
+            System.out.println("list ctrl disconnected from ws");
+        }
     }
 
     public Pane getHighlightDrop() {
@@ -240,7 +309,6 @@ public class TaskListCtrl extends Node implements Initializable {
      */
     public void setDragDropped() {
         VBox target = this.taskContainer;
-
         target.setOnDragDropped(event -> {
             TaskCtrl sourceTaskCtrl = (TaskCtrl)((Node)event.getGestureSource()).getUserData();
             TaskListCtrl targetList = TaskListCtrl.this;

@@ -82,10 +82,7 @@ public class TaskService {
      * @return the task node
      */
     public Optional<Node> getNodeByTaskId(TaskCtrl caller, long id) {
-        System.out.println("entered get node by task id");
         BoardCtrl board = caller.getParentCtrl().getParentCtrl();
-        System.out.println(board);
-        System.out.println(board.getListContainer().getChildren().toString());
 
         var streams = board.getListContainer()
             .getChildren()
@@ -96,8 +93,6 @@ public class TaskService {
             .map(TaskListCtrl::getTaskContainer)
             .map(VBox::getChildren)
             .map(ObservableList::stream);
-
-        System.out.println("got the stream of streams");
 
         return streams
             .map(stream ->
@@ -184,26 +179,19 @@ public class TaskService {
      * @return true if it has already been dragged, false otherwise
      */
     public boolean isAlreadyDragged(TaskCtrl ctrl, List<?> ids) {
-        System.out.println("entered the drag check");
         // check if the correlated node element is in its parent controller's node children
         Optional<Node> taskNode = this.getNodeByTaskId(ctrl, ((Long) ids.get(1)));
 
         if (taskNode.isEmpty())
             throw new IllegalArgumentException("Could not find the node by ID");
 
-        System.out.println("couldn't find the related node");
-
         Optional<TaskListCtrl> newParentCtrl = this.getCtrlByTaskListId(ctrl, ((Long) ids.get(1)));
 
         if (newParentCtrl.isEmpty())
             throw new IllegalArgumentException("Could not find the list by ID");
 
-        System.out.println("could not find the target list");
-
         if (!this.nodeInList(taskNode.get(), newParentCtrl.get()))
             return false;
-
-        System.out.println("passed the first check");
 
         // check if the controller's next task matches that of the drag and drop destination
         Task ctrlNext = ctrl.getNextTask(ctrl.getTask()).getTask();
@@ -212,7 +200,6 @@ public class TaskService {
         long id1 = ctrlNext == null ? 0 : ctrlNext.id;
         long id2 = taskNext == null ? 0 : taskNext.id;
 
-        System.out.println("before the second check");
         return id1 == id2;
     }
 
@@ -276,8 +263,9 @@ public class TaskService {
         // insert the old node into new location
         nodeList.add(insertIndex - offset, taskNode);
 
-        if (!sourceTaskCtrl.getParentCtrl().equals(targetListCtrl))
-            sourceTaskCtrl.setParentCtrl(targetListCtrl);
+//        if (!sourceTaskCtrl.getParentCtrl().equals(targetListCtrl))
+//            sourceTaskCtrl.setParentCtrl(targetListCtrl);
+        sourceTaskCtrl.setParentCtrl(targetListCtrl);
 
         // update the next and inserted tasks
         if (nextTask != null)
@@ -332,7 +320,6 @@ public class TaskService {
      * @param task The associated task that should be deleted
      */
     public void deleteTask(TaskListCtrl ctrl, Task task) {
-        System.out.println("went into delete task");
         ObservableList<Node> taskContainer = ctrl
             .getTaskContainer()
             .getChildren();
@@ -341,8 +328,10 @@ public class TaskService {
             .filter(node -> (((TaskCtrl)node.getUserData()).getTask()).id == task.id)
             .findFirst();
 
-        if (nodeToRemove.isEmpty())
-            throw new IllegalArgumentException("The provided task is not referenced in any node");
+        if (nodeToRemove.isEmpty()) {
+            return;
+            //throw new IllegalArgumentException("The provided task is not referenced in any node");
+        }
 
         taskContainer.remove(nodeToRemove.get());
 

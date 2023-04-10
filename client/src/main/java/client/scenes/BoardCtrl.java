@@ -40,11 +40,26 @@ public class BoardCtrl implements Initializable {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.boardService = boardService;
+        System.out.println("created board ctrl");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.server.registerForTaskListsL(this::addTaskListToBoard);
+        System.out.println("board ctrl connected to ws");
+        this.connectToWebSockets();
+        this.server.registerForMessages("/topic/tasklists/add", TaskList.class, taskList -> {
+            Long l1 = taskList.getParentBoard().getId();
+            Long l2 = this.board.getId();
+            if (l1.equals(l2)) {
+                this.showAddedTaskList(taskList);
+            }
+        });
+    }
+
+    public void showAddedTaskList(TaskList taskList) {
+        Platform.runLater(() -> {
+            this.addTaskListToBoard(taskList);
+        });
     }
 
     public void setOverviewCtrl(ApplicationOverviewCtrl ctrl) {
@@ -113,6 +128,18 @@ public class BoardCtrl implements Initializable {
         }
     }
 
+
+    /**
+     * Loads the task list as the board is opened.
+     */
+//    public void loadTaskLists() {
+//        this.removeTaskLists();
+//        List<TaskList> lists = this.server.getTaskListOfBoard(this.board);
+//        for(TaskList taskList: lists) {
+//            this.mainCtrl.addToTaskListCtrl(this.addTaskListToBoard(taskList));
+//        }
+//    }
+
     /**
      * Sends the user into the newTaskList scene to create a new task list.
      */
@@ -168,5 +195,9 @@ public class BoardCtrl implements Initializable {
 
     public void getJoinKey() {
         this.mainCtrl.showJoinKey(this);
+    }
+
+    public void disconnect() {
+        this.server.terminateWebSocketConnection();
     }
 }
