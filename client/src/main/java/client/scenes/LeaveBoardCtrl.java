@@ -6,17 +6,19 @@ import javafx.scene.control.Label;
 
 import javax.inject.Inject;
 
-//only admins should be able to delete boards
 public class LeaveBoardCtrl {
 
     private final MainCtrl mainCtrl;
     private BoardCtrl boardCtrl;
+    private ApplicationOverviewCtrl appOverview;
     @FXML
     private Label boardName;
 
     @Inject
-    public LeaveBoardCtrl(MainCtrl mainCtrl, ServerUtils server) {
+    public LeaveBoardCtrl(MainCtrl mainCtrl, ServerUtils server,
+                          ApplicationOverviewCtrl appOverview) {
         this.mainCtrl = mainCtrl;
+        this.appOverview = appOverview;
     }
 
     public void cancel() {
@@ -25,6 +27,7 @@ public class LeaveBoardCtrl {
 
     public void confirm() {
         //TODO: method to remove the board from the user's view
+        this.appOverview.removeBoardPreview(this.boardCtrl.getBoard());
         this.mainCtrl.hidePopUp();
     }
 
@@ -32,4 +35,5 @@ public class LeaveBoardCtrl {
         this.boardCtrl = bc;
         this.boardName.setText(this.boardCtrl.getBoard().getName());
     }
+
 }

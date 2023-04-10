@@ -123,8 +123,27 @@ public class ApplicationOverviewCtrl {
         this.boardPreviews.clear();
         this.boards.clear();
         for(Board board : this.server.getBoards()) {
-            this.addBoardPreview(board.getName(), this.addBoard(board));
+            if(board.isShow()) {
+                this.addBoardPreview(board.getName(), this.addBoard(board));
+            }
         }
+    }
+
+    /**
+     * Removes a board from the list of boards.
+     * @param board - the board to be removed
+     */
+    public void removeBoardPreview(Board board) {
+        this.boardPreviews.remove(board);
+        this.boardList.getChildren().clear();
+        for(Board b : this.server.getBoards()) {
+            if(this.boardPreviews.containsKey(b)) {
+                this.addBoardPreview(b.getName(), this.addBoard(b));
+            }
+        }
+        this.boardDisplay.getChildren().remove(this.boards.get(board).getValue());
+        board.setShow(false);
+        this.server.editBoard(board);
     }
 
     public BoardCtrl getBoardCtrl(Board board) {

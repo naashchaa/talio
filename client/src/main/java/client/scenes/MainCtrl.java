@@ -132,13 +132,6 @@ public class MainCtrl {
         this.primaryStage.setScene(this.connectToServer);
     }
 
-    public void showBoard() {
-        this.currentBoardCtrl.loadContents();
-        this.primaryStage.setTitle("Board");
-        this.primaryStage.setScene(this.board);
-        this.setStageDimensions();
-    }
-
     public void showAppOverview() {
         this.primaryStage.setTitle("Talio");
         this.primaryStage.setScene(this.appOverview);
