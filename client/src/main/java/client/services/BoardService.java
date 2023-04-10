@@ -4,8 +4,10 @@ import client.scenes.BoardCtrl;
 import client.scenes.TaskCtrl;
 import client.scenes.TaskListCtrl;
 import client.utils.ServerUtils;
+import commons.Task;
 import commons.TaskList;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
@@ -63,24 +65,40 @@ public class BoardService {
      * @param list the list to update
      */
     public void refreshTaskList(BoardCtrl ctrl, TaskListCtrl list) {
-        System.out.println("started");
         Optional<Node> listNode = ctrl
-            .getListContainer() // get the VBox, which holds all the scene nodes
-            .getChildren() // get the VBox's children
+            .getListContainer() // get the HBox, which holds all the scene nodes
+            .getChildren() // get the HBox's children -> task list nodes
             .stream() // turn it back into a stream
+//            .filter(node -> (list.getTaskList().getId() == (node.getUserData() == null ? 0 :
+//                (((TaskCtrl)node.getUserData()).getTask()).id))) // find the right task node
             .filter(node -> (list.getTaskList().getId() == (node.getUserData() == null ? 0 :
-                (((TaskCtrl)node.getUserData()).getTask()).id))) // find the right task node
+            (((TaskListCtrl)node.getUserData()).getTaskList().getId())))) // find the right task node
             .findFirst();
-
-        System.out.println("supposedly found a node");
         if (listNode.isEmpty())
             throw new IllegalArgumentException("No node linked to the given task list was found");
 
-        System.out.println("actually found a node");
         Label label = (Label) listNode.get().lookup("#taskListName");
         label.setText(list.getTaskList().getName()); // update node data
         listNode.get().setUserData(list);
-        System.out.println("refreshed");
+    }
+
+    public void refreshTasksInTaskList(BoardCtrl ctrl, TaskListCtrl listCtrl) {
+        Optional<Node> listNode = ctrl
+                .getListContainer() // get the HBox, which holds all the scene nodes
+                .getChildren() // get the HBox's children -> task list nodes
+                .stream() // turn it back into a stream
+                .filter(node -> (listCtrl.getTaskList().getId() == (node.getUserData() == null ? 0 :
+                        (((TaskListCtrl)node.getUserData()).getTaskList().getId())))) // find the right task node
+                .findFirst(); // has the task list node
+
+        if (listNode.isEmpty())
+            throw new IllegalArgumentException("No node linked to the given task list was found");
+
+        Node taskListNode = listNode.get();
+        ObservableList<Node> taskNodeList =
+                ((TaskListCtrl)(taskListNode.getUserData())).getTaskContainer().getChildren();
+
+        List<Task> a = this.server.getTasksByParentList(listCtrl.getTaskList());
     }
 
     public void loadTaskLists(BoardCtrl ctrl) {

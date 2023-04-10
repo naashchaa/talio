@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.services.BoardService;
 import client.services.TaskListService;
 import client.services.TaskService;
 import client.utils.ServerUtils;
@@ -27,6 +28,8 @@ public class TaskListCtrl extends Node implements Initializable {
     private final MainCtrl mainCtrl;
     private final TaskListService listService;
     private final TaskService taskService;
+    private final BoardService boardService;
+    private boolean isConnected;
     private BoardCtrl parentCtrl;
     private TaskList taskList;
     @FXML
@@ -38,22 +41,31 @@ public class TaskListCtrl extends Node implements Initializable {
 
     @Inject
     public TaskListCtrl(ServerUtils server, MainCtrl mainCtrl,
-                        TaskService taskService, TaskListService listService) {
+                        TaskService taskService, TaskListService listService,
+                        BoardService boardService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.taskService = taskService;
         this.listService = listService;
-        System.out.println("created list ctrl");
+        this.boardService = boardService;
+        this.isConnected = false;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("list ctrl connected to ws");
         this.connectToWebSockets();
         this.taskService.connectToWebSockets();
         // The task list ctrl gets subscribed to the following path.
         // Now it can receive updates that are sent back from the server to this path.
+        this.setDragMethods();
+    }
+
+    /**
+     * Registers for methods by subscribing to websockets.
+     */
+    public void registerForMessages() {
         this.server.registerForMessages("/topic/tasks/add", Task.class, task -> {
+            System.out.println("notified");
             // makes sure that the parent task list is the only that shows task on client.
             if (this.taskList.getId() == task.getParentTaskList().getId()) {
                 // this method is used to call runLater() to avoid JAVAFX thread errors.
@@ -74,20 +86,11 @@ public class TaskListCtrl extends Node implements Initializable {
         this.server.registerForMessages("/topic/tasks/drag", List.class, ids -> {
             System.out.println("should it?");
             if (((Long)((Integer)ids.get(0)).longValue()).equals(this.taskList.getId()) ||
-                ((Long)((Integer)ids.get(1)).longValue()).equals(this.taskList.getId())) {
+                    ((Long)((Integer)ids.get(1)).longValue()).equals(this.taskList.getId())) {
                 System.out.println("as it should");
                 this.loadTasksLater();
             }
         });
-        this.server.registerForMessages("/topic/tasks/drag", List.class, ids -> {
-            System.out.println("should it?");
-            if (((Long)((Integer)ids.get(0)).longValue()).equals(this.taskList.getId()) ||
-                ((Long)((Integer)ids.get(1)).longValue()).equals(this.taskList.getId())) {
-                System.out.println("as it should");
-                this.loadTasksLater();
-            }
-        });
-        this.setDragMethods();
     }
 
     public void loadTasks() {
@@ -190,9 +193,16 @@ public class TaskListCtrl extends Node implements Initializable {
         this.mainCtrl.showDeleteTaskList(this);
     }
 
+    /**
+     * Establishes a connection with the websockets if not already connected.
+     */
     public void connectToWebSockets() {
-        this.server.terminateWebSocketConnection();
-        this.server.establishWebSocketConnection();
+        if (!this.isConnected) {
+            this.server.establishWebSocketConnection();
+            this.isConnected = true;
+            this.registerForMessages();
+            System.out.println("list ctrl connected to ws");
+        }
     }
 
     /**
@@ -203,13 +213,20 @@ public class TaskListCtrl extends Node implements Initializable {
         for (int i = 0; i < this.taskContainer.getChildren().size(); i++) {
             if (!this.taskContainer.getChildren().get(i).equals(this.highlightDrop)) {
                 toRemove.add(this.taskContainer.getChildren().get(i));
-                ((TaskCtrl)this.taskContainer.getChildren().get(i).getUserData()).disconnect();
+                if (!((TaskCtrl)this.taskContainer.getChildren().
+                        get(i).getUserData()).getIsConnected()) {
+                    ((TaskCtrl)this.taskContainer.getChildren().get(i).getUserData()).disconnect();
+                }
             }
         }
         this.taskContainer.getChildren().removeAll(toRemove);
     }
     public void disconnect() {
-        this.server.terminateWebSocketConnection();
+        if (this.isConnected) {
+            this.server.terminateWebSocketConnection();
+            this.isConnected = false;
+            System.out.println("list ctrl disconnected from ws");
+        }
     }
 
     public Pane getHighlightDrop() {
