@@ -44,12 +44,10 @@ public class BoardCtrl implements Initializable {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.boardService = boardService;
-        System.out.println("created board ctrl");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("board ctrl connected to ws");
         this.connectToWebSockets();
         this.server.registerForMessages("/topic/tasklists/add", TaskList.class, taskList -> {
             Long l1 = taskList.getParentBoard().getId();

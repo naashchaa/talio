@@ -5,18 +5,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane onMouseClicked="#loadBoard" prefHeight="80.0" prefWidth="178.0"
-            style="-fx-border-color: black; -fx-border-radius: 5px; -fx-border-width: 1.5px;" styleClass="board-card"
-            stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardPreviewCtrl">
-   <Label fx:id="boardTitle" alignment="CENTER" layoutX="28.0" layoutY="-1.0" prefHeight="29.0" prefWidth="126.0"
-          text="Board Name" textFill="WHITE">
+<AnchorPane onMouseClicked="#loadBoard" prefHeight="80.0" prefWidth="178.0" style="-fx-border-color: black; -fx-border-radius: 5px; -fx-border-width: 1.5px;" styleClass="board-card" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardPreviewCtrl">
+   <Label fx:id="boardTitle" alignment="CENTER" layoutX="4.0" layoutY="-1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="170.0" text="Board Name" textFill="WHITE">
       <font>
-         <Font name="Berlin Sans FB Demi Bold" size="16.0"/>
+         <Font name="Berlin Sans FB Demi Bold" size="16.0" />
       </font>
    </Label>
-   <Button layoutX="26.0" layoutY="41.0" mnemonicParsing="false" onAction="#edit" styleClass="board-card-button"
-           text="Edit"/>
-   <Button layoutX="92.0" layoutY="41.0" mnemonicParsing="false" onAction="#remove" styleClass="board-card-button"
-           text="Remove"/>
+   <Button layoutX="26.0" layoutY="41.0" mnemonicParsing="false" onAction="#edit" styleClass="board-card-button" text="Edit" />
+   <Button layoutX="98.0" layoutY="41.0" mnemonicParsing="false" onAction="#remove" styleClass="board-card-button" text="Leave" />
 </AnchorPane>

@@ -138,7 +138,6 @@ public class TaskListController {
     @MessageMapping("/tasklists/delete")
     @SendTo("/topic/tasklists/delete")
     public TaskList deleteMessage(TaskList taskList) {
-        System.out.println("tryna delete");
         this.delete(taskList.getId());
         return taskList;
     }

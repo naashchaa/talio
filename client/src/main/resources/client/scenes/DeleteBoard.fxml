@@ -5,36 +5,30 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="295.0" prefWidth="446.0" stylesheets="@../styling/styling.css"
-            xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.scenes.DeleteBoardCtrl">
-    <Label fx:id="boardName" alignment="CENTER" layoutX="160.0" layoutY="147.0" prefHeight="13.0" prefWidth="137.0"
-           text="Board Name">
+<AnchorPane prefHeight="295.0" prefWidth="446.0" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.DeleteBoardCtrl">
+    <Label fx:id="boardName" alignment="CENTER" layoutY="147.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="458.0" text="Board Name">
         <font>
-          <Font size="20.0"/>
+          <Font size="20.0" />
         </font>
     </Label>
-    <Label layoutX="67.0" layoutY="102.0" text="Are you sure you want to delete this Board?">
+    <Label alignment="CENTER" layoutX="-1.0" layoutY="102.0" prefHeight="27.0" prefWidth="458.0" text="Are you sure you want to delete this Board?">
         <font>
-          <Font size="18.0"/>
+          <Font size="18.0" />
         </font>
     </Label>
-    <Label alignment="CENTER" prefHeight="60.0" prefWidth="458.0" styleClass="title" text="Delete Board"
-           textFill="WHITE">
+    <Label alignment="CENTER" prefHeight="60.0" prefWidth="458.0" styleClass="title" text="Delete Board" textFill="WHITE">
         <font>
-          <Font size="24.0"/>
+          <Font size="24.0" />
         </font>
     </Label>
-    <Button layoutX="297.0" layoutY="208.0" mnemonicParsing="false" onAction="#confirm" prefHeight="27.0"
-            prefWidth="80.0" styleClass="primary-button" text="Confirm" textFill="WHITE">
+    <Button layoutX="297.0" layoutY="208.0" mnemonicParsing="false" onAction="#confirm" prefHeight="27.0" prefWidth="80.0" styleClass="primary-button" text="Confirm" textFill="WHITE">
         <font>
-          <Font name="Berlin Sans FB Demi Bold" size="19.0"/>
+          <Font name="Berlin Sans FB Demi Bold" size="19.0" />
         </font>
     </Button>
-    <Button layoutX="80.0" layoutY="208.0" mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="80.0"
-            style="-fx-background-color: #EBBC93;" styleClass="secondary-button" text="Cancel" textFill="WHITE">
+    <Button layoutX="80.0" layoutY="208.0" mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: #EBBC93;" styleClass="secondary-button" text="Cancel" textFill="WHITE">
         <font>
-          <Font name="Berlin Sans FB Demi Bold" size="19.0"/>
+          <Font name="Berlin Sans FB Demi Bold" size="19.0" />
         </font>
     </Button>
 </AnchorPane>

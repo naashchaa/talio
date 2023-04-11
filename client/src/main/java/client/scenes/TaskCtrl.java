@@ -128,7 +128,6 @@ public class TaskCtrl extends Node implements Initializable {
     }
 
     public void openTaskOverview() {
-        System.out.println("Opening task overview for task " + this.taskTitle.getText());
     }
 
     public void connectToWebSockets() {

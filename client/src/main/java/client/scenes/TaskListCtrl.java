@@ -68,7 +68,6 @@ public class TaskListCtrl extends Node implements Initializable {
      */
     public void registerForMessages() {
         this.server.registerForMessages("/topic/tasks/add", Task.class, task -> {
-            System.out.println("notified");
             // makes sure that the parent task list is the only that shows task on client.
             if (this.taskList.getId() == task.getParentTaskList().getId()) {
                 // this method is used to call runLater() to avoid JAVAFX thread errors.
@@ -83,16 +82,12 @@ public class TaskListCtrl extends Node implements Initializable {
         });
         this.server.registerForMessages("/topic/tasklists/delete", TaskList.class, taskList -> {
             if (this.taskList.getId() == taskList.getId()) {
-                System.out.println("received a delete update");
                 this.removeThisCtrl();
-                System.out.println("deleted");
             }
         });
         this.server.registerForMessages("/topic/tasks/drag", List.class, ids -> {
-            System.out.println("should it?");
             if (((Long)((Integer)ids.get(0)).longValue()).equals(this.taskList.getId()) ||
                     ((Long)((Integer)ids.get(1)).longValue()).equals(this.taskList.getId())) {
-                System.out.println("as it should");
                 this.loadTasksLater();
             }
         });
@@ -169,9 +164,7 @@ public class TaskListCtrl extends Node implements Initializable {
 
     public void delete() {
         this.server.deleteTasksByParentList(this.taskList);
-        System.out.println("deleted children");
         this.server.send("/app/tasklists/delete", this.taskList);
-        System.out.println("deleted the task list");
     }
 
     public void showDeleteTaskList() {
@@ -186,7 +179,6 @@ public class TaskListCtrl extends Node implements Initializable {
             this.server.establishWebSocketConnection();
             this.isConnected = true;
             this.registerForMessages();
-            System.out.println("list ctrl connected to ws");
         }
     }
 
@@ -210,7 +202,6 @@ public class TaskListCtrl extends Node implements Initializable {
         if (this.isConnected) {
             this.server.terminateWebSocketConnection();
             this.isConnected = false;
-            System.out.println("list ctrl disconnected from ws");
         }
     }
 
