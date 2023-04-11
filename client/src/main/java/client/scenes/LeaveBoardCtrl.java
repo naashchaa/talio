@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.utils.ServerUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -9,16 +8,18 @@ import javax.inject.Inject;
 public class LeaveBoardCtrl {
 
     private final MainCtrl mainCtrl;
+    private ApplicationOverviewCtrl appCtrl;
     private BoardCtrl boardCtrl;
-    private ApplicationOverviewCtrl appOverview;
     @FXML
     private Label boardName;
 
     @Inject
-    public LeaveBoardCtrl(MainCtrl mainCtrl, ServerUtils server,
-                          ApplicationOverviewCtrl appOverview) {
+    public LeaveBoardCtrl(MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
-        this.appOverview = appOverview;
+    }
+
+    public void setParentCtrl(ApplicationOverviewCtrl ctrl) {
+        this.appCtrl = ctrl;
     }
 
     public void cancel() {
@@ -26,14 +27,14 @@ public class LeaveBoardCtrl {
     }
 
     public void confirm() {
-        //TODO: method to remove the board from the user's view
-        this.appOverview.removeBoardPreview(this.boardCtrl.getBoard());
+        this.appCtrl.deleteBoard(this.boardCtrl.getBoard());
+        this.appCtrl.updateContext();
         this.mainCtrl.hidePopUp();
     }
 
     public void setBoardCtrl(BoardCtrl bc) {
         this.boardCtrl = bc;
-        this.boardName.setText(this.boardCtrl.getBoard().getName());
+        this.boardName.setText(bc.getBoard().getName());
     }
 
 }

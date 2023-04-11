@@ -7,6 +7,7 @@ build/
 
 **/*.mv.db
 **/*.trace.db
+/config/contexts.txt
 
 **/*.swp
 
@@ -43,3 +44,4 @@ out/
 
 ### macOS system files ###
 .DS_Store
+

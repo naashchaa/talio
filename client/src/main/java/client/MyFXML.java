@@ -31,7 +31,7 @@ import javafx.util.Pair;
 
 public class MyFXML {
 
-    private Injector injector;
+    private final Injector injector;
 
     public MyFXML(Injector injector) {
         this.injector = injector;
@@ -39,12 +39,12 @@ public class MyFXML {
 
     /**
      * Method to facilitate the load to the fxml.
-     * @param c the class for the controller
+     * @param ignoredC the class for the controller
      * @param parts the path to the files
      * @return returns a pair that wraps the controller and its parent
      * @param <T> the type of class
      */
-    public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
+    public <T> Pair<T, Parent> load(Class<T> ignoredC, String... parts) {
         try {
             var loader = new FXMLLoader(this.getLocation(parts), null,
                     null, new MyFactory(), StandardCharsets.UTF_8);
@@ -54,6 +54,7 @@ public class MyFXML {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     private URL getLocation(String... parts) {
@@ -66,12 +67,7 @@ public class MyFXML {
         @Override
         @SuppressWarnings("rawtypes")
         public Builder<?> getBuilder(Class<?> type) {
-            return new Builder() {
-                @Override
-                public Object build() {
-                    return MyFXML.this.injector.getInstance(type);
-                }
-            };
+            return (Builder) () -> MyFXML.this.injector.getInstance(type);
         }
 
         @Override

@@ -3,16 +3,14 @@ package client.services;
 import client.scenes.BoardCtrl;
 import client.scenes.TaskListCtrl;
 import client.utils.ServerUtils;
-import commons.Task;
+import commons.Board;
 import commons.TaskList;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BoardService {
 
@@ -25,84 +23,7 @@ public class BoardService {
 
 
     public void loadContents(BoardCtrl ctrl) {
-//        this.loadBoard(ctrl);
         this.loadTaskLists(ctrl);
-    }
-
-    /** This method loads the board object from the database.
-     * @param ctrl Controller to load the board for
-     */
-//    public void loadBoard(BoardCtrl ctrl) {
-//        try {
-//            List<Board> boards = this.server.getBoard();
-//            if (boards.size() == 0) {
-//                Board newBoard = new Board("Default Board");
-//                this.server.addBoard(newBoard);
-//                ctrl.setBoard(this.server.getBoard().get(0));
-//            }
-//            ctrl.setBoard(boards.get(0));
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-    public void refreshBoardLater(BoardCtrl ctrl) {
-        for (var list : ctrl.getListContainer().getChildren()) {
-            TaskListCtrl listCtrl = (TaskListCtrl) list.getUserData();
-            if (listCtrl != null)
-                this.refreshTaskListLater(ctrl, listCtrl);
-        }
-    }
-
-    public void refreshTaskListLater(BoardCtrl ctrl, TaskListCtrl list) {
-        Platform.runLater(() -> this.refreshTaskList(ctrl, list));
-    }
-
-    /** This method refreshes the clientside task list object to display changes.
-     * @param ctrl Parent controller to update in
-     * @param list the list to update
-     */
-    public void refreshTaskList(BoardCtrl ctrl, TaskListCtrl list) {
-        Optional<Node> listNode = ctrl
-            .getListContainer() // get the HBox, which holds all the scene nodes
-            .getChildren() // get the HBox's children -> task list nodes
-            .stream() // turn it back into a stream
-//            .filter(node -> (list.getTaskList().getId() == (node.getUserData() == null ? 0 :
-//                (((TaskCtrl)node.getUserData()).getTask()).id))) // find the right task node
-            .filter(node -> (list.getTaskList().getId() == (node.getUserData() == null ? 0 :
-            (((TaskListCtrl)node.getUserData()).getTaskList().getId()))))
-            .findFirst();
-        if (listNode.isEmpty())
-            throw new IllegalArgumentException("No node linked to the given task list was found");
-
-        Label label = (Label) listNode.get().lookup("#taskListName");
-        label.setText(list.getTaskList().getName()); // update node data
-        listNode.get().setUserData(list);
-    }
-
-    /**
-     * Method that refreshes all tasks in a task list.
-     * @param ctrl
-     * @param listCtrl
-     */
-    public void refreshTasksInTaskList(BoardCtrl ctrl, TaskListCtrl listCtrl) {
-        Optional<Node> listNode = ctrl
-                .getListContainer() // get the HBox, which holds all the scene nodes
-                .getChildren() // get the HBox's children -> task list nodes
-                .stream() // turn it back into a stream
-                .filter(node -> (listCtrl.getTaskList().getId() == (node.getUserData() == null ? 0 :
-                        (((TaskListCtrl)node.getUserData()).getTaskList().getId()))))
-                .findFirst(); // has the task list node
-
-        if (listNode.isEmpty())
-            throw new IllegalArgumentException("No node linked to the given task list was found");
-
-        Node taskListNode = listNode.get();
-        ObservableList<Node> taskNodeList =
-                ((TaskListCtrl)(taskListNode.getUserData())).getTaskContainer().getChildren();
-
-        List<Task> a = this.server.getTasksByParentList(listCtrl.getTaskList());
     }
 
     public void loadTaskLists(BoardCtrl ctrl) {
@@ -118,11 +39,132 @@ public class BoardService {
      */
     public void removeTaskLists(BoardCtrl ctrl) {
         for (Node node : ctrl.getListContainer().getChildren()) {
-            if (!"button_addtasklist".equals(node.getId()))
+            if (!"buttonAddTaskList".equals(node.getId()))
                 ((TaskListCtrl) node.getUserData()).disconnect();
         }
         while (ctrl.getListContainer().getChildren().size() > 1) {
             ctrl.getListContainer().getChildren().remove(0);
+        }
+    }
+
+    /** This method updates the clientside remembered contexts when there are changes.
+     * @param server The connection string to update for
+     * @param boards the list of boards that contains the changed context
+     */
+    public void updateRememberedBoards(String server, List<Board> boards) {
+        // get all known boards
+        List<Board> knownBoards = this.server.getRememberedBoards();
+
+        // check the given list against known boards and add or remove accordingly
+
+        Set<Board> hashedKnownBoards = new HashSet<>(knownBoards);
+        Set<Board> hashedPassedBoards = new HashSet<>(boards);
+
+        // if sets are equal, do nothing
+        if (hashedKnownBoards.equals(hashedPassedBoards))
+            return;
+
+        List<Board> difference = new LinkedList<>();
+
+        // check for new boards
+        if (!hashedKnownBoards.containsAll(hashedPassedBoards)) {
+            // more boards were passed than what was known
+            // boards hence have to be remembered
+            difference.addAll(hashedPassedBoards);
+            difference.removeAll(hashedKnownBoards);
+            knownBoards.addAll(difference);
+            difference.clear();
+        }
+
+        // check for forgotten boards
+        if (!hashedPassedBoards.containsAll(hashedKnownBoards)) {
+            // more boards were known than what was passed
+            // boards hence have to be forgotten
+            difference.addAll(hashedKnownBoards);
+            difference.removeAll(hashedPassedBoards);
+            knownBoards.removeAll(difference);
+            difference.clear();
+        }
+
+        // after changes have been fetched, write the new context to file
+        this.writeUpdatedKnownBoards(server, knownBoards);
+    }
+
+    /** This is a helper method that determines what changes have to be made
+     * and then writes the updated context.
+     * @param server The server connection string
+     * @param knownBoards the list of known boards
+     */
+    public void writeUpdatedKnownBoards(String server, List<Board> knownBoards) {
+        // parse existing contexts
+        Map<String, List<Long>> contexts = this.parseAllContexts();
+
+        // get a list of ids
+        List<Long> ids = knownBoards.stream().map(Board::getId).collect(Collectors.toList());
+
+        // modify the current one with the given list
+        contexts.get(server).clear();
+        contexts.get(server).addAll(ids);
+
+        // write the contexts again
+        this.writeContexts(contexts);
+    }
+
+    /** This method parses all known contexts into a simple to process structure
+     * which consists of a map with the server connection string as the key
+     * and the list of known boards as the value.
+     * @return the map representation of all known contexts
+     */
+    public Map<String, List<Long>> parseAllContexts() {
+        Map<String, List<Long>> contexts = new HashMap<>();
+        try {
+            Scanner contextsScanner = new Scanner(new File("config/contexts.txt"));
+            contextsScanner.useDelimiter(System.lineSeparator() + System.lineSeparator());
+
+            List<String> contextStrings = contextsScanner.tokens().collect(Collectors.toList());
+
+            for (String context : contextStrings) {
+                Scanner contextScanner = new Scanner(context);
+                List<String> contents = contextScanner.tokens().collect(Collectors.toList());
+
+                String server = contents.remove(0);
+                List<Long> ids = new LinkedList<>();
+
+                for (String id : contents) {
+                    ids.add(Long.parseLong(id));
+                }
+
+                contexts.put(server, ids);
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Could not find the contexts config file");
+        }
+        return contexts;
+    }
+
+    /** This method writes to the file the provided contexts data structure.
+     * @param contexts the contexts to write
+     */
+    public void writeContexts(Map<String, List<Long>> contexts) {
+        try {
+            PrintWriter writer = new PrintWriter(
+                new FileWriter("config/contexts.txt"));
+
+            for (String server : contexts.keySet()) {
+                writer.println(server);
+
+                for (Long id : contexts.get(server)) {
+                    writer.println(id);
+                }
+
+                writer.println();
+            }
+
+            writer.close();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

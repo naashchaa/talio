@@ -6,28 +6,31 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="279.0" prefWidth="499.0" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CreateBoardCtrl">
-   <children>
-      <Label alignment="CENTER" prefHeight="53.0" prefWidth="511.0" styleClass="title" text="New Board" textFill="WHITE">
-         <font>
-            <Font name="Berlin Sans FB Demi Bold" size="24.0" />
-         </font>
-      </Label>
-      <Label layoutX="30.0" layoutY="79.0" prefHeight="39.0" prefWidth="82.0" text="Enter title:">
-         <font>
-            <Font name="Berlin Sans FB Demi Bold" size="18.0" />
-         </font>
-      </Label>
-      <TextField fx:id="boardTitle" layoutX="30.0" layoutY="119.0" prefHeight="39.0" prefWidth="459.0" style="-fx-background-color: #E8D5C4;" />
-      <Button layoutX="49.0" layoutY="200.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0" prefWidth="82.0" styleClass="secondary-button" text="Cancel" textFill="WHITE">
-         <font>
-            <Font name="Berlin Sans FB Demi Bold" size="19.0" />
-         </font>
-      </Button>
-      <Button layoutX="384.0" layoutY="200.0" mnemonicParsing="false" onAction="#create" prefHeight="31.0" prefWidth="82.0" styleClass="primary-button" text="Create" textFill="WHITE">
-         <font>
-            <Font name="Berlin Sans FB Demi Bold" size="19.0" />
-         </font>
-      </Button>
-   </children>
+<AnchorPane prefHeight="279.0" prefWidth="499.0" stylesheets="@../styling/styling.css"
+            xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.scenes.CreateBoardCtrl">
+   <Label alignment="CENTER" prefHeight="53.0" prefWidth="511.0" styleClass="title" text="New Board" textFill="WHITE">
+      <font>
+         <Font name="Berlin Sans FB Demi Bold" size="24.0"/>
+      </font>
+   </Label>
+   <Label layoutX="30.0" layoutY="79.0" prefHeight="39.0" prefWidth="82.0" text="Enter title:">
+      <font>
+         <Font name="Berlin Sans FB Demi Bold" size="18.0"/>
+      </font>
+   </Label>
+   <TextField fx:id="boardTitle" layoutX="30.0" layoutY="119.0" prefHeight="39.0" prefWidth="459.0"
+              style="-fx-background-color: #E8D5C4;"/>
+   <Button layoutX="49.0" layoutY="200.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0" prefWidth="82.0"
+           styleClass="secondary-button" text="Cancel" textFill="WHITE">
+      <font>
+         <Font name="Berlin Sans FB Demi Bold" size="19.0"/>
+      </font>
+   </Button>
+   <Button layoutX="384.0" layoutY="200.0" mnemonicParsing="false" onAction="#create" prefHeight="31.0" prefWidth="82.0"
+           styleClass="primary-button" text="Create" textFill="WHITE">
+      <font>
+         <Font name="Berlin Sans FB Demi Bold" size="19.0"/>
+      </font>
+   </Button>
 </AnchorPane>

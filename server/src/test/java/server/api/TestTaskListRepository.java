@@ -40,7 +40,12 @@ public class TestTaskListRepository implements TaskListRepository {
 
     @Override
     public List<TaskList> findAllByParentBoard_Id(long id) {
-        return null;
+        List<TaskList> list1 = new ArrayList<>();
+        for (TaskList list : this.list) {
+            if (list.getParentBoard().getId() == id)
+                list1.add(list);
+        }
+        return list1;
     }
 
     @Override
@@ -50,12 +55,14 @@ public class TestTaskListRepository implements TaskListRepository {
 
     @Override
     public void deleteById(Long aLong) {
-
+        for (int i = 0; i < this.list.size(); i++) {
+            if (this.list.get(i).getId() == aLong) this.list.remove(this.list.get(i));
+        }
     }
 
     @Override
     public void delete(TaskList entity) {
-
+        this.list.remove(entity);
     }
 
     @Override
@@ -75,8 +82,8 @@ public class TestTaskListRepository implements TaskListRepository {
 
     @Override
     public <S extends TaskList> S save(S entity) {
-        entity.setId((long) this.list.size());
         this.list.add(entity);
+        entity.setId((long) this.list.size());
         return entity;
     }
 
@@ -137,7 +144,7 @@ public class TestTaskListRepository implements TaskListRepository {
 
     @Override
     public TaskList getById(Long aLong) {
-        return null;
+        return this.list.get(aLong.intValue() - 1);
     }
 
     @Override

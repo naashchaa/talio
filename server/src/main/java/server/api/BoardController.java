@@ -32,7 +32,7 @@ public class BoardController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Board> getById(@PathVariable("id") long id) {
-        if (id < 0 || !this.repo.existsById(id)) {
+        if (id < 0 || this.repo.findById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(this.repo.findById(id).get());
@@ -47,10 +47,6 @@ public class BoardController {
     public ResponseEntity<Board> add(@RequestBody Board board) {
         //TODO: long polling / websockets syncing clients
 
-        if (board.getName() == null){
-            return ResponseEntity.badRequest().build();
-        }
-
         Board saved = this.repo.save(board);
         return ResponseEntity.ok(saved);
     }
@@ -61,13 +57,16 @@ public class BoardController {
      */
     //delete mapping
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") long id) {
+    public ResponseEntity<Board> delete(@PathVariable("id") long id) {
         //TODO: long polling / websockets syncing clients
         if (id < 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
+
+        Board removed = this.repo.getById(id);
         this.repo.deleteById(id);
-        return ResponseEntity.ok("delete successful");
+
+        return ResponseEntity.ok(removed);
     }
 
     /**
@@ -77,13 +76,12 @@ public class BoardController {
     @PostMapping(path = {"/update"})
     //TODO: long polling / websockets syncing clients
     public ResponseEntity<Board> update(@RequestBody Board board) {
-        if (board.getId() < 0 || !this.repo.existsById(board.getId())) {
+        if (board.getId() < 0 || this.repo.findById(board.getId()).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
         Board saved = this.repo.findById(board.getId()).get();
         saved.setName(board.getName());
-        saved.setShow(board.isShow());
 
         this.repo.save(saved);
         return ResponseEntity.ok(saved);

@@ -10,7 +10,7 @@ import javafx.scene.control.TextField;
 public class CreateBoardCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private ApplicationOverviewCtrl appOverview;
+    private final ApplicationOverviewCtrl appOverview;
 
     @FXML
     private TextField boardTitle;

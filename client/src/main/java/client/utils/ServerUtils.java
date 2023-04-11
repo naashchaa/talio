@@ -17,8 +17,12 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.io.*;
 import java.lang.reflect.Type;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,6 +49,10 @@ public class ServerUtils {
 
     private static String SERVER = "http://localhost:8080/";
 
+    public String getConnectionString() {
+        return SERVER;
+    }
+
     /** This method modifies the SERVER connection string.
      * @param string the string to set SERVER to
      * @return true if the connection was successful, false otherwise
@@ -53,8 +61,8 @@ public class ServerUtils {
         String temp = SERVER;
         try {
             SERVER = string;
-            this.getBoards();
-            return true;
+            List<Board> boards = this.getBoards();
+            return boards != null;
         }
         catch (RuntimeException e){
             SERVER = temp;
@@ -62,12 +70,107 @@ public class ServerUtils {
         }
     }
 
-    public Task addTask(Task task) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tasks")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .post(Entity.entity(task, APPLICATION_JSON), Task.class);
+    /** This method returns only the boards that the client has joined.
+     * @return the list of joined boards
+     */
+    public List<Board> getRememberedBoards() {
+        List<Long> ids = this.parseRememberedBoardIds();
+        List<Board> boards = new LinkedList<>();
+
+        for (long id : ids) {
+            boards.add(this.getBoard(id));
+        }
+
+        return boards;
+    }
+
+    /**
+     * This method makes sure that there is a contexts.txt config file present.
+     */
+    public void ensureContextConfigPresence() {
+        try {
+            Scanner contextsScanner = new Scanner(new File("config/contexts.txt"));
+            if (!contextsScanner.hasNext() ||
+                contextsScanner.next().equals(System.lineSeparator()))
+                throw new FileNotFoundException();
+        }
+        catch (FileNotFoundException e) {
+            try {
+                PrintWriter writer = new PrintWriter(
+                    new FileWriter("config/contexts.txt"));
+
+                writer.println(SERVER);
+                writer.println();
+                writer.close();
+            }
+            catch (IOException eee) {
+                throw new RuntimeException(eee);
+            }
+        }
+    }
+
+    /**
+     * This method will write a new entry for a server it wasn't present in the contexts.txt yet.
+     */
+    public void writeNewServerContext() {
+        try {
+            PrintWriter writer = new PrintWriter(
+                new FileWriter("config/contexts.txt", true));
+
+            writer.println(SERVER);
+            writer.println();
+            writer.close();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /** This method parses all boards that a client visited in a given server.
+     * @return List of ids of visited boards
+     */
+    public List<Long> parseRememberedBoardIds() {
+        List<Long> ids = new LinkedList<>();
+
+        // check if the config is present
+        this.ensureContextConfigPresence();
+
+        try {
+            Scanner contextsScanner = new Scanner(new File("config/contexts.txt"));
+            contextsScanner.useDelimiter(System.lineSeparator() + System.lineSeparator());
+
+            Optional<String> context = contextsScanner.tokens()
+                .filter(lines -> lines.startsWith(SERVER))
+                .findFirst();
+
+            if(context.isEmpty())
+                this.writeNewServerContext();
+
+            contextsScanner = new Scanner(new File("config/contexts.txt"));
+            contextsScanner.useDelimiter(System.lineSeparator() + System.lineSeparator());
+
+            context = contextsScanner.tokens()
+                .filter(lines -> lines.startsWith(SERVER))
+                .findFirst();
+
+            if (context.isEmpty())
+                throw new RuntimeException("I don't know what to do if this fails.");
+
+            Scanner contextScanner = new Scanner(context.get());
+            contextScanner.useDelimiter(System.lineSeparator());
+
+            if (contextScanner.hasNext())   //redundant if, but java doesn't know
+                contextScanner.next();
+
+            while (contextScanner.hasNext()) {
+                ids.add(Long.parseLong(contextScanner.next()));
+            }
+        }
+        catch (FileNotFoundException e) {
+            throw new RuntimeException("Could not load the contexts config file");
+        }
+
+        return ids;
     }
 
     public List<Board> getBoards() {
@@ -75,8 +178,15 @@ public class ServerUtils {
                 .target(SERVER).path("api/boards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {
-                });
+                .get(new GenericType<>() {});
+    }
+
+    public Board getBoard(long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+            .target(SERVER).path("api/boards/" + id) //
+            .request(APPLICATION_JSON) //
+            .accept(APPLICATION_JSON) //
+            .get(new GenericType<>() {});
     }
 
     public Board addBoard(Board board) {
@@ -85,14 +195,6 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(board, APPLICATION_JSON), Board.class);
-    }
-
-    public TaskList addTaskList(TaskList tasklist) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tasklists")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .post(Entity.entity(tasklist, APPLICATION_JSON), TaskList.class);
     }
 
     public void deleteTaskListWrapper(TaskList taskList) {
@@ -109,14 +211,6 @@ public class ServerUtils {
             .request(APPLICATION_JSON)
             .accept(APPLICATION_JSON)
             .delete();
-    }
-
-    public List<TaskList> getTaskLists() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/tasklists/") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {});
     }
 
     /**
@@ -146,46 +240,6 @@ public class ServerUtils {
                                 .delete();
     }
 
-    public void deleteTask(Task task) {
-        ClientBuilder.newClient(new ClientConfig())
-        .target(SERVER).path("api/tasks/" + task.getId())
-        .request(APPLICATION_JSON)
-        .accept(APPLICATION_JSON)
-            .delete();
-    }
-
-    /** Retrieves the provided TaskList from the repository
-     * (used for TaskList objects without assigned IDs).
-     * @param taskList TaskList to be returned
-     * @return the TaskList entry from the database
-     */
-    public TaskList getTaskList(TaskList taskList) {
-        String id = Long.toString(taskList.getId());
-
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("/api/tasklists/" + id) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {
-                });
-    }
-
-    public Task updateTask(Task task) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("/api/tasks/" + task.id + "/update") //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .post(Entity.entity(task, APPLICATION_JSON), Task.class);
-    }
-
-    public TaskList updateTaskList(TaskList taskList) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("/api/tasklists/update") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
-    }
-
     public List<TaskList> getTaskListsByParentBoard(Board board) {
         return ClientBuilder.newClient(new ClientConfig())
             .target(SERVER).path("api/tasklists/get_by_parent/" + board.getId())
@@ -193,15 +247,6 @@ public class ServerUtils {
             .accept(APPLICATION_JSON)
             .get(new GenericType<>() {});
     }
-
-//    public List<Task> getTasksOfTasklist(TaskList taskList) {
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("/api/tasks/get_by_parent/" + taskList.getId()) //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .get(new GenericType<>() {
-//                });
-//    }
 
     public void deleteBoard(Board board) {
         ClientBuilder.newClient(new ClientConfig())

@@ -49,7 +49,6 @@ public class TaskListService {
                 TaskCtrl ref = ((TaskCtrl)(ctrl.getTaskContainer().getChildren()
                         .get(i).getUserData()));
                 ref.disconnect();
-                ref = null;
             }
         }
         ctrl.getTaskContainer().getChildren().removeAll(toRemove);
@@ -104,7 +103,8 @@ public class TaskListService {
         ObservableList<Node> listContainer = ctrl.getListContainer().getChildren();
 
         Optional<Node> nodeToRemove = listContainer.stream()
-            .filter(node -> (node.getId() == null || !node.getId().equals("button_addtasklist")))
+            .filter(node -> (node.getId() == null || !node.getId().equals("buttonAddTaskList")))
+            .filter(node -> node.getUserData() != null)
             .filter(node -> (((TaskListCtrl)node.getUserData()).getTaskList()).getId() ==
                 listCtrl.getTaskList().getId())
             .findFirst();

@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.services.BoardService;
 import client.services.TaskService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -23,7 +22,6 @@ public class TaskCtrl extends Node implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final TaskService service;
-    private final BoardService boardService;
     private TaskListCtrl parentCtrl;
     private boolean isConnected;
 
@@ -41,22 +39,18 @@ public class TaskCtrl extends Node implements Initializable {
 
     /**
      * Constructor for a task ctrl.
-     * @param server
-     * @param mainCtrl
-     * @param service
-     * @param title
-     * @param boardService
+     * @param server ServerUtils instance
+     * @param mainCtrl MainCtrl instance
+     * @param service TaskService helper instance
+     * @param title task title
      */
     @Inject
-    public TaskCtrl(ServerUtils server, MainCtrl mainCtrl, TaskService service, String title,
-                    BoardService boardService) {
+    public TaskCtrl(ServerUtils server, MainCtrl mainCtrl, TaskService service, String title) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.service = service;
         this.taskTitle = new Label(title);
-        this.boardService = boardService;
         this.isConnected = false;
-        System.out.println("created task ctrl " + this.taskTitle.getText());
     }
 
     /** This method initializes task controller.
@@ -67,7 +61,6 @@ public class TaskCtrl extends Node implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("task ctrl connected to ws");
         this.connectToWebSockets();
         this.service.connectToWebSockets();
         this.setDragStuff();
@@ -81,19 +74,14 @@ public class TaskCtrl extends Node implements Initializable {
         this.server.registerForMessages("/topic/tasks/edit", Task.class, task -> {
             if (task.id == this.task.id) {
                 this.setTask(task);
-                System.out.println("received an edit notification");
                 this.service.refreshTaskLater(this);
             }
         });
         // Subscribing the task controller to the delete path
         this.server.registerForMessages("/topic/tasks/delete", Task.class, task -> {
-//            if (task.id == this.task.id) {
-//                this.service.deleteTaskLater(this.parentCtrl, task);
-//            }
             Long l1 = task.getId();
             long l2 = this.task.getId();
             if (l1.equals(l2)) {
-                System.out.println("in becasuse " + l1 + " " + l2);
                 this.service.deleteTaskLater(this.parentCtrl, task);
             }
         });
@@ -270,9 +258,8 @@ public class TaskCtrl extends Node implements Initializable {
                 TaskCtrl nextTask = (TaskCtrl)(topTarget.getParent()).getUserData();
                 TaskListCtrl targetList = nextTask.getParentCtrl();
                 this.setParentCtrl(targetList);
-
                 Long prevId = sourceTaskCtrl.getTask().getParentTaskList().getId();
-                if(TaskCtrl.this.getTask().getPrevTask() == sourceTaskCtrl.getTask().id) {
+                if (TaskCtrl.this.getTask().getPrevTask() == sourceTaskCtrl.getTask().id) {
                     event.setDropCompleted(false);
                     event.consume();
                     return;

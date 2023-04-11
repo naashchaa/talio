@@ -45,37 +45,6 @@ public class TaskService {
         return (TaskCtrl)nextNode.map(Node::getUserData).orElse(null);
     }
 
-    /** This method returns a task controller based on the associated task id.
-     * @param caller the caller controller
-     * @param id the id of the task
-     * @return the associated controller
-     */
-    public Optional<TaskCtrl> getCtrlByTaskId(TaskCtrl caller, long id) {
-        BoardCtrl board = caller.getParentCtrl().getParentCtrl();
-
-        return board.getListContainer()
-            .getChildren()
-            .stream()
-            .map(Node::getUserData)
-            .map(obj -> (TaskListCtrl)obj)
-            .map(TaskListCtrl::getTaskContainer)
-            .map(VBox::getChildren)
-            .map(ObservableList::stream)
-            .map(stream ->
-                stream.filter(node ->
-                        (id == (node.getUserData() == null ? 0 :
-                                (((TaskCtrl)node.getUserData()).getTask().id))
-                        )
-                    )
-                    .map(Node::getUserData)
-                    .map(obj -> (TaskCtrl)obj)
-                    .findFirst()
-            )
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .findFirst();
-    }
-
     /** This method returns the node associated with a certain task.
      * @param caller the caller controller
      * @param id the task id
@@ -104,103 +73,6 @@ public class TaskService {
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst();
-    }
-
-    public Optional<TaskCtrl> getNextByTaskId(TaskCtrl caller, long id) {
-        Optional<TaskCtrl> nextTask = Optional.empty();
-        if (id != 0)
-            nextTask = this.getCtrlByTaskId(caller, id);
-
-        return nextTask;
-    }
-
-    /** This method returns the task list controller associated to a certain task list.
-     * @param caller the caller controller
-     * @param id the task list id
-     * @return the task list controller
-     */
-    public Optional<TaskListCtrl> getCtrlByTaskListId(TaskCtrl caller, long id) {
-        //get parent board
-        BoardCtrl board = caller.getParentCtrl().getParentCtrl();
-
-        return board.getListContainer()
-            .getChildren()
-            .stream()
-            .map(Node::getUserData)
-            .map(obj -> (TaskListCtrl)obj)
-            .filter(ctrl -> id == ctrl.getTaskList().getId())
-            .findFirst();
-    }
-
-    public boolean nodeInList(Node node, TaskListCtrl ctrl) {
-        return ctrl.getTaskContainer().getChildren().contains(node);
-    }
-
-    /** This method finds the drag and drop parameters based on a list of ids.
-     * @param caller the caller task controller
-     * @param ids the list of needed ids
-     * @return a list with all the parameters
-     */
-    public List<Object> getDragParameters(TaskCtrl caller, List<?> ids) {
-        List<Object> list = new ArrayList<>();
-
-        //find source task controller
-        Optional<TaskCtrl> sourceTaskCtrl =
-            this.getCtrlByTaskId(caller, ((Long) ids.get(0)));
-
-        if (sourceTaskCtrl.isEmpty())
-            throw new IllegalArgumentException("Could not find the source task controller");
-
-        //find target list controller
-        Optional<TaskListCtrl> targetListCtrl =
-            this.getCtrlByTaskListId(caller, ((Long) ids.get(1)));
-
-        if(targetListCtrl.isEmpty())
-            throw new IllegalArgumentException("Could not find the target list controller");
-
-        //find next task
-        Optional<TaskCtrl> nextTaskCtrl =
-            this.getNextByTaskId(caller, ((Long) ids.get(2)));
-
-        Task nextTask = null;
-        if (nextTaskCtrl.isPresent())
-            nextTask = nextTaskCtrl.get().getTask();
-
-        list.add(sourceTaskCtrl.get());
-        list.add(targetListCtrl.get());
-        list.add(nextTask);
-
-        return list;
-    }
-
-    /** This checks if a certain task has already been dragged to hopefully not get updated twice.
-     * @param ctrl the controller of the task to check
-     * @param ids the list of ids of drag and drop parameters
-     * @return true if it has already been dragged, false otherwise
-     */
-    public boolean isAlreadyDragged(TaskCtrl ctrl, List<?> ids) {
-        // check if the correlated node element is in its parent controller's node children
-        Optional<Node> taskNode = this.getNodeByTaskId(ctrl, ((Long) ids.get(1)));
-
-        if (taskNode.isEmpty())
-            throw new IllegalArgumentException("Could not find the node by ID");
-
-        Optional<TaskListCtrl> newParentCtrl = this.getCtrlByTaskListId(ctrl, ((Long) ids.get(1)));
-
-        if (newParentCtrl.isEmpty())
-            throw new IllegalArgumentException("Could not find the list by ID");
-
-        if (!this.nodeInList(taskNode.get(), newParentCtrl.get()))
-            return false;
-
-        // check if the controller's next task matches that of the drag and drop destination
-        Task ctrlNext = ctrl.getNextTask(ctrl.getTask()).getTask();
-        Optional<TaskCtrl> taskNextCtrl = this.getNextByTaskId(ctrl, (Long) ids.get(2));
-        Task taskNext = taskNextCtrl.isEmpty() ? null : taskNextCtrl.get().getTask();
-        long id1 = ctrlNext == null ? 0 : ctrlNext.id;
-        long id2 = taskNext == null ? 0 : taskNext.id;
-
-        return id1 == id2;
     }
 
     /** This method moves one task from another with the ability to move between lists.
@@ -263,8 +135,6 @@ public class TaskService {
         // insert the old node into new location
         nodeList.add(insertIndex - offset, taskNode);
 
-//        if (!sourceTaskCtrl.getParentCtrl().equals(targetListCtrl))
-//            sourceTaskCtrl.setParentCtrl(targetListCtrl);
         sourceTaskCtrl.setParentCtrl(targetListCtrl);
 
         // update the next and inserted tasks
