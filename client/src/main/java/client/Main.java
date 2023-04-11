@@ -19,6 +19,7 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 import client.scenes.*;
@@ -40,6 +41,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        URL stylingPath = this.getClass().getResource("../client/styling/styling.css");
+        if (stylingPath == null) {
+            throw new IOException("Could not find styling.css");
+        }
+        String css = stylingPath.toExternalForm();
         var connectToServer =
             FXML.load(ConnectToServerCtrl.class, "client", "scenes", "ConnectToServer.fxml");
         var applicationOverview =
@@ -87,6 +93,10 @@ public class Main extends Application {
             joinBoard,
             joinKey
         );
+
+        for (var scene : scenes) {
+            scene.getValue().getStylesheets().add(css);
+        }
 
         mainCtrl.initialize(primaryStage, scenes);
 
