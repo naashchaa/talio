@@ -99,15 +99,6 @@ public class Task {
     public void setParentTask(Task parent) {
         this.parentTask = parent;
     }
-
-//    public Task getNextTask() {
-//        return this.nextTask;
-//    }
-//
-//    public void setNextTask(Task next) {
-//        this.nextTask = next;
-//    }
-
     public long getPrevTask() {
         return this.prevTask;
     }

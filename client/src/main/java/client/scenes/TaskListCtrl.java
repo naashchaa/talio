@@ -1,7 +1,6 @@
 package client.scenes;
 
 import client.Main;
-import client.services.BoardService;
 import client.services.TaskListService;
 import client.services.TaskService;
 import client.utils.ServerUtils;
@@ -28,7 +27,6 @@ public class TaskListCtrl extends Node implements Initializable {
     private final MainCtrl mainCtrl;
     private final TaskListService listService;
     private final TaskService taskService;
-    private final BoardService boardService;
     private boolean isConnected;
     private BoardCtrl parentCtrl;
     private TaskList taskList;
@@ -41,21 +39,18 @@ public class TaskListCtrl extends Node implements Initializable {
 
     /**
      * Constructor for task list ctrl.
-     * @param server
-     * @param mainCtrl
-     * @param taskService
-     * @param listService
-     * @param boardService
+     * @param server ServerUtils instance
+     * @param mainCtrl MainCtrl instance
+     * @param taskService TaskService instance
+     * @param listService TaskListService instance
      */
     @Inject
     public TaskListCtrl(ServerUtils server, MainCtrl mainCtrl,
-                        TaskService taskService, TaskListService listService,
-                        BoardService boardService) {
+                        TaskService taskService, TaskListService listService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.taskService = taskService;
         this.listService = listService;
-        this.boardService = boardService;
         this.isConnected = false;
     }
 
@@ -88,7 +83,9 @@ public class TaskListCtrl extends Node implements Initializable {
         });
         this.server.registerForMessages("/topic/tasklists/delete", TaskList.class, taskList -> {
             if (this.taskList.getId() == taskList.getId()) {
+                System.out.println("received a delete update");
                 this.removeThisCtrl();
+                System.out.println("deleted");
             }
         });
         this.server.registerForMessages("/topic/tasks/drag", List.class, ids -> {
@@ -99,10 +96,6 @@ public class TaskListCtrl extends Node implements Initializable {
                 this.loadTasksLater();
             }
         });
-    }
-
-    public void loadTasks() {
-        this.listService.loadTasks(this);
     }
 
     /**
@@ -124,23 +117,8 @@ public class TaskListCtrl extends Node implements Initializable {
      * Helper method to be able to use runLater().
      */
     public void loadTasksLater() {
-//        Platform.runLater(() -> {
-//            this.loadTasksLaterHelper();
-//        });
         Platform.runLater(() -> this.listService.loadTasks(this));
     }
-
-//    /**
-//     * Send a parent task list and a task to be added to that task list
-//     * in the main ctrl.
-//     */
-//    public void loadTasksLaterHelper() {
-//        this.removeTasks();
-//        for(Task task : this.server.getTasksOfTasklist(this.taskList)) {
-//            this.addTaskToList(task);
-//        }
-//        this.sortTasks();
-//    }
 
     public void addTask() {
         this.mainCtrl.showAddTask(this);
@@ -190,11 +168,10 @@ public class TaskListCtrl extends Node implements Initializable {
     }
 
     public void delete() {
-        //this.server.deleteTaskListWrapper(this.taskList); // delete serverside
-        //this.listService.deleteTaskList(this.getParentCtrl(), this); // delete clientside
         this.server.deleteTasksByParentList(this.taskList);
+        System.out.println("deleted children");
         this.server.send("/app/tasklists/delete", this.taskList);
-
+        System.out.println("deleted the task list");
     }
 
     public void showDeleteTaskList() {

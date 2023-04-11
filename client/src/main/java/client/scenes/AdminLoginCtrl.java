@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class AdminLoginCtrl {
-    private MainCtrl mainCtrl;
+    private final MainCtrl mainCtrl;
     private ApplicationOverviewCtrl appCtrl;
     @FXML
     private PasswordField password;

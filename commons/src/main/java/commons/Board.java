@@ -15,15 +15,18 @@ public class Board {
     @Column(nullable = false)
     private String name;
     private String password;
-    @Column(nullable = false)
-    private boolean show;
 
     @SuppressWarnings("unused")
     private Board(){}
 
     public Board(@NotNull String name) {
         this.name = name;
-        this.show = true;
+    }
+
+    //    constructor for when a password is entered
+    public Board(@NotNull String name, @NotNull String password){
+        this.name = name;
+        this.password = password;
     }
 
     public long getId(){
@@ -68,13 +71,5 @@ public class Board {
     @Override
     public String toString(){
         return "Board: " + this.name + ", " + this.id;
-    }
-
-    public void setShow(boolean value) {
-        this.show = value;
-    }
-
-    public boolean isShow() {
-        return this.show;
     }
 }

@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.services.BoardService;
 import client.services.TaskListService;
 import client.services.TaskService;
 import client.utils.ServerUtils;
@@ -17,7 +16,6 @@ class TaskListCtrlTest {
     public TaskListCtrl sut;
     public MainCtrl mainCtrl;
     public ServerUtils sUtils;
-    public BoardService bService;
     public TaskListService lService;
     public TaskService tService;
 
@@ -25,7 +23,7 @@ class TaskListCtrlTest {
     public void setup() {
         mainCtrl = mock(MainCtrl.class);
         sUtils = mock(ServerUtils.class);
-        sut = new TaskListCtrl(sUtils, mainCtrl, tService, lService, bService);
+        sut = new TaskListCtrl(sUtils, mainCtrl, tService, lService);
     }
 
     @Test

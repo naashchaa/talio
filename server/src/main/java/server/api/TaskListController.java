@@ -38,7 +38,7 @@ public class TaskListController {
      */
     @GetMapping(path = "/{id}")
     public ResponseEntity<TaskList> getById(@PathVariable("id") long id) {
-        if (id < 0 || !this.repo.existsById(id)) {
+        if (id < 0 || this.repo.findById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(this.repo.findById(id).get());
@@ -57,14 +57,8 @@ public class TaskListController {
     @PostMapping(path = { "", "/" })
     public ResponseEntity<TaskList> add(@RequestBody TaskList taskList) {
 
-        if (taskList.getName() == null){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-
         // long polling
-        this.listeners.forEach((k, l) -> {
-            l.accept(taskList);
-        });
+        this.listeners.forEach((k, l) -> l.accept(taskList));
 
         TaskList saved = this.repo.save(taskList);
         return new ResponseEntity<>(saved, HttpStatus.OK);
@@ -72,21 +66,18 @@ public class TaskListController {
 
     /**
      * Mapping for deleting a task list.
-     * @param id the id of the taks list to be found in the database
+     * @param id the id of the tasks list to be found in the database
      * @return the response
      */
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") long id) {
+    public ResponseEntity<TaskList> delete(@PathVariable("id") long id) {
         if (id < 0 || !this.repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
 
-//        this.listeners.forEach((k, l) -> {
-//            l.accept(null);
-//        });
-
+        TaskList removed = this.repo.getById(id);
         this.repo.deleteById(id);
-        return ResponseEntity.ok("delete successful");
+        return ResponseEntity.ok(removed);
     }
 
     /**
@@ -96,16 +87,12 @@ public class TaskListController {
      */
     @PostMapping(path = {"/update"})
     public ResponseEntity<TaskList> update(@RequestBody TaskList tasklist) {
-        if (tasklist.getId() < 0 || !this.repo.existsById(tasklist.getId())) {
+        if (tasklist.getId() < 0 || this.repo.findById(tasklist.getId()).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
         TaskList saved = this.repo.findById(tasklist.getId()).get();
         saved.setName(tasklist.getName());
-
-//        this.listeners.forEach((k, l) -> {
-//            l.accept(saved);
-//        });
 
         this.repo.save(saved);
         return ResponseEntity.ok(saved);
@@ -118,11 +105,11 @@ public class TaskListController {
         return taskList;
     }
 
-    private Map<Object, Consumer<TaskList>> listeners = new HashMap<>();
+    private final Map<Object, Consumer<TaskList>> listeners = new HashMap<>();
 
     /**
-     * a.
-     * @return a.
+     * This is an update endpoint for long polling.
+     * @return A DeferredResult with the TaskList ResponseEntity in it
      */
     @GetMapping("/updates")
     public DeferredResult<ResponseEntity<TaskList>> getUpdates() {
@@ -131,12 +118,8 @@ public class TaskListController {
         var res = new DeferredResult<ResponseEntity<TaskList>>(5000L, noContent);
 
         var key = new Object();
-        this.listeners.put(key, taskList -> {
-            res.setResult(ResponseEntity.ok(taskList));
-        });
-        res.onCompletion(() -> {
-            this.listeners.remove(key);
-        });
+        this.listeners.put(key, taskList -> res.setResult(ResponseEntity.ok(taskList)));
+        res.onCompletion(() -> this.listeners.remove(key));
         return res;
     }
 
@@ -155,6 +138,7 @@ public class TaskListController {
     @MessageMapping("/tasklists/delete")
     @SendTo("/topic/tasklists/delete")
     public TaskList deleteMessage(TaskList taskList) {
+        System.out.println("tryna delete");
         this.delete(taskList.getId());
         return taskList;
     }

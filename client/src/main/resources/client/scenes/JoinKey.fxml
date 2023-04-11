@@ -5,23 +5,27 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="316.0" prefWidth="549.0" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.JoinKeyCtrl">
-   <children>
-      <Label alignment="CENTER" layoutY="-2.0" prefHeight="52.0" prefWidth="554.0" styleClass="title" text="Join Key" textFill="WHITE">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <Button layoutX="244.0" layoutY="249.0" mnemonicParsing="false" onAction="#cancel" styleClass="primary-button" text="Confirm" />
-      <Label fx:id="boardName" alignment="CENTER" layoutX="79.0" layoutY="114.0" prefHeight="29.0" prefWidth="397.0" text="The Join Key for Board boardName is:">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <Label fx:id="key" alignment="CENTER" layoutX="118.0" layoutY="180.0" prefHeight="29.0" prefWidth="318.0" text="BoardId">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-   </children>
+<AnchorPane prefHeight="316.0" prefWidth="549.0" stylesheets="@../styling/styling.css"
+            xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.scenes.JoinKeyCtrl">
+    <Label alignment="CENTER" layoutY="-2.0" prefHeight="52.0" prefWidth="554.0" styleClass="title" text="Join Key"
+           textFill="WHITE">
+        <font>
+          <Font size="24.0"/>
+        </font>
+    </Label>
+    <Button layoutX="244.0" layoutY="249.0" mnemonicParsing="false" onAction="#cancel" styleClass="primary-button"
+            text="Confirm"/>
+    <Label fx:id="boardName" alignment="CENTER" layoutX="79.0" layoutY="114.0" prefHeight="29.0" prefWidth="397.0"
+           text="The Join Key for Board boardName is:">
+        <font>
+          <Font size="24.0"/>
+        </font>
+    </Label>
+    <Label fx:id="key" alignment="CENTER" layoutX="118.0" layoutY="180.0" prefHeight="29.0" prefWidth="318.0"
+           text="BoardId">
+        <font>
+          <Font size="24.0"/>
+        </font>
+    </Label>
 </AnchorPane>

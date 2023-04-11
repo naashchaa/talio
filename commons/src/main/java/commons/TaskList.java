@@ -23,14 +23,14 @@ public class TaskList {
     private String name;
 
     @SuppressWarnings("unused")
-    private TaskList(){}
+    TaskList(){}
 
     public TaskList(@NotNull String name, @NotNull Board parentBoard){
         this.name = name;
         this.parentBoard = parentBoard;
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return this.name;
     }
 

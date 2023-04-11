@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.services.BoardService;
 import client.services.TaskListService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -16,21 +17,30 @@ import java.util.*;
 public class ApplicationOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private Map<Board, Pair<BoardCtrl, Parent>> boards;
-    private Map<Board, Pair<BoardPreviewCtrl, Parent>> boardPreviews;
-    private final TaskListService service;
+    private final Map<Board, Pair<BoardCtrl, Parent>> boards;
+    private final Map<Board, Pair<BoardPreviewCtrl, Parent>> boardPreviews;
+    private final BoardService boardService;
+    private final TaskListService listService;
     @FXML
     private VBox boardList;
     @FXML
     private AnchorPane boardDisplay;
 
+    /** The constructor for ApplicationOverviewCtrl.
+     * @param server The ServerUtils instance
+     * @param mainCtrl the MainCtrl instance
+     * @param boardService the BoardService instance
+     * @param listService the TaskListService instance
+     */
     @Inject
-    public ApplicationOverviewCtrl(ServerUtils server, MainCtrl mainCtrl, TaskListService service) {
+    public ApplicationOverviewCtrl(ServerUtils server, MainCtrl mainCtrl,
+                                   BoardService boardService, TaskListService listService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.boards = new HashMap<>();
         this.boardPreviews = new HashMap<>();
-        this.service = service;
+        this.boardService = boardService;
+        this.listService = listService;
     }
 
     public void reconnect() {
@@ -69,7 +79,16 @@ public class ApplicationOverviewCtrl {
         pair.getKey().setBoardCtrl(ctrl);
         this.boardList.getChildren().add(pair.getValue());
         this.boardPreviews.put(ctrl.getBoard(), pair);
+        this.updateContext();
         this.mainCtrl.hidePopUp();
+    }
+
+    public void updateContext() {
+        // make a list of remembered boards
+        List<Board> boards = new LinkedList<>(this.boardPreviews.keySet());
+
+        // remember the change
+        this.boardService.updateRememberedBoards(this.server.getConnectionString(), boards);
     }
 
     /**
@@ -99,8 +118,10 @@ public class ApplicationOverviewCtrl {
                     this.mainCtrl.getCurrentBoardCtrl().getListContainer().getChildren();
             for (int i = 0; i < taskListNodes.size() - 1; i++) {
                 TaskListCtrl listCtrl = (TaskListCtrl) taskListNodes.get(i).getUserData();
+                if (listCtrl == null)
+                    continue;
                 listCtrl.removeTasks();
-                this.service.deleteTaskList(this.mainCtrl.getCurrentBoardCtrl(), listCtrl);
+                this.listService.deleteTaskList(this.mainCtrl.getCurrentBoardCtrl(), listCtrl);
                 listCtrl.disconnect();
             }
         }
@@ -128,10 +149,8 @@ public class ApplicationOverviewCtrl {
             }
             return;
         }
-        for(Board board : this.server.getBoards()) {
-            if(board.isShow()) {
-                this.addBoardPreview(board.getName(), this.addBoard(board));
-            }
+        for(Board board : this.server.getRememberedBoards()) {
+            this.addBoardPreview(board.getName(), this.addBoard(board));
         }
     }
 
@@ -140,7 +159,6 @@ public class ApplicationOverviewCtrl {
      * @param board - the board to be removed
      */
     public void removeBoardPreview(Board board) {
-        this.boardPreviews.remove(board);
         this.boardList.getChildren().clear();
         for(Board b : this.server.getBoards()) {
             if(this.boardPreviews.containsKey(b)) {
@@ -148,25 +166,7 @@ public class ApplicationOverviewCtrl {
             }
         }
         this.boardDisplay.getChildren().remove(this.boards.get(board).getValue());
-        board.setShow(false);
         this.server.editBoard(board);
-    }
-
-    /** Joins a board and adds it to the list of boards.
-     * @param id - the id of the board to be joined
-     */
-    public void joinBoardPreview(long id){
-        this.server.getBoards().forEach(board -> {
-            if(board.getId() == id){
-                this.addBoardPreview(board.getName(), this.addBoard(board));
-                board.setShow(true);
-                this.server.editBoard(board);
-            }
-        });
-    }
-
-    public BoardCtrl getBoardCtrl(Board board) {
-        return this.boards.get(board).getKey();
     }
 
     /** Removes the Ctrls from the list of boards and previews
@@ -191,6 +191,7 @@ public class ApplicationOverviewCtrl {
         this.boardList.getChildren().remove(this.boardPreviews
                 .get(board).getValue());
         this.boardPreviews.remove(board);
+        this.removeBoardPreview(board);
         this.boards.remove(board);
     }
 

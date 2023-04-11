@@ -5,15 +5,19 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane onMouseClicked="#loadBoard" prefHeight="80.0" prefWidth="178.0" styleClass="board-card" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardPreviewCtrl">
-    <children>
-        <Label fx:id="boardTitle" alignment="CENTER" layoutX="28.0" layoutY="-1.0" prefHeight="29.0" prefWidth="126.0" text="Board Name" textFill="WHITE">
-            <font>
-                <Font name="Berlin Sans FB Demi Bold" size="16.0" />
-            </font>
-        </Label>
-        <Button layoutX="8.0" layoutY="41.0" mnemonicParsing="false" onAction="#edit" styleClass="board-card-button" text="Edit" />
-        <Button layoutX="110.0" layoutY="41.0" mnemonicParsing="false" onAction="#remove" styleClass="board-card-button" text="Remove" />
-      <Button layoutX="52.0" layoutY="41.0" mnemonicParsing="false" onAction="#delete" styleClass="board-card-button" text="Delete" />
-    </children>
+<AnchorPane onMouseClicked="#loadBoard" prefHeight="80.0" prefWidth="178.0" styleClass="board-card"
+            stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardPreviewCtrl">
+    <Label fx:id="boardTitle" alignment="CENTER" layoutX="28.0" layoutY="-1.0" prefHeight="29.0" prefWidth="126.0"
+           text="Board Name" textFill="WHITE">
+        <font>
+            <Font name="Berlin Sans FB Demi Bold" size="16.0"/>
+        </font>
+    </Label>
+    <Button layoutX="8.0" layoutY="41.0" mnemonicParsing="false" onAction="#edit" styleClass="board-card-button"
+            text="Edit"/>
+    <Button layoutX="110.0" layoutY="41.0" mnemonicParsing="false" onAction="#remove" styleClass="board-card-button"
+            text="Remove"/>
+    <Button layoutX="52.0" layoutY="41.0" mnemonicParsing="false" onAction="#delete" styleClass="board-card-button"
+            text="Delete"/>
 </AnchorPane>

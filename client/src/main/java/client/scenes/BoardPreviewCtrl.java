@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -14,7 +13,7 @@ public class BoardPreviewCtrl {
     private Label boardTitle;
 
     @Inject
-    public BoardPreviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public BoardPreviewCtrl(MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
     }
 

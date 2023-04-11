@@ -24,16 +24,15 @@ import java.util.List;
 public class MainCtrl {
 
     private Stage primaryStage;
-//    private ConnectToServerCtrl connectToServerCtrl;
     private Stage popup;
 
-    private ConnectToServerCtrl connectToServerCtrl;
+//    private ConnectToServerCtrl connectToServerCtrl;
     private Scene connectToServer;
 
     private ApplicationOverviewCtrl appOverviewCtrl;
     private Scene appOverview;
     private BoardCtrl currentBoardCtrl;
-    private Scene board;
+//    private Scene board;
     private AddTaskCtrl addTaskCtrl;
     private Scene addTask;
     private AddTaskListCtrl addTaskListCtrl;
@@ -44,7 +43,7 @@ public class MainCtrl {
     private Scene editTask;
     private DeleteTaskListCtrl deleteTaskListCtrl;
     private Scene deleteTaskList;
-    private CreateBoardCtrl createBoardCtrl;
+//    private CreateBoardCtrl createBoardCtrl;
     private Scene createBoard;
 
     private AdminLoginCtrl adminLoginCtrl;
@@ -96,7 +95,7 @@ public class MainCtrl {
         this.deleteTaskListCtrl = (DeleteTaskListCtrl) scenes.get(6).getKey();
         this.deleteTaskList = new Scene(scenes.get(6).getValue());
 
-        this.createBoardCtrl = (CreateBoardCtrl) scenes.get(7).getKey();
+//        this.createBoardCtrl = (CreateBoardCtrl) scenes.get(7).getKey();
         this.createBoard = new Scene(scenes.get(7).getValue());
 
         this.adminLoginCtrl = (AdminLoginCtrl) scenes.get(8).getKey();
@@ -119,12 +118,6 @@ public class MainCtrl {
 
         this.showConnectToServer();
         this.primaryStage.show();
-    }
-
-    public void setStageDimensions() {
-        this.primaryStage.sizeToScene();
-        this.primaryStage.setX(0);
-        this.primaryStage.setY(0);
     }
 
     public void showConnectToServer() {
@@ -162,13 +155,15 @@ public class MainCtrl {
         this.popup.setTitle("Remove Board");
         this.popup.setScene(this.leaveBoard);
         this.leaveBoardCtrl.setBoardCtrl(boardctrl);
+        this.leaveBoardCtrl.setParentCtrl(this.appOverviewCtrl);
         this.showPopUp();
     }
 
     public void showJoinBoard(){
+        this.joinBoardCtrl.setParentOverviewCtrl(this.appOverviewCtrl);
         this.popup.setTitle("Join Board");
         this.popup.setScene(this.joinBoard);
-        this.joinBoardCtrl.setCtrls(this.appOverviewCtrl);
+        this.joinBoardCtrl.setParentOverviewCtrl(this.appOverviewCtrl);
         this.showPopUp();
     }
 
@@ -241,10 +236,6 @@ public class MainCtrl {
 
     public void updateBoard(BoardCtrl boardController) {
         this.currentBoardCtrl = boardController;
-    }
-
-    public void loadBoards() {
-        this.appOverviewCtrl.loadExistingBoards();
     }
 
     public void setAdmin(boolean b) {

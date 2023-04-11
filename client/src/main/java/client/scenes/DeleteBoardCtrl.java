@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.utils.ServerUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -16,7 +15,7 @@ public class DeleteBoardCtrl {
     private Label boardName;
 
     @Inject
-    public DeleteBoardCtrl(MainCtrl mainCtrl, ServerUtils server) {
+    public DeleteBoardCtrl(MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
     }
 

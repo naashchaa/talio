@@ -43,12 +43,14 @@ public class TestBoardRepository implements BoardRepository {
 
     @Override
     public void deleteById(Long aLong) {
-
+        for (int i = 0; i < this.list.size(); i++) {
+            if (this.list.get(i).getId() == aLong) this.list.remove(this.list.get(i));
+        }
     }
 
     @Override
     public void delete(Board entity) {
-
+        this.list.remove(entity);
     }
 
     @Override
@@ -68,8 +70,8 @@ public class TestBoardRepository implements BoardRepository {
 
     @Override
     public <S extends Board> S save(S entity) {
-        entity.setId((long) this.list.size());
         this.list.add(entity);
+        entity.setId((long) this.list.size());
         return entity;
     }
 
@@ -130,7 +132,7 @@ public class TestBoardRepository implements BoardRepository {
 
     @Override
     public Board getById(Long aLong) {
-        return null;
+        return this.list.get(aLong.intValue() - 1);
     }
 
     @Override

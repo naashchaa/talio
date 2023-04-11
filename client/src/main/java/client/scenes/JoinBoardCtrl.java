@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.Board;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -11,7 +12,7 @@ public class JoinBoardCtrl {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils server;
-    private ApplicationOverviewCtrl appOverview;
+    private ApplicationOverviewCtrl ctrl;
     @FXML
     private TextField boardId;
     @FXML
@@ -20,7 +21,11 @@ public class JoinBoardCtrl {
     @Inject
     public JoinBoardCtrl(MainCtrl mainCtrl, ServerUtils server) {
         this.mainCtrl = mainCtrl;
-        this.server = new ServerUtils();
+        this.server = server;
+    }
+
+    public void setParentOverviewCtrl(ApplicationOverviewCtrl ctrl) {
+        this.ctrl = ctrl;
     }
 
     public void cancel() {
@@ -32,21 +37,19 @@ public class JoinBoardCtrl {
      * checks if the board exists and joins it if it does.
      */
     public void join(){
-        //TODO: check if works correctly and implement method to join the board
         long id = Long.parseLong(this.boardId.getText());
         if (this.server.checkBoardExists(id)){
             this.wrongId.setVisible(false);
+
+            Board newBoard = this.server.getBoard(Long.parseLong(this.boardId.getText()));
+            this.ctrl.addBoardPreview(newBoard.getName(), this.ctrl.addBoard(newBoard));
+
             this.boardId.clear();
-            this.appOverview.joinBoardPreview(id);
             this.mainCtrl.hidePopUp();
         }
         else {
             this.boardId.clear();
             this.wrongId.setVisible(true);
         }
-    }
-
-    public void setCtrls(ApplicationOverviewCtrl appOverview) {
-        this.appOverview = appOverview;
     }
 }

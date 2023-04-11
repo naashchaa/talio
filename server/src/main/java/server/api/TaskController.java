@@ -26,7 +26,7 @@ public class TaskController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Task> getById(@PathVariable("id") long id) {
-        if (id <= 0 || !this.repo.existsById(id)) {
+        if (id <= 0 || this.repo.findById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(this.repo.findById(id).get());
@@ -43,11 +43,6 @@ public class TaskController {
      */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Task> add(@RequestBody Task task) {
-
-        if (task.getName() == null){
-            return ResponseEntity.badRequest().build();
-        }
-
         Task saved = this.repo.save(task);
         return ResponseEntity.ok(saved);
     }
@@ -61,7 +56,7 @@ public class TaskController {
     @PostMapping(path = "{id}/update")
     public ResponseEntity<Task> update(@PathVariable("id") long id,
                                        @RequestBody Task modifiedTask) {
-        if (id <= 0 || !this.repo.existsById(id)) {
+        if (id <= 0 || this.repo.findById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -144,7 +139,6 @@ public class TaskController {
 
         if (nextTask.isPresent()) {
             Task next = nextTask.get();
-            //next.setPrevTask(0);
             next.setPrevTask(task.getPrevTask());
             this.update(next.id, next);
         }
@@ -158,5 +152,4 @@ public class TaskController {
     public List<Long> dragMessage(List<Long> ids) {
         return ids;
     }
-
 }

@@ -20,9 +20,9 @@ public class TestTaskRepository implements TaskRepository {
     @Override
     public List<Task> findAllByParentTaskList_Id(long id) {
         List<Task> list1 = new ArrayList<>();
-        for (Task task:
-                this.list) {
-            if (task.getParentTaskList().getId() == id) {list1.add(task); break;}
+        for (Task task: this.list) {
+            if (task.getParentTaskList().getId() == id)
+                list1.add(task);
         }
         return list1;
     }

@@ -47,7 +47,7 @@ public class BoardCtrlTest {
     @Test
     public void addTaskListToBoardReturnsTaskListCtrl() {
         TaskList taskList = mock(TaskList.class);
-        TaskListCtrl expected = new TaskListCtrl(sUtils, mainCtrl, tService, lService, bService);
+        TaskListCtrl expected = new TaskListCtrl(sUtils, mainCtrl, tService, lService);
         BoardCtrl sutSpy = spy(sut);
         doReturn(expected).when(sutSpy).addTaskListToBoard(any(TaskList.class));
         Assertions.assertEquals(expected, sutSpy.addTaskListToBoard(taskList));

@@ -13,26 +13,15 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 class TaskListControllerTest {
 
-    private TestTaskListRepository repo;
     private TaskListController sut;
 
     @BeforeEach
     public void setup() {
-        repo = new TestTaskListRepository();
-        sut = new TaskListController(repo);
+        sut = new TaskListController(new TestTaskListRepository());
     }
 
     @Test
-    public void testNullTaskListName(){
-        Board a = new Board("a");
-        TaskList b = new TaskList(null, a);
-        var actual = sut.add(b);
-        assertEquals(BAD_REQUEST, actual.getStatusCode());
-    }
-
-
-    @Test
-    public void testGetAll() {
+    void getAll() {
         Board a = new Board("a");
         TaskList b = new TaskList("b", a);
         sut.add(b);
@@ -42,7 +31,7 @@ class TaskListControllerTest {
     }
 
     @Test
-    public void testGetById() {
+    void getById() {
         Board a = new Board("a");
         TaskList b1 = new TaskList("b1", a);
         TaskList b2 = new TaskList("b2", a);
@@ -50,11 +39,150 @@ class TaskListControllerTest {
         sut.add(b1);
         sut.add(b2);
         sut.add(b3);
-        assertEquals(b1, sut.getById(0).getBody());
-        assertEquals(b2, sut.getById(1).getBody());
-        assertEquals(b3, sut.getById(2).getBody());
+        assertEquals(b1, sut.getById(1).getBody());
+        assertEquals(b2, sut.getById(2).getBody());
+        assertEquals(b3, sut.getById(3).getBody());
         assertEquals(BAD_REQUEST, sut.getById(5).getStatusCode());
         assertEquals(BAD_REQUEST, sut.getById(-1).getStatusCode());
+    }
 
+    @Test
+    void getAllByParentBoard() {
+        Board a = new Board("a");
+        a.setId(1);
+        Board c = new Board("c");
+        c.setId(2);
+        TaskList b1 = new TaskList("b1", a);
+        TaskList b2 = new TaskList("b2", a);
+        TaskList b3 = new TaskList("b3", c);
+
+        List<TaskList> lists = new ArrayList<>();
+        lists.add(b1);
+        lists.add(b2);
+
+        sut.add(b1);
+        sut.add(b2);
+        sut.add(b3);
+
+        assertEquals(lists, sut.getAllByParentBoard(1).getBody());
+    }
+
+    @Test
+    void add() {
+        Board a = new Board("a");
+        TaskList b1 = new TaskList("b1", a);
+        TaskList b2 = b1;
+
+        b1 = sut.add(b1).getBody();
+
+        assertEquals(b2, b1);
+    }
+
+    @Test
+    void delete() {
+        Board a = new Board("a");
+        TaskList b1 = new TaskList("b1", a);
+
+        b1 = sut.add(b1).getBody();
+        assertNotNull(b1);
+        assertEquals(b1, sut.getById(b1.getId()).getBody());
+
+        b1 = sut.delete(b1.getId()).getBody();
+        assertNotNull(b1);
+        assertEquals(BAD_REQUEST, sut.getById(b1.getId()).getStatusCode());
+
+        assertEquals(BAD_REQUEST, sut.delete(b1.getId()).getStatusCode());
+    }
+
+    @Test
+    void update() {
+
+        Board a = new Board("a");
+        TaskList b1 = new TaskList("b1", a);
+        TaskList b0 = new TaskList("b1", a);
+        TaskList b2 = new TaskList("b2", a);
+        TaskList b3 = new TaskList("b3", a);
+
+        b1 = sut.add(b1).getBody();
+        b2 = sut.add(b2).getBody();
+        assertNotNull(b1);
+        assertNotNull(b2);
+
+        b1.setName("b2");
+        b1 = sut.update(b1).getBody();
+        assertNotNull(b1);
+
+        assertEquals(BAD_REQUEST, sut.update(b3).getStatusCode());
+
+        assertNotEquals(b1, b0);
+        assertEquals(b1.getName(), b2.getName());
+    }
+
+    @Test
+    void addTaskList() {
+        Board a = new Board("a");
+        TaskList b1 = new TaskList("b1", a);
+        TaskList b2 = b1;
+
+        b1 = sut.addTaskList(b1);
+
+        assertEquals(b2, b1);
+    }
+
+    @Test
+    void getUpdates() {
+        Board a = new Board("a");
+        TaskList b1 = new TaskList("b1", a);
+
+        sut.add(b1);
+
+        var result = sut.getUpdates();
+
+        assertNotNull(result);
+    }
+
+    @Test
+    void addMessage() {
+        Board a = new Board("a");
+        TaskList b1 = new TaskList("b1", a);
+        TaskList b2 = b1;
+
+        b1 = sut.addMessage(b1);
+
+        assertEquals(b2, b1);
+    }
+
+    @Test
+    void editMessage() {
+        Board a = new Board("a");
+        TaskList b1 = new TaskList("b1", a);
+        TaskList b0 = new TaskList("b1", a);
+        TaskList b2 = new TaskList("b2", a);
+
+        b1 = sut.add(b1).getBody();
+        b2 = sut.add(b2).getBody();
+        assertNotNull(b1);
+        assertNotNull(b2);
+
+        b1.setName("b2");
+        b1 = sut.editMessage(b1);
+        assertNotNull(b1);
+
+        assertNotEquals(b1, b0);
+        assertEquals(b1.getName(), b2.getName());
+    }
+
+    @Test
+    void deleteMessage() {
+        Board a = new Board("a");
+        TaskList b1 = new TaskList("b1", a);
+
+        b1 = sut.add(b1).getBody();
+        assertNotNull(b1);
+        assertEquals(b1, sut.getById(b1.getId()).getBody());
+
+        b1 = sut.deleteMessage(b1);
+        assertNotNull(b1);
+        assertEquals(BAD_REQUEST, sut.getById(b1.getId()).getStatusCode());
     }
 }

@@ -18,7 +18,6 @@ package client;
 import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     public static final MyFXML FXML = new MyFXML(INJECTOR);
 
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    public static void main(String[] args) {
         launch();
     }
 
@@ -100,8 +99,6 @@ public class Main extends Application {
 
         mainCtrl.initialize(primaryStage, scenes);
 
-        primaryStage.setOnCloseRequest(e -> {
-            applicationOverview.getKey().stop();
-        });
+        primaryStage.setOnCloseRequest(e -> applicationOverview.getKey().stop());
     }
 }
