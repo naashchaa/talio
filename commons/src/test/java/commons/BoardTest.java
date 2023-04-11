@@ -10,7 +10,6 @@ class BoardTest {
 
     Board b1 = new Board("b");
     Board b2 = new Board("b");
-    Board b3 = new Board("b", "test1");
     Board b4 = new Board("bb");
     Board b5 = b1;
 
@@ -30,11 +29,12 @@ class BoardTest {
     @Test
     void testPassword() {
         assertNull(b1.getPassword());
-        assertNotNull(b3.getPassword());
-        assertEquals("test1", b3.getPassword());
-        b3.setPassword("test2");
-        assertNotNull(b3.getPassword());
-        assertEquals("test2", b3.getPassword());
+        b2.setPassword("testpw");
+        assertNotNull(b2.getPassword());
+        assertEquals("testpw", b2.getPassword());
+        b2.setPassword("testpw2");
+        assertNotNull(b2.getPassword());
+        assertEquals("testpw2", b2.getPassword());
     }
 
     @Test
@@ -42,13 +42,11 @@ class BoardTest {
         b1.setId(1L);
         assertEquals(b1, b1);
         assertEquals(b1, b2);
-        assertNotEquals(b1, b3);
         assertNotEquals(b1, b4);
         assertEquals(b1, b5);
 
         assertEquals(b1.hashCode(), b1.hashCode());
         assertNotEquals(b1.hashCode(), b2.hashCode());
-        assertNotEquals(b1.hashCode(), b3.hashCode());
         assertNotEquals(b1.hashCode(), b4.hashCode());
         assertEquals(b1.hashCode(), b5.hashCode());
     }
@@ -59,14 +57,5 @@ class BoardTest {
         assertEquals("Board: bb, 0", b4.toString());
         b1.setId(1L);
         assertEquals("Board: b, 1", b1.toString());
-    }
-
-    @Test
-    public void testHash() {
-        Long id = b3.getId();
-        String name = b3.getName();
-        String pass = b3.getPassword();
-        int expectedHash = Objects.hash(id, name, pass);
-        assertEquals(expectedHash, b3.hashCode());
     }
 }

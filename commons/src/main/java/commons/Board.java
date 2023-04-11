@@ -26,13 +26,6 @@ public class Board {
         this.show = true;
     }
 
-    //    constructor for when a password is entered
-    public Board(@NotNull String name, @NotNull String password){
-        this.name = name;
-        this.password = password;
-        this.show = true;
-    }
-
     public long getId(){
         return this.id;
     }

@@ -11,6 +11,7 @@ public class JoinBoardCtrl {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils server;
+    private ApplicationOverviewCtrl appOverview;
     @FXML
     private TextField boardId;
     @FXML
@@ -32,14 +33,20 @@ public class JoinBoardCtrl {
      */
     public void join(){
         //TODO: check if works correctly and implement method to join the board
-        if (this.server.checkBoardExists((long) Long.parseLong(this.boardId.getText()))){
+        long id = Long.parseLong(this.boardId.getText());
+        if (this.server.checkBoardExists(id)){
             this.wrongId.setVisible(false);
             this.boardId.clear();
+            this.appOverview.joinBoardPreview(id);
             this.mainCtrl.hidePopUp();
         }
         else {
             this.boardId.clear();
             this.wrongId.setVisible(true);
         }
+    }
+
+    public void setCtrls(ApplicationOverviewCtrl appOverview) {
+        this.appOverview = appOverview;
     }
 }

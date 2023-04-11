@@ -122,6 +122,12 @@ public class ApplicationOverviewCtrl {
         this.boardList.getChildren().clear();
         this.boardPreviews.clear();
         this.boards.clear();
+        if(this.mainCtrl.isAdmin()){
+            for (Board board: this.server.getBoards()){
+                this.addBoardPreview(board.getName(), this.addBoard(board));
+            }
+            return;
+        }
         for(Board board : this.server.getBoards()) {
             if(board.isShow()) {
                 this.addBoardPreview(board.getName(), this.addBoard(board));
@@ -144,6 +150,19 @@ public class ApplicationOverviewCtrl {
         this.boardDisplay.getChildren().remove(this.boards.get(board).getValue());
         board.setShow(false);
         this.server.editBoard(board);
+    }
+
+    /** Joins a board and adds it to the list of boards.
+     * @param id - the id of the board to be joined
+     */
+    public void joinBoardPreview(long id){
+        this.server.getBoards().forEach(board -> {
+            if(board.getId() == id){
+                this.addBoardPreview(board.getName(), this.addBoard(board));
+                board.setShow(true);
+                this.server.editBoard(board);
+            }
+        });
     }
 
     public BoardCtrl getBoardCtrl(Board board) {
