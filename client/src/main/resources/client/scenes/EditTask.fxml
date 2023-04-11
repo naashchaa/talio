@@ -6,25 +6,25 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="226.0" prefWidth="571.0" style="-fx-background-color: #EEEEEE;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EditTaskCtrl">
+<AnchorPane prefHeight="256.0" prefWidth="571.0" style="-fx-background-color: #EEEEEE;" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EditTaskCtrl">
     <children>
-        <Label alignment="CENTER" prefHeight="53.0" prefWidth="571.0" style="-fx-background-color: #3A98B9;" text="Edit Task" textFill="WHITE">
+        <Label alignment="CENTER" prefHeight="53.0" prefWidth="571.0" styleClass="title" text="Edit Task" textFill="WHITE">
             <font>
                 <Font name="Berlin Sans FB Demi Bold" size="24.0" />
             </font>
         </Label>
-        <Label layoutX="46.0" layoutY="53.0" prefHeight="39.0" prefWidth="82.0" text="Name:">
+        <Label layoutX="46.0" layoutY="73.0" prefHeight="39.0" prefWidth="82.0" text="Name:">
             <font>
                 <Font name="Berlin Sans FB Demi Bold" size="18.0" />
             </font>
         </Label>
-        <TextField fx:id="name" layoutX="46.0" layoutY="94.0" prefHeight="39.0" prefWidth="479.0" style="-fx-background-color: #E8D5C4;" />
-        <Button layoutX="46.0" layoutY="154.0" mnemonicParsing="false" onAction="#cancel" prefHeight="46.0" prefWidth="110.0" style="-fx-background-color: #EBBC93;" text="Cancel" textFill="WHITE">
+        <TextField fx:id="name" layoutX="46.0" layoutY="114.0" prefHeight="39.0" prefWidth="479.0" style="-fx-background-color: #E8D5C4;" />
+        <Button layoutX="69.0" layoutY="190.0" mnemonicParsing="false" onAction="#cancel" prefHeight="30.0" prefWidth="82.0" styleClass="secondary-button" text="Cancel" textFill="WHITE">
             <font>
                 <Font name="Berlin Sans FB Demi Bold" size="19.0" />
             </font>
         </Button>
-        <Button layoutX="415.0" layoutY="154.0" mnemonicParsing="false" onAction="#confirm" prefHeight="46.0" prefWidth="110.0" style="-fx-background-color: #EBBC93;" text="Confirm" textFill="WHITE">
+        <Button layoutX="422.0" layoutY="190.0" mnemonicParsing="false" onAction="#confirm" prefHeight="30.0" prefWidth="82.0" styleClass="primary-button" text="Confirm" textFill="WHITE">
             <font>
                 <Font name="Berlin Sans FB Demi Bold" size="19.0" />
             </font>

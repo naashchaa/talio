@@ -7,25 +7,25 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.JoinBoardCtrl">
+<AnchorPane prefHeight="297.0" prefWidth="527.0" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.JoinBoardCtrl">
    <children>
-      <Label alignment="CENTER" prefHeight="53.0" prefWidth="600.0" style="-fx-background-color: #3A98B9;" text="Join Board" textFill="WHITE">
+      <Label alignment="CENTER" prefHeight="53.0" prefWidth="558.0" style="-fx-background-color: #3A98B9;" text="Join Board" textFill="WHITE">
          <font>
             <Font name="Berlin Sans FB Demi Bold" size="24.0" />
          </font>
       </Label>
-      <Label layoutX="60.0" layoutY="91.0" prefHeight="39.0" prefWidth="82.0" text="Join key:">
+      <Label layoutX="59.0" layoutY="90.0" prefHeight="39.0" prefWidth="82.0" text="Join key:">
          <font>
             <Font name="Berlin Sans FB Demi Bold" size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="boardId" layoutX="60.0" layoutY="131.0" prefHeight="39.0" prefWidth="479.0" style="-fx-background-color: #E8D5C4;" />
-      <Button layoutX="109.0" layoutY="250.0" mnemonicParsing="false" onAction="#cancel" prefHeight="46.0" prefWidth="110.0" style="-fx-background-color: #EBBC93;" text="Cancel" textFill="WHITE">
+      <TextField fx:id="boardId" layoutX="59.0" layoutY="130.0" prefHeight="33.0" prefWidth="441.0" style="-fx-background-color: #E8D5C4;" />
+      <Button layoutX="78.0" layoutY="195.0" mnemonicParsing="false" onAction="#cancel" prefHeight="27.0" prefWidth="82.0" styleClass="secondary-button" text="Cancel" textFill="WHITE">
          <font>
             <Font name="Berlin Sans FB Demi Bold" size="19.0" />
          </font>
       </Button>
-      <Button layoutX="372.0" layoutY="250.0" mnemonicParsing="false" onAction="#join" prefHeight="46.0" prefWidth="110.0" style="-fx-background-color: #EBBC93;" text="Join" textFill="WHITE">
+      <Button layoutX="418.0" layoutY="195.0" mnemonicParsing="false" onAction="#join" prefHeight="27.0" prefWidth="66.0" styleClass="primary-button" text="Join" textFill="WHITE">
          <font>
             <Font name="Berlin Sans FB Demi Bold" size="19.0" />
          </font>

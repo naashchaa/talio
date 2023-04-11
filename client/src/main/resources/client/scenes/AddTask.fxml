@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="227.0" prefWidth="608.0" style="-fx-border-color: #000000;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddTaskCtrl">
+<AnchorPane prefHeight="227.0" prefWidth="608.0" style="-fx-border-color: #000000;" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddTaskCtrl">
    <children>
-      <AnchorPane layoutX="2.0" prefHeight="77.0" prefWidth="604.0" style="-fx-background-color: #3A98B9;">
+      <AnchorPane prefHeight="77.0" prefWidth="611.0" styleClass="title">
          <children>
-            <Label layoutX="245.0" layoutY="25.0" style="-fx-text-fill: #000000;" text="NEW TASK" textFill="WHITE">
+            <Label layoutX="245.0" layoutY="25.0" style="-fx-text-fill: #FFFFFF;" text="NEW TASK" textFill="WHITE">
                <font>
-                  <Font name="Berlin Sans FB Demi Bold" size="24.0" />
+                  <Font name="System Bold" size="24.0" />
                </font>
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane layoutY="74.0" prefHeight="181.0" prefWidth="604.0" style="-fx-background-color: #EEEEEE;">
+      <AnchorPane layoutY="74.0" prefHeight="198.0" prefWidth="611.0" style="-fx-background-color: #EEEEEE;">
          <children>
-            <Button fx:id="createButton" layoutX="313.0" layoutY="120.0" mnemonicParsing="false" onAction="#createTask" prefHeight="41.0" prefWidth="87.0" style="-fx-background-color: EBBC93;" text="Create" textFill="WHITE">
+            <Button fx:id="createButton" layoutX="319.0" layoutY="131.0" mnemonicParsing="false" onAction="#createTask" prefHeight="35.0" prefWidth="87.0" styleClass="primary-button" text="Create" textFill="WHITE">
                <font>
                   <Font name="Berlin Sans FB Demi Bold" size="18.0" />
                </font>
             </Button>
-            <Button id="cancelTask" fx:id="cancelButton" layoutX="204.0" layoutY="120.0" mnemonicParsing="false" onAction="#cancelTask" prefHeight="41.0" prefWidth="87.0" style="-fx-background-color: EBBC93;" text="Cancel" textFill="WHITE">
+            <Button id="cancelTask" fx:id="cancelButton" layoutX="191.0" layoutY="131.0" mnemonicParsing="false" onAction="#cancelTask" prefHeight="35.0" prefWidth="87.0" styleClass="secondary-button" text="Cancel" textFill="WHITE">
                <font>
-                  <Font name="Berlin Sans FB Demi Bold" size="18.0" />
+                  <Font size="14.0" />
                </font>
             </Button>
             <Label layoutX="74.0" layoutY="60.0" text="Name:">
@@ -38,4 +39,7 @@
          </children>
       </AnchorPane>
    </children>
+   <padding>
+      <Insets right="-1.0" />
+   </padding>
 </AnchorPane>

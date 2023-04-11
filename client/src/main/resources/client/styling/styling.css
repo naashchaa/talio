@@ -1,0 +1,48 @@
+.title {
+    -fx-background-color: #3A98B9;
+    -fx-font-familiy: System;
+    -fx-font-size: 24px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.primary-button {
+    -fx-background-color: #E48C3D;
+    -fx-font-familiy: System;
+    -fx-font-size: 14px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.secondary-button {
+    -fx-background-color: #EBBC93;
+    -fx-font-familiy: System;
+    -fx-font-size: 14px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.task {
+    -fx-border-radius: 5px;
+    -fx-border-color: #000000;
+    -fx-background-color: #C2B2A4;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.task-list {
+    -fx-border-radius: 10px;
+    -fx-border-color: #000000;
+    -fx-background-color: #FFF1DC;
+    -fx-background-radius: 10px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.board-card {
+    -fx-border-color: #000000;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1.5px;
+    -fx-background-color: #C2B2A4;
+    -fx-background-radius: 5px;
+}
+
+.board-card-button {
+    -fx-background-color: #D9D9D9;
+}

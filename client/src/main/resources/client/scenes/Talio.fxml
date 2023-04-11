@@ -8,14 +8,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="543.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ApplicationOverviewCtrl">
+<AnchorPane prefHeight="543.0" prefWidth="950.0" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ApplicationOverviewCtrl">
    <children>
-      <Label alignment="CENTER" prefHeight="52.0" prefWidth="950.0" style="-fx-background-color: #3A98B9;" text="Talio" textFill="WHITE">
+      <Label alignment="CENTER" prefHeight="52.0" prefWidth="950.0" styleClass="title" text="Talio" textFill="WHITE">
          <font>
             <Font name="Berlin Sans FB Demi Bold" size="24.0" />
          </font>
       </Label>
-      <ScrollPane layoutX="14.0" layoutY="132.0" prefHeight="389.0" prefWidth="200.0">
+      <ScrollPane layoutX="14.0" layoutY="145.0" prefHeight="376.0" prefWidth="200.0">
          <content>
             <VBox fx:id="boardList" prefHeight="389.0" prefWidth="183.0" spacing="10.0">
                <padding>
@@ -23,15 +23,15 @@
                </padding></VBox>
          </content>
       </ScrollPane>
-      <Label alignment="CENTER" layoutX="14.0" layoutY="97.0" prefHeight="34.0" prefWidth="200.0" text="Your Boards">
+      <Label alignment="CENTER" layoutX="20.0" layoutY="113.0" prefHeight="34.0" prefWidth="200.0" text="Your Boards">
          <font>
             <Font name="Berlin Sans FB Demi Bold" size="19.0" />
          </font>
       </Label>
-      <Button layoutX="14.0" layoutY="65.0" mnemonicParsing="false" onAction="#create" prefHeight="10.0" prefWidth="90.0" text="Create Board" />
-      <AnchorPane fx:id="boardDisplay" accessibleText="Bo" layoutX="226.0" layoutY="60.0" prefHeight="474.0" prefWidth="702.0" />
-      <Button layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#reconnect" text="Reconnect" />
-      <Button layoutX="123.0" layoutY="65.0" mnemonicParsing="false" onAction="#join" prefHeight="10.0" prefWidth="90.0" text="Join Board" />
-      <Button layoutX="102.0" layoutY="13.0" mnemonicParsing="false" onAction="#adminLogin" text="Admin Login" />
+      <Button layoutX="18.0" layoutY="79.0" mnemonicParsing="false" onAction="#create" styleClass="primary-button" text="Create Board" />
+      <AnchorPane fx:id="boardDisplay" accessibleText="Bo" layoutX="228.0" layoutY="57.0" prefHeight="464.0" prefWidth="702.0" />
+      <Button layoutX="18.0" layoutY="14.0" mnemonicParsing="false" onAction="#reconnect" styleClass="primary-button" text="Reconnect" />
+      <Button layoutX="132.0" layoutY="79.0" mnemonicParsing="false" onAction="#join" styleClass="primary-button" text="Join Board" />
+      <Button layoutX="120.0" layoutY="13.0" mnemonicParsing="false" onAction="#adminLogin" styleClass="primary-button" text="Admin Login" />
    </children>
 </AnchorPane>

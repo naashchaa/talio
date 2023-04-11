@@ -10,18 +10,20 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="527.0" prefWidth="289.0" style="-fx-background-color: #FFF1DC; -fx-border-radius: 20px; -fx-background-radius: 20px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskListCtrl">
+
+<AnchorPane minWidth="-Infinity" prefHeight="391.0" prefWidth="222.0" styleClass="task-list" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskListCtrl">
    <children>
-      <Label fx:id="taskListName" alignment="CENTER" prefHeight="50.0" prefWidth="289.0" style="-fx-background-color: #EBBC93; border-top-left-radius: 80px 80px;" text="Task List Name" textFill="WHITE">
+      <Label fx:id="taskListName" alignment="CENTER" layoutX="1.0" layoutY="1.0" prefHeight="50.0" prefWidth="220.0" style="-fx-background-color: #EBBC93; -fx-background-radius: 10px 10px 0 0;" text="Task List Name" textFill="WHITE">
          <font>
-            <Font name="Berlin Sans FB Demi Bold" size="24.0" />
+            <Font size="18.0" />
          </font>
       </Label>
-      <ScrollPane hbarPolicy="NEVER" layoutX="23.0" layoutY="56.0" prefHeight="378.0" prefWidth="242.0" style="-fx-background-color: #FFFFFF00; -fx-vbar-policy: NEVER;" styleClass="s" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="56.0">
+      <ScrollPane hbarPolicy="NEVER" layoutX="20.0" layoutY="63.0" prefHeight="262.0" prefWidth="182.0" style="-fx-background-color: #FFFFFF00; -fx-vbar-policy: NEVER;" styleClass="s" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="62.0">
          <content>
-            <VBox fx:id="taskContainer" maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="384.0" prefWidth="227.0" spacing="10.0" style="-fx-background-color: #FFF1DC;">
+            <VBox fx:id="taskContainer" maxWidth="1.7976931348623157E308" prefHeight="264.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: #FFF1DC;">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
@@ -31,20 +33,26 @@
             </VBox>
          </content>
       </ScrollPane>
-      <Button layoutX="100.0" layoutY="453.0" mnemonicParsing="false" onAction="#addTask" prefHeight="50.0" prefWidth="90.0" style="-fx-background-color: #FFFFFF;" text="Add task" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="99.0" AnchorPane.topAnchor="453.0">
-         <font>
-            <Font name="Berlin Sans FB" size="14.0" />
-         </font>
-      </Button>
-      <MenuBar layoutX="240.0" layoutY="14.0" prefHeight="26.0" prefWidth="9.0">
+      <MenuBar layoutX="164.0" layoutY="13.0" prefHeight="9.0" prefWidth="31.0" scaleX="0.75" scaleY="0.75" style="-fx-background-color: FFFFFF00;">
         <menus>
-          <Menu mnemonicParsing="false" text="V">
+          <Menu mnemonicParsing="false">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#edit" text="EDIT" />
                   <MenuItem mnemonicParsing="false" onAction="#showDeleteTaskList" text="DELETE" />
             </items>
+               <graphic>
+                  <SVGPath content="M4,10h24c1.104,0,2-0.896,2-2s-0.896-2-2-2H4C2.896,6,2,6.896,2,8S2.896,10,4,10z M28,14H4c-1.104,0-2,0.896-2,2  s0.896,2,2,2h24c1.104,0,2-0.896,2-2S29.104,14,28,14z M28,22H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h24c1.104,0,2-0.896,2-2  S29.104,22,28,22z" fill="WHITE" />
+               </graphic>
           </Menu>
         </menus>
       </MenuBar>
+      <Button layoutX="90.0" layoutY="339.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#addTask" prefHeight="28.0" prefWidth="38.0" style="-fx-background-color: #FFFFFF;">
+         <font>
+            <Font name="Berlin Sans FB" size="14.0" />
+         </font>
+         <graphic>
+            <SVGPath content="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z" scaleX="0.7" scaleY="0.7" />
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>
