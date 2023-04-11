@@ -17,7 +17,7 @@ public class Board {
     private String password;
 
     @SuppressWarnings("unused")
-    private Board(){}
+    Board(){}
 
     public Board(@NotNull String name) {
         this.name = name;

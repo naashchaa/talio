@@ -25,8 +25,8 @@ public class DeleteBoardCtrl {
 
     public void confirm() {
         //TODO: check if works correctly
-        this.boardCtrl.deleteBoard();
         this.appOverview.deleteBoard(this.boardCtrl.getBoard());
+        this.boardCtrl.deleteBoard();
         this.mainCtrl.hidePopUp();
     }
 

@@ -264,6 +264,7 @@ public class ServerUtils {
         for (TaskList taskList : taskLists) {
             this.deleteTaskListWrapper(taskList);
         }
+        this.deleteBoard(board);
     }
 
     public void editBoard(Board board) {
