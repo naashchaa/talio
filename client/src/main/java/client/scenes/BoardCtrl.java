@@ -123,7 +123,6 @@ public class BoardCtrl implements Initializable {
     public void deleteBoard() {
         //TODO: check if works correctly
         this.server.deleteEverythingOfBoard(this.board);
-        this.server.deleteBoard(this.board);
     }
 
     public void refresh() {
