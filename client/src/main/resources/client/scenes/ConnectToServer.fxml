@@ -9,7 +9,7 @@
 <AnchorPane prefHeight="239.0" prefWidth="435.0" stylesheets="@../styling/styling.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ConnectToServerCtrl">
    <children>
       <TextField fx:id="textField" layoutX="15.0" layoutY="117.0" prefHeight="25.0" prefWidth="403.0" />
-      <Button layoutX="348.0" layoutY="178.0" mnemonicParsing="false" onAction="#connect" styleClass="primary-button" text="Connect" />
+      <Button layoutX="329.0" layoutY="178.0" mnemonicParsing="false" onAction="#connect" styleClass="primary-button" text="Connect" />
       <Pane layoutX="-1.0" layoutY="-1.0" prefHeight="57.0" prefWidth="441.0" styleClass="title">
          <children>
             <Text fill="WHITE" layoutX="115.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Connect To Server" />
@@ -17,6 +17,6 @@
       </Pane>
       <Text layoutX="20.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter URL:" />
       <Text fx:id="error" layoutX="47.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="There was an error connecting to the server. Please try again." visible="false" />
-      <Button layoutX="15.0" layoutY="178.0" mnemonicParsing="false" onAction="#showAdminLogin" styleClass="primary-button" text="Admin Login" />
+      <Button layoutX="31.0" layoutY="178.0" mnemonicParsing="false" onAction="#showAdminLogin" styleClass="primary-button" text="Admin Login" />
    </children>
 </AnchorPane>
